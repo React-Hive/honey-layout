@@ -1,18 +1,19 @@
 {
-  "name": "@tynik/react-honey-layout",
-  "version": "0.27.0-beta",
+  "name": "@react-hive/honey-layout",
+  "version": "1.0.0-beta",
   "description": "",
   "keywords": [
     "react",
-    "web"
+    "layout",
+    "theme"
   ],
   "homepage": "https://react-honey-layout.netlify.app",
   "bugs": {
-    "url": "https://github.com/Tynik/react-honey-layout/issues"
+    "url": "https://github.com/React-Hive/honey-layout/issues"
   },
   "repository": {
     "type": "git",
-    "url": "git+ssh://git@github.com/Tynik/react-honey-layout.git"
+    "url": "git+ssh://git@github.com/React-Hive/honey-layout.git"
   },
   "author": "Mykhailo Aliinyk <m.aliynik@gmail.com>",
   "license": "MIT",

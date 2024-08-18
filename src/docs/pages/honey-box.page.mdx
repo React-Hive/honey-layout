@@ -56,7 +56,7 @@ The `SquareBox` component renders a square box with customizable dimensions and 
 
 ~~~tsx
 import { useTheme } from 'styled-components';
-import { HoneyBox, resolveColor } from '@tynik/react-honey-layout';
+import { HoneyBox, resolveColor } from '@react-hive/honey-layout';
 
 /**
 * $backgroundColor (object): An object containing background colors for different screen sizes.
@@ -93,8 +93,8 @@ Below is an example of how to create and use a modifier with the component.
 
 ~~~tsx
 import { css } from 'styled-components';
-import type { HoneyModifier } from '@tynik/react-honey-layout';
-import { HoneyBox, resolveColor } from '@tynik/react-honey-layout';
+import type { HoneyModifier } from '@react-hive/honey-layout';
+import { HoneyBox, resolveColor } from '@react-hive/honey-layout';
 
 const hoverableModifier: HoneyModifier = () => () => css`
   &:hover {

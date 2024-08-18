@@ -9,13 +9,13 @@ It merges the provided theme with the current theme from the context.
 
 ### Usage
 
-1. Define your theme object, extending the `HoneyTheme` interface from `@tynik/react-honey-layout`.
+1. Define your theme object, extending the `HoneyTheme` interface from `@react-hive/honey-layout`.
 
 Example of configuring the theme:
 
 ~~~ts
 // theme.ts
-import type { HoneyTheme } from '@tynik/react-honey-layout';
+import type { HoneyTheme } from '@react-hive/honey-layout';
 
 const theme: HoneyTheme = {
   breakpoints: {
@@ -79,7 +79,7 @@ Each nested `HoneyThemeProvider` merges its theme with the theme provided by its
 
 ~~~tsx
 import { ThemeProvider } from 'styled-components';
-import { HoneyThemeProvider } from '@tynik/react-honey-layout';
+import { HoneyThemeProvider } from '@react-hive/honey-layout';
 
 import theme from './theme';
 import nestedTheme from './nested-theme';
@@ -103,7 +103,7 @@ This nested instance of `HoneyThemeProvider` merges nested theme with the theme 
 To augment the `DefaultTheme` interface from `styled-components` with the `HoneyTheme`, add the following declaration to your project:
 
 ~~~ts
-import type { HoneyTheme } from '@tynik/react-honey-layout';
+import type { HoneyTheme } from '@react-hive/honey-layout';
 
 declare module 'styled-components' {
   interface DefaultTheme extends HoneyTheme {}
@@ -117,11 +117,11 @@ This declaration extends the `DefaultTheme` interface with the properties define
 To augment any interface, use the following module declaration.
 
 ~~~ts
-import type { HoneyColor, HoneyFont } from '@tynik/react-honey-layout';
+import type { HoneyColor, HoneyFont } from '@react-hive/honey-layout';
 
 type NeutralColors = 'charcoalDark' | 'charcoalGray' | 'crimsonRed';
 
-declare module '@tynik/react-honey-layout' {
+declare module '@react-hive/honey-layout' {
   interface HoneyFonts {
     body1: HoneyFont;
     // Other fonts can be defined in the same way

@@ -330,7 +330,7 @@ export interface BaseHoneyColors {
  *
  * @example
  * ```typescript
- * declare module '@tynik/react-honey-layout' {
+ * declare module '@react-hive/honey-layout' {
  *  interface HoneyColors {
  *    neutral: Record<'charcoalDark' | 'charcoalGray' | 'crimsonRed', HoneyColor>;
  *  }
@@ -377,7 +377,7 @@ export type HoneyFont = {
  *
  * @example
  * ```typescript
- * declare module '@tynik/react-honey-layout' {
+ * declare module '@react-hive/honey-layout' {
  *  interface HoneyFonts {
  *    body: HoneyFont;
  *    caption: HoneyFont;

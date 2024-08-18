@@ -102,7 +102,7 @@ Returns a string representing the 8-character HEX with alpha (RRGGBBAA) format c
 ### Usage
 
 ```ts
-import { convertHexToHexWithAlpha } from '@tynik/react-honey-layout';
+import { convertHexToHexWithAlpha } from '@react-hive/honey-layout';
 
 const hexWithAlpha = convertHexToHexWithAlpha('#1A5297', 0.5);
 ```
@@ -127,7 +127,7 @@ The `resolveFont` function generates CSS font styles based on the `fontName` par
 
 ```tsx
 import styled from 'styled-components';
-import { resolveFont } from '@tynik/react-honey-layout';
+import { resolveFont } from '@react-hive/honey-layout';
 
 // Assume the theme object includes 'heading' font configuration
 
@@ -163,7 +163,7 @@ Dynamically resolve color values from the theme based on color keys, enabling co
 
 ```tsx
 import styled from 'styled-components';
-import { resolveColor } from '@tynik/react-honey-layout';
+import { resolveColor } from '@react-hive/honey-layout';
 
 export const ColoredBox = styled.div`
   width: 100px;
@@ -207,7 +207,7 @@ Here's how it works:
 
 ```tsx
 import styled from 'styled-components';
-import { resolveSpacing } from '@tynik/react-honey-layout';
+import { resolveSpacing } from '@react-hive/honey-layout';
 
 const Button = styled.button`
   margin: ${resolveSpacing(1)}; /* Using default unit 'px' */
@@ -237,7 +237,7 @@ The `resolveDimension` function accesses a specific dimension value from the the
 
 ```tsx
 import styled from 'styled-components';
-import { resolveDimension } from '@tynik/react-honey-layout';
+import { resolveDimension } from '@react-hive/honey-layout';
 
 const Box = styled.div`
   width: ${resolveDimension('width')}; /* Retrieves the 'width' dimension value from the theme */
@@ -286,7 +286,7 @@ Changes the background color of the box element responsively according to the sc
 
 ```tsx
 import styled, { css }from 'styled-components';
-import { bpMedia } from '@tynik/react-honey-layout';
+import { bpMedia } from '@react-hive/honey-layout';
 
 const ResponsiveBox = styled.div`
   ${({ theme: { colors } }) => css`
@@ -334,7 +334,7 @@ Flattens a nested list structure to create a flat list with depth levels, parent
 
 ```tsx
 import { useTheme } from 'styled-components';
-import { flattenNestedList } from '@tynik/react-honey-layout';
+import { flattenNestedList } from '@react-hive/honey-layout';
 
 export const FlattenedList = () => {
   const theme = useTheme()
