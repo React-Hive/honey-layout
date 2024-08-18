@@ -1,0 +1,239 @@
+import styled, { css, useTheme } from 'styled-components';
+
+import { HoneyGrid, HoneyGridColumn } from '../../components';
+
+export const GridColumnStyled = styled.div`
+  ${({ theme }) => css`
+    cursor: pointer;
+
+    &:hover {
+        background-color: ${theme.colors.neutral.coralRed};
+    }
+  `}
+`;
+
+export const GridColumn =  ({ children, ...props }) => {
+  const theme = useTheme();
+
+  return (
+    <HoneyGridColumn
+      $minWidth="300px"
+      $justifyContent="center"
+      $alignItems="center"
+      $backgroundColor={theme.colors.neutral.crimsonRed}
+      as={GridColumnStyled}
+      {...props}
+    >
+      {children}
+    </HoneyGridColumn>
+  )
+}
+
+export const GridWith2Columns = () => {
+  return (
+    <HoneyGrid
+      columns={2}
+      minColumnHeight="100px"
+      spacing={2}
+      $padding="16px"
+      $border="1px solid #cccccc"
+      $borderRadius="4px"
+      $overflow="hidden"
+    >
+      <GridColumn>1</GridColumn>
+      <GridColumn>2</GridColumn>
+    </HoneyGrid>
+  );
+}
+
+export const GridWith3Columns = () => {
+  return (
+    <HoneyGrid
+      columns={3}
+      minColumnHeight="100px"
+      spacing={2}
+      $padding="16px"
+      $border="1px solid #cccccc"
+      $borderRadius="4px"
+      $overflow="hidden"
+    >
+      <GridColumn>1</GridColumn>
+      <GridColumn>2</GridColumn>
+      <GridColumn>3</GridColumn>
+    </HoneyGrid>
+  );
+}
+
+export const GridWithTaking2Columns = () => {
+  return (
+    <HoneyGrid
+      columns={3}
+      minColumnHeight="100px"
+      spacing={2}
+      $padding="16px"
+      $border="1px solid #cccccc"
+      $borderRadius="4px"
+      $overflow="hidden"
+    >
+      <GridColumn takeColumns={2}>1</GridColumn>
+      <GridColumn>2</GridColumn>
+    </HoneyGrid>
+  );
+}
+
+export const GridWithTaking2ColumnsInMiddle = () => {
+  return (
+    <HoneyGrid
+      columns={4}
+      minColumnHeight="100px"
+      spacing={2}
+      $padding="16px"
+      $border="1px solid #cccccc"
+      $borderRadius="4px"
+      $overflow="hidden"
+    >
+      <GridColumn>1</GridColumn>
+      <GridColumn takeColumns={2}>2</GridColumn>
+      <GridColumn>3</GridColumn>
+    </HoneyGrid>
+  );
+}
+
+# HoneyGrid
+
+---
+
+The `HoneyGrid` component is a component that provides a grid-based layout system for organizing content in a responsive and visually appealing manner.
+
+### Props:
+
+* **columns**: The number of columns in the grid.
+* **minColumnHeight**: The minimum height of each column.
+* **spacing**: The spacing between columns.
+
+## HoneyGridColumn
+
+The `HoneyGridColumn` component is a flexible grid column component based on `HoneyBox` that allows customization of column width,
+background color, and other styling options.
+
+### Props:
+
+* **takeColumns**: The number of columns the column should span across.
+
+### Usage
+
+1. Grid with 2 columns
+
+<GridWith2Columns/>
+
+~~~tsx
+import { HoneyGrid, HoneyGridColumn } from '@tynik/react-honey-layout';
+
+const GridWith2Columns = () => {
+  return (
+    <HoneyGrid
+      columns={2}
+      minColumnHeight="100px"
+      spacing={2}
+      $padding="16px"
+    >
+      <HoneyGridColumn $minWidth="300px">1</HoneyGridColumn>
+      <HoneyGridColumn $minWidth="300px">2</HoneyGridColumn>
+    </HoneyGrid>
+  );
+}
+~~~
+
+2. Grid with 3 columns
+
+<GridWith3Columns/>
+
+~~~tsx
+import styled, { useTheme, css } from 'styled-components';
+import { HoneyGrid, HoneyGridColumn } from '@tynik/react-honey-layout';
+
+export const GridColumnStyled = styled.div`
+  ${({ theme }) => css`
+    cursor: pointer;
+
+    &:hover {
+        background-color: ${theme.colors.neutral.coralRed};
+    }
+  `}
+`;
+
+export const GridColumn =  ({ children, ...props }) => {
+  const theme = useTheme();
+
+  return (
+    <HoneyGridColumn
+      $minWidth="300px"
+      $justifyContent="center"
+      $alignItems="center"
+      $backgroundColor={theme.colors.neutral.crimsonRed}
+      as={GridColumnStyled}
+      {...props}
+    >
+      {children}
+    </HoneyGridColumn>
+  )
+}
+
+const GridWith3Columns = () => {
+  return (
+    <HoneyGrid
+      columns={3}
+      minColumnHeight="100px"
+      spacing={2}
+      $padding="16px"
+    >
+      <GridColumn>1</GridColumn>
+      <GridColumn>2</GridColumn>
+      <GridColumn>3</GridColumn>
+    </HoneyGrid>
+  );
+}
+~~~
+
+3. Grid where first column takes 2 columns
+
+<GridWithTaking2Columns/>
+
+~~~tsx
+import { HoneyGrid } from '@tynik/react-honey-layout';
+
+const GridWithTaking2Columns = () => {
+  return (
+    <HoneyGrid
+      columns={3}
+      minColumnHeight="100px"
+      spacing={2}
+    >
+      <GridColumn takeColumns={2}>1</GridColumn>
+      <GridColumn>2</GridColumn>
+    </HoneyGrid>
+  );
+}
+~~~
+
+4. Grid where middle column takes 2 columns
+
+<GridWithTaking2ColumnsInMiddle/>
+
+~~~tsx
+import { HoneyGrid } from '@tynik/react-honey-layout';
+
+const GridWithTaking2ColumnsInMiddle = () => {
+  return (
+    <HoneyGrid
+      columns={4}
+      minColumnHeight="100px"
+      spacing={2}
+    >
+      <GridColumn>1</GridColumn>
+      <GridColumn takeColumns={2}>2</GridColumn>
+      <GridColumn>3</GridColumn>
+    </HoneyGrid>
+  );
+}
+~~~

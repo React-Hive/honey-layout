@@ -1,0 +1,377 @@
+import styled, { css, useTheme } from 'styled-components';
+import { resolveColor, bpMedia } from '../../helpers';
+import { flattenNestedList } from '../../utils';
+
+export const ColoredBox = styled.div`
+  ${() => css`
+    width: 100px;
+    height: 100px;
+    margin: 0 auto;
+
+    background-color: ${resolveColor('neutral.crimsonRed')};
+
+    &:hover {
+        background-color: ${resolveColor('neutral.crimsonRed', 0.9)};
+    }
+  `}
+`;
+
+export const ResponsiveBox = styled.div`
+  ${({ theme: { colors } }) => css`
+    width: 100px;
+    height: 100px;
+    margin: 0 auto;
+    background-color: ${colors.neutral.royalBlue};
+
+    ${bpMedia('sm').down} {
+        background-color: ${colors.neutral.mauve};
+    }
+
+    ${bpMedia('md').up} {
+        background-color: ${colors.neutral.coralRed};
+    }
+
+    ${bpMedia('lg').up} {
+        background-color: ${colors.neutral.forestGreen};
+    }
+  `}
+`;
+
+export const FlattenedList = () => {
+  const theme = useTheme()
+
+  const nestedList = [
+    {
+      id: 1,
+      name: 'Item 1',
+      children: [
+        {
+          id: 2,
+          name: 'Item 1.1',
+          children: [
+            { id: 3, name: 'Item 1.1.1', children: [] },
+            { id: 4, name: 'Item 1.1.2', children: [] }
+          ]
+        },
+        { id: 5, name: 'Item 1.2', children: [] }
+      ]
+    },
+    {
+      id: 6,
+      name: 'Item 2',
+      children: []
+    }
+  ];
+
+  const flatList = flattenNestedList(nestedList, 'id', 'children');
+
+  return (
+    <ul>
+      {flatList.map(item => (
+        <li key={item.id} style={{ marginLeft: item.depthLevel * theme.spacings.base * 2 }}>
+          {item.name} (Parent ID: {item.parentId ?? 'undefined'}, Total nested items: {item.totalNestedItems})
+        </li>
+      ))}
+    </ul>
+  )
+};
+
+# Utils
+
+A comprehensive list of utility functions designed to streamline and enhance your CSS-in-JS development workflow.
+
+## convertHexToHexWithAlpha
+---
+
+The `convertHexToHexWithAlpha` function converts a 3-character or 6-character HEX color code to an 8-character HEX with alpha (RRGGBBAA) format.
+
+### Parameters
+
+- `hex`: The 3-character or 6-character HEX color code. It can optionally start with '#'. Examples include "#RGB", "#RRGGBB", "RGB", or "RRGGBB".
+- `alpha`: The alpha transparency value between 0 (fully transparent) and 1 (fully opaque).
+
+### Throws
+
+- Throws an error if the alpha value is not within the valid range (0 to 1).
+- Throws an error if the hex code is not a valid format.
+
+### Returns
+
+Returns a string representing the 8-character HEX with alpha (RRGGBBAA) format color code.
+
+### Usage
+
+```ts
+import { convertHexToHexWithAlpha } from '@tynik/react-honey-layout';
+
+const hexWithAlpha = convertHexToHexWithAlpha('#1A5297', 0.5);
+```
+
+
+## resolveFont
+---
+
+The `resolveFont` function generates CSS font styles based on the provided font name from the theme. This function is particularly useful when styling components with dynamically applied font properties based on theme values.
+
+### Parameters
+
+- `fontName`: The name of the font to be resolved from the theme. This should correspond to a key in the `fonts` object of the theme.
+
+### Returns
+
+A function that takes the theme and returns the CSS for the specified font. The returned CSS includes font-family, font-size (converted from px to rem), font-weight, line-height (if defined, converted from px to rem), and letter-spacing (if defined, converted from px to rem).
+
+### Usage
+
+The `resolveFont` function generates CSS font styles based on the `fontName` parameter.
+
+```tsx
+import styled from 'styled-components';
+import { resolveFont } from '@tynik/react-honey-layout';
+
+// Assume the theme object includes 'heading' font configuration
+
+const Heading = styled.h1`
+  ${resolveFont('heading')};
+`;
+```
+
+
+## resolveColor
+---
+
+The `resolveColor` function resolves a color value based on the provided color key and optional alpha value. This utility function facilitates the retrieval of theme colors in a consistent and type-safe manner.
+
+### Parameters
+
+- `colorKey`: The key representing the color to be resolved. This key is a string in the format `colorType.colorName`.
+- `alpha`: Optional. The alpha transparency value between 0 (fully transparent) and 1 (fully opaque).
+
+### Returns
+
+A function that takes the theme and returns the resolved color value from the theme, either in HEX format or in 8-character HEX with alpha format.
+
+### Throws
+
+An error if the `alpha` value is not between 0 and 1 or if the `colorKey` does not match the expected format.
+
+### Usage
+
+Dynamically resolve color values from the theme based on color keys, enabling consistent theming throughout your application. You can also specify an alpha value to get a color with transparency.
+
+<ColoredBox/>
+
+```tsx
+import styled from 'styled-components';
+import { resolveColor } from '@tynik/react-honey-layout';
+
+export const ColoredBox = styled.div`
+  width: 100px;
+  height: 100px;
+  margin: 0 auto;
+
+  background-color: ${resolveColor('neutral.crimsonRed')};
+
+  &:hover {
+    background-color: ${resolveColor('neutral.crimsonRed', 0.9)};
+  }
+`;
+```
+
+
+## resolveSpacing
+---
+
+The `resolveSpacing` function resolves spacing values based on the provided spacing factor and spacing type, allowing for flexible application of spacing in your CSS-in-JS setup.
+This function is particularly useful when styling components with dynamically calculated spacing based on theme values.
+
+### Parameters
+
+- `value`: The spacing factor to be applied, which can be a single number or an array of 2, 3, or 4 numbers.
+- `unit`: Optional. The CSS unit to be used for the calculated value, e.g., 'px', 'em'. Set null to not apply a unit. Default: 'px'.
+- `type`: Optional. The type of spacing to be used, e.g., 'base', 'small', 'large'. Default: 'base'.
+
+### Returns
+
+A function that takes the theme and returns the resolved spacing value, either as a string or a number, optionally with the specified unit. When `value` is an array, the returned string joins array values with a space.
+
+### Usage
+
+The `resolveSpacing` function calculates spacing values based on the `value`, `unit`, and `type` parameters.
+
+Here's how it works:
+
+* **value**: Can be a single number or an array of numbers `[num1, num2]`, `[num1, num2, num2]` or `[num1, num2, num3, num4]`.
+* **unit**: Specifies the CSS unit (px, em, %, etc.) to apply to the calculated spacing values. If not provided, defaults to 'px'. When set to `null`, no unit will be applied.
+* **type**: Indicates the type of spacing ('base', 'small', 'large', etc.) to fetch from the theme. Defaults to 'base'.
+
+```tsx
+import styled from 'styled-components';
+import { resolveSpacing } from '@tynik/react-honey-layout';
+
+const Button = styled.button`
+  margin: ${resolveSpacing(1)}; /* Using default unit 'px' */
+  padding: ${resolveSpacing([1, 2], 'rem', 'small')}; /* Using 'rem' unit and 'small' type spacing from theme */
+  width: ${resolveSpacing(5, '%')}; /* Using '%' unit */
+  height: ${resolveSpacing([10, 15], 'px', 'large')}; /* Using 'px' unit and 'large' type spacing from theme */
+`;
+```
+
+
+## resolveDimension
+---
+
+The `resolveDimension` function retrieves dimension values based on the provided dimension name from the theme configuration. This function is useful for styling components with dimension values defined in your theme.
+
+### Parameters
+
+- `dimensionName`: The name of the dimension to resolve.
+
+### Returns
+
+A function that takes the theme and returns the resolved dimension value for the specified dimension name.
+
+### Usage
+
+The `resolveDimension` function accesses a specific dimension value from the theme configuration using the dimension name.
+
+```tsx
+import styled from 'styled-components';
+import { resolveDimension } from '@tynik/react-honey-layout';
+
+const Box = styled.div`
+  width: ${resolveDimension('width')}; /* Retrieves the 'width' dimension value from the theme */
+  height: ${resolveDimension('height')};
+`;
+```
+
+## bpMedia
+---
+
+The `bpMedia` utility function that returns functions for generating media queries for the specified breakpoint. The `down` function creates a media query for screen sizes smaller than the breakpoint, while the `up` function creates a media query for screen sizes larger than the breakpoint.
+
+### Parameters
+
+- `breakpoint`: The name of the breakpoint.
+- `ruleOptions`: Additional options for the media rule.
+
+### HoneyCSSMediaRule
+
+- `operator`: Operator for the media rule.
+- `mediaType`: Media type for the media rule.
+- `width`: Width for the media rule.
+- `minWidth`: Minimum width for the media rule.
+- `maxWidth`: Maximum width for the media rule.
+- `height`: Height for the media rule.
+- `minHeight`: Minimum height for the media rule.
+- `maxHeight`: Maximum height for the media rule.
+- `orientation`: Orientation for the media rule.
+- `resolution`: Resolution for the media rule.
+- `minResolution`: Minimum resolution for the media rule.
+- `maxResolution`: Maximum resolution for the media rule.
+- `update`: Update for the media rule.
+
+### Returns
+
+Functions for generating media queries:
+
+- `down`: Function that creates a media query for screen sizes smaller than the breakpoint.
+- `up`: Function that creates a media query for screen sizes larger than the breakpoint.
+
+### Usage
+
+Changes the background color of the box element responsively according to the screen size, adapting to small, medium, and large screens for a seamless user experience.
+
+<ResponsiveBox/>
+
+```tsx
+import styled, { css }from 'styled-components';
+import { bpMedia } from '@tynik/react-honey-layout';
+
+const ResponsiveBox = styled.div`
+  ${({ theme: { colors } }) => css`
+    width: 100px;
+    height: 100px;
+    margin: 0 auto;
+    background-color: ${colors.neutral.royalBlue};
+
+    ${bpMedia('sm').down} {
+        background-color: ${colors.neutral.mauve};
+    }
+
+    ${bpMedia('md').up} {
+        background-color: ${colors.neutral.coralRed};
+    }
+
+    ${bpMedia('lg').up} {
+        background-color: ${colors.neutral.forestGreen};
+    }
+  `}
+`;
+```
+
+
+## flattenNestedList
+---
+
+The `flattenNestedList` function converts a nested list structure into a flat list, excluding the nested list key from the result and adding `depthLevel`, `parentIndex`, and `totalNestedItems` properties to each item. This is useful for displaying hierarchical data in a flat structure while maintaining information about the hierarchy.
+
+### Parameters
+
+- `items`: The array of items to be flattened. This array can be undefined.
+- `itemIdKey`: The key in each item that uniquely identifies it.
+- `nestedItemsKey`: The key in each item that contains the nested list.
+
+### Returns
+
+A flat array of items, excluding the nested list key and including `depthLevel`, `parentIndex`, and `totalNestedItems` properties.
+
+### Usage
+
+Flattens a nested list structure to create a flat list with depth levels, parent indices, and total nested items, making it easier to display hierarchical data in components like lists or trees.
+
+<FlattenedList/>
+
+```tsx
+import { useTheme } from 'styled-components';
+import { flattenNestedList } from '@tynik/react-honey-layout';
+
+export const FlattenedList = () => {
+  const theme = useTheme()
+
+  const nestedList = [
+    {
+      id: 1,
+      name: 'Item 1',
+      children: [
+        {
+          id: 2,
+          name: 'Item 1.1',
+          children: [
+            { id: 3, name: 'Item 1.1.1', children: [] },
+            { id: 4, name: 'Item 1.1.2', children: [] }
+          ]
+        },
+        { id: 5, name: 'Item 1.2', children: [] }
+      ]
+    },
+    {
+      id: 6,
+      name: 'Item 2',
+      children: []
+    }
+  ];
+
+  const flatList = flattenNestedList(nestedList, 'id', 'children');
+
+  return (
+    <ul>
+      {flatList.map(item => (
+        <li key={item.id} style={{ marginLeft: item.depthLevel * theme.spacings.base * 2 }}>
+          {item.name} (Parent ID: {item.parentId ?? 'undefined'}, Total nested items: {item.totalNestedItems})
+        </li>
+      ))}
+    </ul>
+  )
+};
+```

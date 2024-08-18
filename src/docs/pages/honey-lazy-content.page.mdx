@@ -1,0 +1,121 @@
+import { useState } from 'react';
+import styled, { css } from 'styled-components';
+
+import { HoneyBox, HoneyLazyContent } from '../../components';
+import { resolveSpacing } from '../../helpers';
+
+export const Button = styled.button`
+  ${({ theme: { colors } }) => css`
+    padding: ${resolveSpacing(1)};
+
+    border: 0;
+    border-radius: 4px;
+    background-color: ${colors.neutral.forestGreen};
+    cursor: pointer;
+
+    &:hover {
+        background-color: ${colors.neutral.forestGreenLight};
+    }
+
+    &:active {
+        background-color: ${colors.neutral.forestGreenDark};
+    }
+  `}
+`
+
+export const LazyContentExample = () => {
+  const [isShow, setIsShow] = useState(false);
+
+  return (
+    <HoneyBox $padding="16px" $border="1px solid #cccccc" $borderRadius="4px">
+      <HoneyBox $display="flex" $alignItems="center" $gap="8px">
+        <Button onClick={() => setIsShow(!isShow)}>
+          Toggle Content
+        </Button>
+
+        <span>show={isShow.toString()}</span>
+      </HoneyBox>
+
+      <HoneyBox>
+        <HoneyLazyContent mount={isShow} unmountDelay={1000}>
+          This content will be lazily loaded and unloaded based on the mount state
+        </HoneyLazyContent>
+      </HoneyBox>
+    </HoneyBox>
+  );
+}
+
+# HoneyLazyContent
+
+---
+
+The `HoneyLazyContent` component for lazy loading and unloading content based on a mount/unmount state.
+
+### Benefits:
+
+* Efficiently loads content only when necessary.
+* Provides control over mounting and unmounting based on props.
+* Efficiently used with CSS animations to unmount content after animation finishes.
+
+### Props:
+
+* **mount**: Determines whether the content should be mounted or unmounted.
+* **unmountDelay**: The delay in milliseconds before unmounting the content when `mount` is set to `false`.
+* **alwaysMounted**: Determines whether the content should always remain mounted, regardless of the value of `mount`.
+If `true`, the content will never be unmounted. Defaults to `false`.
+* **keepAfterMount**: Determines whether the content should remain mounted after the first mount.
+If `true`, the content will not be unmounted after the first time it's mounted. Defaults to `false`.
+
+### Usage
+
+This example showcases the usage of the `HoneyLazyContent` component alongside a styled button for toggling content visibility. When the button is clicked, it toggles the display of lazily loaded content.
+
+<LazyContentExample/>
+
+```tsx
+import { useState } from 'react';
+import styled, { css } from 'styled-components';
+
+import { HoneyBox, HoneyLazyContent, resolveSpacing } from '@tynik/react-honey-layout';
+
+export const Button = styled.button`
+  ${({ theme: { colors } }) => css`
+    padding: ${resolveSpacing(1)};
+
+    border: 0;
+    border-radius: 4px;
+    background-color: ${colors.neutral.forestGreen};
+    cursor: pointer;
+
+    &:hover {
+        background-color: ${colors.neutral.forestGreenLight};
+    }
+
+    &:active {
+        background-color: ${colors.neutral.forestGreenDark};
+    }
+  `}
+`
+
+export const LazyContentExample = () => {
+  const [isShow, setIsShow] = useState(false);
+
+  return (
+    <HoneyBox $padding="16px" $border="1px solid #cccccc" $borderRadius="4px">
+      <HoneyBox $display="flex" $alignItems="center" $gap="8px">
+        <Button onClick={() => setIsShow(!isShow)}>
+          Toggle Content
+        </Button>
+
+        <span>show={isShow.toString()}</span>
+      </HoneyBox>
+
+      <HoneyBox>
+        <HoneyLazyContent mount={isShow} unmountDelay={1000}>
+          This content will be lazily loaded and unloaded based on the mount state
+        </HoneyLazyContent>
+      </HoneyBox>
+    </HoneyBox>
+  );
+}
+```

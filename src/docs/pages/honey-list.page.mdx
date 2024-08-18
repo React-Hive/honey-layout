@@ -1,0 +1,111 @@
+import styled, { css } from 'styled-components';
+
+import { resolveSpacing } from '../../helpers';
+import { HoneyBox, HoneyList } from '../../components';
+
+export const ListItemStyled = styled.li`
+  ${({ theme: { colors } }) => css`
+    padding: 0 ${resolveSpacing(1)};
+
+    border-radius: 4px;
+    cursor: pointer;
+
+    &:hover {
+        background-color: ${colors.neutral.charcoalDark};
+    }
+  `}
+`;
+
+
+export const ListExample = () => {
+  const items = Array.from(Array(5)).map((_, index) => ({
+    id: index,
+    name: `name-${index}`
+  }));
+
+  return (
+    <HoneyBox $marginTop="16px" $border="1px solid #cccccc" $borderRadius="4px">
+      <HoneyList
+        items={items}
+        itemKey="id"
+        $display="flex"
+        $flexDirection="column"
+        $gap="8px"
+        as="ul"
+      >
+        {item => <HoneyBox as={ListItemStyled}>{item.name}</HoneyBox>}
+      </HoneyList>
+    </HoneyBox>
+  );
+}
+
+# HoneyList
+
+---
+
+The `HoneyList` component used for rendering lists.
+It provides a rich set of features to handle various states of the list, including loading, error, and no content scenarios.
+The component offers flexibility in rendering list items and integrates seamlessly with styled-components for styling purposes.
+
+### Benefits:
+
+* **Dynamic Rendering**: Allows for dynamic rendering of lists by providing a function to render each item.
+* **Conditional Rendering**: Handles various states of the list, such as loading, error, and no content, with different content blocks.
+* **Flexibility**: Supports customization of list items, including their keys and rendering components.
+
+### Props:
+
+* **children**: A function that receives an item, its index, and the array of items, and returns `ReactNode`.
+  This function is responsible for rendering each item in the list.
+* **items**: An array of items to be rendered in the list.
+* **itemKey**: Optional. A key used to uniquely identify each item in the list.
+  If not provided, the index of the item will be used as the key.
+* **isLoading**: A boolean flag indicating whether the list is in a loading state.
+* **loadingBlockContent**: The content to display when the list is in a loading state.
+* **isError**: A boolean flag indicating whether an error occurred while fetching the list data.
+* **errorBlockContent**: The content to display when an error occurred while fetching the list data.
+* **noContent**: The content to display when the list has no items.
+
+### Usage
+
+<ListExample/>
+
+```tsx
+import styled, { css } from 'styled-components';
+import { HoneyBox, HoneyList, resolveSpacing } from '@tynik/react-honey-layout';
+
+const ListItemStyled = styled.li`
+  ${({ theme: { colors } }) => css`
+    padding: 0 ${resolveSpacing(1)};
+
+    border-radius: 4px;
+    cursor: pointer;
+
+    &:hover {
+        background-color: ${colors.neutral.charcoalDark};
+    }
+  `}
+`;
+
+const ListExample = () => {
+  const items = Array.from(new Array(5)).map((_, index) => ({
+    id: index,
+    name: `name-${index}`
+  }));
+
+  return (
+    <HoneyBox $marginTop="16px" $border="1px solid #cccccc" $borderRadius="4px">
+      <HoneyList
+        items={items}
+        itemKey="id"
+        $display="flex"
+        $flexDirection="column"
+        $gap="8px"
+        as="ul"
+      >
+        {item => <HoneyBox as={ListItemStyled}>{item.name}</HoneyBox>}
+      </HoneyList>
+    </HoneyBox>
+  );
+}
+```

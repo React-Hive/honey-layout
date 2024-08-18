@@ -1,0 +1,114 @@
+import { useTheme } from 'styled-components';
+
+import { HoneyBox } from '../../components';
+import { resolveColor } from '../../helpers';
+
+export const SquareBox = () => {
+  const { colors } = useTheme();
+
+  return <HoneyBox
+    $width="100px"
+    $height="100px"
+    $margin="0 auto"
+    $backgroundColor={{
+      xs: 'white',
+      sm: colors.neutral.forestGreen,
+      md: 'neutral.forestGreen',
+      // You can use `resolveColor` function to get a color value
+      lg: resolveColor('neutral.crimsonRed')
+    }}
+  />
+}
+
+# HoneyBox
+
+---
+
+The `HoneyBox` component is a versatile-styled component that provides flexible styling options for creating various UI
+elements. It offers a wide range of props to customize its appearance, making it
+suitable for building different types of components such as containers, boxes, cards etc.
+
+### Benefits:
+
+* **Flexibility:** With the `HoneyBox` component, you have complete control over the
+styling of your UI elements. It supports a variety of props that allow you to adjust
+properties like width, height, padding, margin, background color, and more.
+
+* **Responsive Design:** The `HoneyBox` component supports responsive design out of the box. You can easily
+specify different styles for various screen sizes using the $display, $width, $height,
+and other props with responsive values, ensuring your components look great across
+different devices and viewport sizes.
+
+* **Styled Components Integration:** Being built with styled-components,
+the `HoneyBox` component seamlessly integrates with your styled-components-based project.
+You can leverage the power of styled-components to define complex styling logic while maintaining a clean and readable codebase.
+
+* **Customization:** You can extend the `HoneyBox` component to create custom styled components
+tailored to your specific design requirements. By extending the `HoneyBox` component and
+adding custom styling or additional props, you can quickly create reusable UI components
+that fit your project's design system.
+
+### Usage
+
+The `SquareBox` component renders a square box with customizable dimensions and background color based on screen size.
+
+<SquareBox/>
+
+~~~tsx
+import { useTheme } from 'styled-components';
+import { HoneyBox, resolveColor } from '@tynik/react-honey-layout';
+
+/**
+* $backgroundColor (object): An object containing background colors for different screen sizes.
+*   xs: Background color for extra small screens (xs).
+*   sm: Background color for small screens (sm).
+*   md: Background color for medium screens (md).
+* */
+export const SquareBox = () => {
+  const { colors } = useTheme();
+
+  return <HoneyBox
+    $width="100px"
+    $height="100px"
+    $margin="0 auto"
+    $backgroundColor={{
+      xs: 'white',
+      sm: colors.neutral.forestGreen,
+      md: 'neutral.forestGreen',
+      // You can use `resolveColor` function to get a color value
+      lg: resolveColor('neutral.crimsonRed')
+    }}
+  />
+}
+~~~
+
+### Modifiers
+
+Modifiers allow for additional custom styling to be applied to the `HoneyBox` component.
+Modifiers are functions that return CSS styles, which can be dynamically applied to the `HoneyBox` component.
+
+### Usage
+
+Below is an example of how to create and use a modifier with the component.
+
+~~~tsx
+import { css } from 'styled-components';
+import type { HoneyModifier } from '@tynik/react-honey-layout';
+import { HoneyBox, resolveColor } from '@tynik/react-honey-layout';
+
+const hoverableModifier: HoneyModifier = () => () => css`
+  &:hover {
+    background-color: ${resolveColor('neutral.coralRed')};
+  }
+`;
+
+export const SquareBox = () => {
+  return <HoneyBox
+    modifiers={[hoverableModifier()]}
+    $width="100px"
+    $height="100px"
+    $margin="0 auto"
+    $backgroundColor="neutral.forestGreen"
+  />
+}
+~~~
