@@ -1,7 +1,7 @@
 import * as CSS from 'csstype';
 
 import type { ComponentType, ReactNode } from 'react';
-import type { Interpolation } from 'styled-components';
+import type { DefaultTheme, Interpolation } from 'styled-components';
 import type { DataType } from 'csstype';
 
 export type TimeoutId = ReturnType<typeof setTimeout>;
@@ -443,7 +443,7 @@ export type ComponentWithAs<T, P = object> = {
   as?: string | ComponentType<P>;
 } & T;
 
-export type HoneyModifierResultFn = () => Interpolation<{ theme: HoneyTheme }>;
+export type HoneyModifierResultFn = () => Interpolation<{ theme: DefaultTheme }>;
 
 export type HoneyModifier<Config = unknown> = (config?: Config) => HoneyModifierResultFn;
 
