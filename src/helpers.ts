@@ -290,7 +290,7 @@ export const bpMedia = (
   const resolveBpValue = (theme: HoneyTheme) => {
     const value = theme.breakpoints[breakpoint];
     if (!value) {
-      throw new Error(`[honey-layout]: Setup for breakpoint "${breakpoint}" was not found`);
+      throw new Error(`[honey-layout]: Setup for breakpoint "${breakpoint}" was not found.`);
     }
 
     return value;

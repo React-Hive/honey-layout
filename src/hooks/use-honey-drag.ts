@@ -79,7 +79,7 @@ export type HoneyDragHandlers<Element extends HTMLElement> = {
 /**
  * A hook that provides touch and mouse-based dragging functionality for an element.
  * It tracks touch and mouse events, calculates dragging speed and distances during the drag,
- * and exposes `onStart`, `onMove`, and `onEnd` callbacks to handle various stages of dragging.
+ * and exposes `onStartDrag`, `onMoveDrag`, and `onEndDrag` callbacks to handle various stages of dragging.
  *
  * @param {MutableRefObject<Element>} draggableElementRef - A `ref` to the element that should be made draggable.
  * @param {HoneyDragHandlers<Element>} handlers - An object containing the callback functions for different dragging stages.
@@ -157,6 +157,7 @@ export const useHoneyDrag = <Element extends HTMLElement>(
     const releaseDrag = () => {
       stopDrag();
 
+      // eslint-disable-next-line @typescript-eslint/no-use-before-define
       window.removeEventListener('mousemove', mouseMoveHandler);
       window.removeEventListener('mouseup', releaseDrag);
     };

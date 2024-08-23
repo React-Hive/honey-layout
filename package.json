@@ -1,6 +1,6 @@
 {
   "name": "@react-hive/honey-layout",
-  "version": "1.0.0-beta",
+  "version": "1.0.1-beta",
   "description": "",
   "keywords": [
     "react",
@@ -33,7 +33,7 @@
     "@mdx-js/react": "3.0.1",
     "react": "18.2.0",
     "react-dom": "18.2.0",
-    "react-router-dom": "6.24.1",
+    "react-router-dom": "6.26.1",
     "styled-components": "5.3.9",
     "highlight.js": "11.10.0"
   },
@@ -45,9 +45,9 @@
   "devDependencies": {
     "@testing-library/react": "16.0.0",
     "@types/jest": "29.5.12",
-    "@typescript-eslint/eslint-plugin": "7.16.0",
-    "@typescript-eslint/parser": "7.16.0",
-    "@types/react": "18.2.78",
+    "@typescript-eslint/eslint-plugin": "7.18.0",
+    "@typescript-eslint/parser": "7.18.0",
+    "@types/react": "18.2.79",
     "@types/react-dom": "18.2.25",
     "@types/styled-components": "5.1.34",
     "@types/mdx": "2.0.13",
@@ -65,9 +65,9 @@
     "jest-environment-jsdom": "29.7.0",
     "prettier": "3.3.3",
     "ts-jest": "29.2.4",
-    "typescript": "5.4.5",
-    "vite": "5.4.0",
-    "vite-plugin-dts": "4.0.2",
+    "typescript": "5.5.4",
+    "vite": "5.4.2",
+    "vite-plugin-dts": "4.0.3",
     "vite-plugin-checker": "0.7.2"
   },
   "jest": {

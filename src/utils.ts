@@ -345,7 +345,7 @@ export const searchFlattenedItems = <OriginItem extends object, NestedListKey ex
 
             if (shouldInsertParentItem) {
               if (!parentItem) {
-                throw new Error('[honey-layout]: Parent item was not found');
+                throw new Error('[honey-layout]: Parent item was not found.');
               }
 
               matchedFlattenedItems.push(parentItem);
