@@ -1,6 +1,5 @@
-import { useEffect, useRef, useState } from 'react';
-
 import type { PropsWithChildren } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 import type { TimeoutId } from '../types';
 

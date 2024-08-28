@@ -1,5 +1,5 @@
-import { useCallback, useEffect } from 'react';
 import type { MutableRefObject } from 'react';
+import { useCallback, useEffect } from 'react';
 
 import type { Nullable } from '../types';
 import type { HoneyDragOnMoveHandler, HoneyDragHandlers } from './use-honey-drag';

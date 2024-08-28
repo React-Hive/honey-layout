@@ -218,6 +218,55 @@ const Button = styled.button`
 ```
 
 
+## resolveScreenState
+---
+
+The `resolveScreenState` function determines the current screen state based on the window dimensions and the breakpoints provided in the theme. It includes information about the device’s orientation (portrait or landscape) and the active breakpoint, making it useful for responsive design and media query handling.
+
+### Parameters
+
+- `breakpoints`: The breakpoints defined in the theme. Each breakpoint corresponds to a specific screen width, helping to determine which size category (e.g., xs, sm, md, lg, xl) the screen currently falls into.
+
+### Returns
+
+An object of type `HoneyScreenState` that includes:
+
+- `isPortrait`: Indicates if the screen is in portrait orientation.
+- `isLandscape`: Indicates if the screen is in landscape orientation.
+- `isXs`: Indicates if the screen width is within the "xs" breakpoint range.
+- `isSm`: Indicates if the screen width is within the "sm" breakpoint range.
+- `isMd`: Indicates if the screen width is within the "md" breakpoint range.
+- `isLg`: Indicates if the screen width is within the "lg" breakpoint range.
+- `isXl`: Indicates if the screen width is within the "xl" breakpoint range.
+
+### Usage
+
+The `resolveScreenState` function is particularly useful in responsive design scenarios where you need to adjust your layout or behavior based on the screen size and orientation. It helps in conditionally rendering components or applying styles based on the current screen state.
+
+```tsx
+import { useTheme } from 'styled-components';
+import { resolveScreenState } from '@react-hive/honey-layout';
+
+export const ResponsiveComponent = () => {
+  const theme = useTheme();
+
+  const screenState = resolveScreenState(theme.breakpoints);
+
+  return (
+    <div>
+      {screenState.isPortrait && <p>The screen is in portrait mode.</p>}
+      {screenState.isLandscape && <p>The screen is in landscape mode.</p>}
+      {screenState.isXs && <p>Current breakpoint: xs</p>}
+      {screenState.isSm && <p>Current breakpoint: sm</p>}
+      {screenState.isMd && <p>Current breakpoint: md</p>}
+      {screenState.isLg && <p>Current breakpoint: lg</p>}
+      {screenState.isXl && <p>Current breakpoint: xl</p>}
+    </div>
+  );
+};
+```
+
+
 ## resolveDimension
 ---
 

@@ -1,5 +1,5 @@
-import React, { createContext, useMemo } from 'react';
 import type { PropsWithChildren } from 'react';
+import React, { createContext, useMemo } from 'react';
 
 import type { HoneyGridStyledProps } from './HoneyGrid.styled';
 import { HoneyGridStyled } from './HoneyGrid.styled';

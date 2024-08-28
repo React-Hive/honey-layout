@@ -1,5 +1,5 @@
-import { useCallback, useRef } from 'react';
 import type { MutableRefObject } from 'react';
+import { useCallback, useRef } from 'react';
 
 import type { Nullable } from '../types';
 

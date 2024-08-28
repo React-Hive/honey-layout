@@ -1,7 +1,7 @@
+import type { HTMLAttributes } from 'react';
 import * as CSS from 'csstype';
 import { css } from 'styled-components';
 
-import type { HTMLAttributes } from 'react';
 import type {
   HoneyBreakpointName,
   HoneyCSSArrayValue,
@@ -22,6 +22,8 @@ import type {
   HoneyCSSProperties,
   HoneyCSSDimensionProperty,
   HoneyCSSColorProperty,
+  HoneyBreakpoints,
+  HoneyScreenState,
 } from './types';
 import { camelToDashCase, convertHexToHexWithAlpha, media, pxToRem } from './utils';
 import { CSS_COLOR_PROPERTIES, CSS_DIMENSION_PROPERTIES } from './constants';
@@ -52,15 +54,15 @@ type ResolveSpacingResult<
 /**
  * Resolves the spacing value based on the provided `value`, `unit`, and `type`.
  *
+ * @template MultiValue - Type of the spacing value, can be a single value or an array of values.
+ * @template Unit - CSS length unit, which can be null or a specific unit type.
+ * @template T - Type of the numeric value.
+ *
  * @param value - The spacing factor to be applied, which can be a single number or an array of 2, 3, or 4 numbers.
  * @param unit - The CSS unit to be used for the calculated value, e.g., 'px', 'em'. Set `null` to apply no unit. Default: 'px'.
  * @param type - The type of spacing to be used from the theme, e.g., 'base', 'small', 'large'. Default: 'base'.
  *
  * @returns The resolved spacing value, either as a single number or a string of space-separated numbers, optionally with the specified unit.
- *
- * @template MultiValue - Type of the spacing value, can be a single value or an array of values.
- * @template Unit - CSS length unit, which can be null or a specific unit type.
- * @template T - Type of the numeric value.
  */
 export const resolveSpacing =
   <
@@ -296,23 +298,21 @@ export const bpMedia = (
     return value;
   };
 
-  const down = ({ theme }: HoneyThemedProps) => {
-    return media([
+  const down = ({ theme }: HoneyThemedProps) =>
+    media([
       {
         maxWidth: `${resolveBpValue(theme)}px`,
         ...ruleOptions,
       },
     ]);
-  };
 
-  const up = ({ theme }: HoneyThemedProps) => {
-    return media([
+  const up = ({ theme }: HoneyThemedProps) =>
+    media([
       {
         minWidth: `${resolveBpValue(theme)}px`,
         ...ruleOptions,
       },
     ]);
-  };
 
   return {
     down,
@@ -338,3 +338,66 @@ export const generateMediaStyles =
       }
     `;
   };
+
+/**
+ * Resolves the current screen state based on the window's dimensions and the breakpoints provided in the theme.
+ *
+ * This function evaluates the current orientation (portrait or landscape) by checking the screen's orientation type.
+ * It then compares the window's width against the theme-defined breakpoints to determine the active breakpoint
+ * (e.g., xs, sm, md, lg, xl). If no breakpoints are provided, it returns a default state with all breakpoints set to false.
+ *
+ * @param breakpoints - A partial mapping of breakpoints defined in the theme. These breakpoints represent the minimum
+ *                      width required for each screen size category (e.g., xs, sm, md, lg, xl).
+ *
+ * @returns An object representing the screen state, including:
+ *  - `isPortrait`: Whether the screen is in portrait mode.
+ *  - `isLandscape`: Whether the screen is in landscape mode.
+ *  - `isXs`: Whether the screen width is less than the 'xs' breakpoint.
+ *  - `isSm`: Whether the screen width is less than the 'sm' breakpoint.
+ *  - `isMd`: Whether the screen width is less than the 'md' breakpoint.
+ *  - `isLg`: Whether the screen width is less than the 'lg' breakpoint.
+ *  - `isXl`: Whether the screen width is less than the 'xl' breakpoint.
+ */
+export const resolveScreenState = (
+  breakpoints: Partial<HoneyBreakpoints> | undefined,
+): HoneyScreenState => {
+  const orientationType = window.screen.orientation.type;
+
+  const isPortrait =
+    orientationType === 'portrait-primary' || orientationType === 'portrait-secondary';
+
+  const isLandscape = !isPortrait;
+
+  if (!breakpoints) {
+    return {
+      isPortrait,
+      isLandscape,
+      isXs: false,
+      isSm: false,
+      isMd: false,
+      isLg: false,
+      isXl: false,
+    };
+  }
+
+  const sortedBreakpoints = Object.entries(breakpoints)
+    .sort(([, a], [, b]) => a - b) // Sort breakpoints in ascending order of width
+    .map(([name]) => name) as (keyof Partial<HoneyBreakpoints>)[];
+
+  const currentBreakpoint =
+    sortedBreakpoints.find(breakpoint => {
+      const screenSize = breakpoints[breakpoint];
+
+      return screenSize ? window.innerWidth < screenSize : false;
+    }) ?? sortedBreakpoints.pop(); // Use the largest breakpoint if no match is found
+
+  return {
+    isPortrait,
+    isLandscape,
+    isXs: currentBreakpoint === 'xs',
+    isSm: currentBreakpoint === 'sm',
+    isMd: currentBreakpoint === 'md',
+    isLg: currentBreakpoint === 'lg',
+    isXl: currentBreakpoint === 'xl',
+  };
+};

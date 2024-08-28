@@ -144,7 +144,7 @@ export type HoneyCSSMediaRule = {
 };
 
 /**
- * Represents the breakpoints configuration for a responsive layout.
+ * Represents the breakpoints configuration in pixes for a responsive layout.
  *
  * Notes:
  * - `xs`: Extra small devices

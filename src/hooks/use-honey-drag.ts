@@ -1,5 +1,5 @@
-import { useEffect } from 'react';
 import type { MutableRefObject } from 'react';
+import { useEffect } from 'react';
 
 import type { Nullable } from '../types';
 import { calculateEuclideanDistance, calculateMovingSpeed } from '../utils';
