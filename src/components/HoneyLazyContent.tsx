@@ -7,25 +7,25 @@ type HoneyLazyContentProps = {
   /**
    * Determines whether the content should be mounted or unmounted.
    */
-  mount: boolean;
+  isMount: boolean;
   /**
-   * The delay in milliseconds before unmounting the content when `mount` is set to `false`.
+   * The delay in milliseconds before unmounting the content when `isMount` is set to `false`.
    */
   unmountDelay: number;
   /**
-   * Determines whether the content should always remain mounted, regardless of the value of `mount`.
+   * Determines whether the content should always remain mounted, regardless of the value of `isMount`.
    * If `true`, the content will never be unmounted.
    *
    * @default false
    */
-  alwaysMounted?: boolean;
+  isAlwaysMounted?: boolean;
   /**
-   * Determines whether the content should remain mounted after the first mount.
-   * If `true`, the content will not be unmounted after the first time it's mounted.
+   * Determines whether the content should remain mounted after the mount.
+   * If `true`, the content will not be unmounted after the time it's mounted.
    *
    * @default false
    */
-  keepAfterMount?: boolean;
+  isKeepAfterMount?: boolean;
 };
 
 /**
@@ -33,17 +33,17 @@ type HoneyLazyContentProps = {
  */
 export const HoneyLazyContent = ({
   children,
-  mount,
+  isMount,
   unmountDelay,
-  alwaysMounted = false,
-  keepAfterMount = false,
+  isAlwaysMounted = false,
+  isKeepAfterMount = false,
 }: PropsWithChildren<HoneyLazyContentProps>) => {
-  const [isMountContent, setIsMountContent] = useState(alwaysMounted || mount);
+  const [isMountContent, setIsMountContent] = useState(isAlwaysMounted || isMount);
 
   const mountContentTimeoutIdRef = useRef<TimeoutId | undefined>(undefined);
 
   useEffect(() => {
-    if (!mount || alwaysMounted) {
+    if (!isMount || isAlwaysMounted) {
       return;
     }
 
@@ -52,11 +52,11 @@ export const HoneyLazyContent = ({
     setIsMountContent(true);
 
     return () => {
-      if (!keepAfterMount) {
+      if (!isKeepAfterMount) {
         mountContentTimeoutIdRef.current = setTimeout(() => setIsMountContent(false), unmountDelay);
       }
     };
-  }, [mount]);
+  }, [isMount]);
 
   return isMountContent ? children : null;
 };
