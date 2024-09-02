@@ -168,7 +168,7 @@ export type HoneyBreakpointName = keyof HoneyBreakpoints;
  * @template CSSProperty - The CSS property this function will generate a value for.
  */
 type HoneyCSSPropertyValueFn<CSSProperty extends keyof CSS.Properties> = (props: {
-  theme: HoneyTheme;
+  theme: DefaultTheme;
 }) => CSS.Properties[CSSProperty];
 
 /**

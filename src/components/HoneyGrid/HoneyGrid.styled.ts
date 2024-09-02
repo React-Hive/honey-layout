@@ -6,7 +6,7 @@ import { resolveSpacing } from '../../helpers';
 import { HoneyBox } from '../HoneyBox';
 import { HoneyGridColumnStyled } from '../HoneyGridColumn/HoneyGridColumn.styled';
 
-export type HoneyGridStyledProps = HoneyBoxProps<HTMLDivElement> & {
+export type HoneyGridStyledProps = HoneyBoxProps & {
   /**
    * The height of each grid column.
    */

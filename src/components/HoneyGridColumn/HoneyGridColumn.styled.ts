@@ -4,7 +4,7 @@ import type { HoneyBoxProps } from '../HoneyBox';
 import { bpMedia, resolveSpacing } from '../../helpers';
 import { HoneyBox } from '../HoneyBox';
 
-export type HoneyGridColumnStyledProps = HoneyBoxProps<HTMLDivElement> & {
+export type HoneyGridColumnStyledProps = HoneyBoxProps & {
   /**
    * Total number of columns in the grid.
    */

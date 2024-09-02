@@ -18,10 +18,7 @@ const HoneyListStyled = styled(
   overflow: hidden auto;
 `;
 
-export type HoneyListGenericProps<Item extends HoneyListItem, T = unknown> = Omit<
-  HoneyBoxProps<HTMLElement>,
-  'children'
-> & {
+export type HoneyListGenericProps<Item extends HoneyListItem, T = unknown> = HoneyBoxProps & {
   children: (item: Item, itemIndex: number, thisItems: Item[]) => ReactNode;
   items: Item[] | undefined;
   itemKey?: HoneyListItemKey<Item>;

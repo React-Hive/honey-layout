@@ -4,12 +4,11 @@ import styled, { css } from 'styled-components';
 import type { HoneyCSSProperties, HoneyModifierResultFn } from '../types';
 import { generateMediaStyles, generateStyles } from '../helpers';
 
-export type HoneyBoxProps<Element extends HTMLElement> = HTMLAttributes<Element> &
-  HoneyCSSProperties & {
-    modifiers?: HoneyModifierResultFn[];
-  };
+export type HoneyBoxProps = HoneyCSSProperties & {
+  modifiers?: HoneyModifierResultFn[];
+};
 
-export const HoneyBox = styled.div<HoneyBoxProps<HTMLDivElement>>`
+export const HoneyBox = styled.div<HTMLAttributes<HTMLDivElement> & HoneyBoxProps>`
   ${({ modifiers }) => css`
     ${modifiers?.map(modifier => modifier())};
 
