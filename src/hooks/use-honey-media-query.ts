@@ -5,7 +5,7 @@ import debounce from 'lodash.debounce';
 import type { HoneyScreenState } from '../types';
 import { resolveScreenState } from '../helpers';
 
-type UseHoneyMediaQueryOptions = {
+export type UseHoneyMediaQueryOptions = {
   /**
    * The delay in milliseconds before the resize event is processed.
    *

@@ -3,6 +3,7 @@ import styled from 'styled-components';
 
 import type { ComponentWithAs, Nullable } from '../../types';
 import type { HoneyDragOnMoveHandler } from '../../hooks';
+import type { HoneyBoxProps } from '../HoneyBox';
 import type { HoneyListItem, HoneyListGenericProps } from '../HoneyList';
 import { getHoneyListItemId } from '../HoneyList';
 import { HoneyBox } from '../HoneyBox';
@@ -18,13 +19,14 @@ export const HoneyLoopingListStyled = styled(HoneyBox)`
 
 export const HoneyLoopingListItemStyled = styled.div``;
 
-type HoneyLoopingListProps<Item extends HoneyListItem> = HoneyListGenericProps<
-  Item,
-  {
-    activeItemIndex: number;
-    direction?: HoneyLoopingListDirection;
-  }
->;
+type HoneyLoopingListProps<Item extends HoneyListItem> = HoneyBoxProps &
+  HoneyListGenericProps<
+    Item,
+    {
+      activeItemIndex: number;
+      direction?: HoneyLoopingListDirection;
+    }
+  >;
 
 export const HoneyLoopingList = <Item extends HoneyListItem>({
   children,

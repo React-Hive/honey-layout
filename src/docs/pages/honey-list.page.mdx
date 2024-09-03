@@ -5,7 +5,7 @@ import { HoneyBox, HoneyList } from '../../components';
 
 export const ListItemStyled = styled.li`
   ${({ theme: { colors } }) => css`
-    padding: 0 ${resolveSpacing(1)};
+    padding: ${resolveSpacing([0, 1])};
 
     border-radius: 4px;
     cursor: pointer;
@@ -76,7 +76,7 @@ import { HoneyBox, HoneyList, resolveSpacing } from '@react-hive/honey-layout';
 
 const ListItemStyled = styled.li`
   ${({ theme: { colors } }) => css`
-    padding: 0 ${resolveSpacing(1)};
+    padding: ${resolveSpacing([0, 1])};
 
     border-radius: 4px;
     cursor: pointer;
