@@ -1,5 +1,7 @@
 import type { PropsWithChildren } from 'react';
+import type { DefaultTheme } from 'styled-components';
 import React, { createContext, useContext, useMemo } from 'react';
+import { ThemeProvider } from 'styled-components';
 
 import type { HoneyScreenState } from '../types';
 import type { UseHoneyMediaQueryOptions } from '../hooks';
@@ -11,14 +13,14 @@ type HoneyLayoutContextValue = {
 
 const HoneyContext = createContext<HoneyLayoutContextValue | undefined>(undefined);
 
-type HoneyLayoutProviderProps = {
+type HoneyLayoutProviderContentProps = {
   mediaQueryOptions?: UseHoneyMediaQueryOptions;
 };
 
-export const HoneyLayoutProvider = ({
+const HoneyLayoutProviderContent = ({
   children,
   mediaQueryOptions,
-}: PropsWithChildren<HoneyLayoutProviderProps>) => {
+}: PropsWithChildren<HoneyLayoutProviderContentProps>) => {
   const screenState = useHoneyMediaQuery(mediaQueryOptions);
 
   const contextValue = useMemo<HoneyLayoutContextValue>(
@@ -31,11 +33,26 @@ export const HoneyLayoutProvider = ({
   return <HoneyContext.Provider value={contextValue}>{children}</HoneyContext.Provider>;
 };
 
-export const useHoneyLayoutProvider = () => {
+type HoneyLayoutProviderProps = HoneyLayoutProviderContentProps & {
+  theme: DefaultTheme;
+};
+
+export const HoneyLayoutProvider = ({
+  theme,
+  ...props
+}: PropsWithChildren<HoneyLayoutProviderProps>) => {
+  return (
+    <ThemeProvider theme={theme}>
+      <HoneyLayoutProviderContent {...props} />
+    </ThemeProvider>
+  );
+};
+
+export const useHoneyLayout = () => {
   const context = useContext(HoneyContext);
   if (!context) {
     throw new Error(
-      'The `useHoneyLayoutProvider()` hook must be used inside <HoneyLayoutProvider/> component!',
+      'The `useHoneyLayout()` hook must be used inside <HoneyLayoutProvider/> component!',
     );
   }
 

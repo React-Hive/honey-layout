@@ -332,7 +332,7 @@ export interface BaseHoneyColors {
  * ```typescript
  * declare module '@react-hive/honey-layout' {
  *  interface HoneyColors {
- *    neutral: Record<'charcoalDark' | 'charcoalGray' | 'crimsonRed', HoneyColor>;
+ *    neutral: Record<'charcoalDark' | 'charcoalGray' | 'crimsonRed', HoneyCSSColor>;
  *  }
  * }
  * ```
@@ -350,8 +350,8 @@ export interface HoneyColors extends BaseHoneyColors {}
  * Given the `HoneyColors` interface:
  * ```typescript
  * interface HoneyColors {
- *   primary: Record<'blue' | 'green', HoneyColor>;
- *   neutral: Record<'charcoalDark' | 'charcoalGray' | 'crimsonRed', HoneyColor>;
+ *   primary: Record<'blue' | 'green', HoneyCSSColor>;
+ *   neutral: Record<'charcoalDark' | 'charcoalGray' | 'crimsonRed', HoneyCSSColor>;
  * }
  * ```
  *

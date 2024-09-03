@@ -2,10 +2,10 @@
 
 ---
 
-### HoneyThemeProvider
+### HoneyLayoutThemeOverride
 
-The `HoneyThemeProvider` component is used to provide a merged theme to its children.
-It merges the provided theme with the current theme from the context.
+Provides a theme override context to its children.
+Merges the provided theme with the existing theme from the `ThemeContext`.
 
 ### Usage
 
@@ -54,49 +54,48 @@ const theme: HoneyTheme = {
 export default theme;
 ~~~
 
-2. Wrap your application with the `ThemeProvider`, providing your theme object as a prop.
+2. Wrap your application with the `HoneyLayoutProvider`, providing your theme object as a prop.
 
 ~~~tsx
 // App.tsx
 import React from 'react';
-import { ThemeProvider } from 'styled-components';
+import { HoneyLayoutProvider } from '@react-hive/honey-layout';
 
 import theme from './theme';
 
 const App = () => {
   return (
-    <ThemeProvider theme={theme}>
+    <HoneyLayoutProvider theme={theme}>
       {/* Your application components */}
-    </ThemeProvider>
+    </HoneyLayoutProvider>
   );
 };
 
 export default App;
 ~~~
 
-3. You can nest instances of `HoneyThemeProvider` within each other to provide different themes to different parts of your application.
-Each nested `HoneyThemeProvider` merges its theme with the theme provided by its parent.
+3. You can nest instances of `HoneyLayoutThemeOverride` within each other to provide different themes to different parts of your application.
+Each nested `HoneyLayoutThemeOverride` merges its theme with the theme provided by its parent.
 
 ~~~tsx
-import { ThemeProvider } from 'styled-components';
-import { HoneyThemeProvider } from '@react-hive/honey-layout';
+import { HoneyLayoutProvider, HoneyLayoutThemeOverride } from '@react-hive/honey-layout';
 
 import theme from './theme';
 import nestedTheme from './nested-theme';
 
 export const NestedThemeProvider = () => {
   return (
-    <ThemeProvider theme={theme}>
-      <HoneyThemeProvider theme={nestedTheme}>
+    <HoneyLayoutProvider theme={theme}>
+      <HoneyLayoutThemeOverride theme={nestedTheme}>
         {/* Nested components */}
-      </HoneyThemeProvider>
-    </ThemeProvider>
+      </HoneyLayoutThemeOverride>
+    </HoneyLayoutProvider>
   );
 };
 ~~~
 
 In this example, `NestedThemeProvider` is a component that provides a specific theme (nestedTheme) to its children.
-This nested instance of `HoneyThemeProvider` merges nested theme with the theme provided by its parent `ThemeProvider` or `HoneyThemeProvider`.
+This nested instance of `HoneyLayoutThemeOverride` merges nested theme with the theme provided by its parent `HoneyLayoutProvider` or `HoneyLayoutThemeOverride`.
 
 ### Augmentation for `DefaultTheme` from styled components library
 
@@ -117,7 +116,7 @@ This declaration extends the `DefaultTheme` interface with the properties define
 To augment any interface, use the following module declaration.
 
 ~~~ts
-import type { HoneyColor, HoneyFont } from '@react-hive/honey-layout';
+import type { HoneyCSSColor, HoneyFont } from '@react-hive/honey-layout';
 
 type NeutralColors = 'charcoalDark' | 'charcoalGray' | 'crimsonRed';
 
@@ -128,7 +127,7 @@ declare module '@react-hive/honey-layout' {
   }
 
   interface HoneyColors {
-    neutral: Record<NeutralColors, HoneyColor>;
+    neutral: Record<NeutralColors, HoneyCSSColor>;
     // Other colors can be defined in the same way
   }
 }

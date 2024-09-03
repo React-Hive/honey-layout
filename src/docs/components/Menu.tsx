@@ -5,7 +5,7 @@ import styled, { css } from 'styled-components';
 import { PAGES } from '../constants';
 import { useCurrentApp } from '../providers';
 import { bpMedia, resolveSpacing } from '../../helpers';
-import { useHoneyMediaQuery } from '../../hooks';
+import { useHoneyLayout } from '../../providers';
 
 type MenuStyledProps = {
   $isOpenMenu: boolean;
@@ -89,7 +89,7 @@ const ListItem = styled.li`
 `;
 
 export const Menu = () => {
-  const screenState = useHoneyMediaQuery();
+  const { screenState } = useHoneyLayout();
 
   const { isOpenMenu, toggleMenu } = useCurrentApp();
 

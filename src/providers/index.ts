@@ -1,2 +1,2 @@
 export * from './HoneyLayoutProvider';
-export * from './HoneyThemeProvider';
+export * from './HoneyLayoutThemeOverride';

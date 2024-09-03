@@ -6,7 +6,7 @@ import { MDXProvider } from '@mdx-js/react';
 import type { HoneyTheme } from '../types';
 import { App } from './App';
 import { theme } from './theme';
-import { HoneyThemeProvider } from '../providers';
+import { HoneyLayoutProvider } from '../providers';
 import { GlobalStyle } from './global-style';
 
 declare module 'styled-components' {
@@ -28,11 +28,11 @@ const router = createBrowserRouter([
 ]);
 
 root.render(
-  <HoneyThemeProvider theme={theme}>
+  <HoneyLayoutProvider theme={theme}>
     <GlobalStyle />
 
     <MDXProvider>
       <RouterProvider router={router} />
     </MDXProvider>
-  </HoneyThemeProvider>,
+  </HoneyLayoutProvider>,
 );
