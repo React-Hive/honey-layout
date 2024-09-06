@@ -5,6 +5,7 @@ import type { Page } from './types';
 import { MDXWrapper } from './components/MDXWrapper';
 
 import GettingStartedPage from './pages/getting-started.page.mdx';
+import HoneyLayoutProviderPage from './pages/honey-layout-provider.page.mdx';
 import ThematizationPage from './pages/thematization.page.mdx';
 import HoneyBoxPage from './pages/honey-box.page.mdx';
 import HoneyGridPage from './pages/honey-grid.page.mdx';
@@ -44,6 +45,11 @@ export const PAGES: Page[] = [
     path: 'getting-started',
     menuLabel: 'Getting Started',
     element: <GettingStartedPage components={MDX_COMPONENTS} />,
+  },
+  {
+    path: 'layout-provider',
+    menuLabel: 'Layout Provider',
+    element: <HoneyLayoutProviderPage components={MDX_COMPONENTS} />,
   },
   {
     path: 'thematization',

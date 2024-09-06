@@ -1,4 +1,5 @@
 import type { HTMLAttributes } from 'react';
+import type { FlattenSimpleInterpolation } from 'styled-components';
 import * as CSS from 'csstype';
 import { css } from 'styled-components';
 
@@ -24,6 +25,7 @@ import type {
   HoneyCSSColorProperty,
   HoneyBreakpoints,
   HoneyScreenState,
+  HoneyCSSDimensionValue,
 } from './types';
 import { camelToDashCase, convertHexToHexWithAlpha, media, pxToRem } from './utils';
 import { CSS_COLOR_PROPERTIES, CSS_DIMENSION_PROPERTIES } from './constants';
@@ -31,50 +33,54 @@ import { CSS_COLOR_PROPERTIES, CSS_DIMENSION_PROPERTIES } from './constants';
 /**
  * Conditional type to determine the return type of the `resolveSpacing` function.
  *
- * @template MultiValue - Type of the spacing value, can be a single value or an array of values.
+ * @template MultiValue - Type of the spacing value can be a single value or an array of values.
  * @template Unit - CSS length unit, which can be null or a specific unit type.
- * @template T - Type of the numeric value.
  */
-type ResolveSpacingResult<
-  MultiValue extends HoneyCSSMultiValue<T>,
+export type ResolveSpacingResult<
+  MultiValue extends HoneyCSSMultiValue<number>,
   Unit extends Nullable<HoneyCSSDimensionUnit>,
-  T extends number,
 > = Unit extends null
-  ? MultiValue extends HoneyCSSArrayValue<T>
+  ? MultiValue extends HoneyCSSArrayValue<number>
     ? // Returns an array of calculated values if `MultiValue` is an array
-      HoneyCSSArrayValue<T>
+      HoneyCSSArrayValue<number>
     : // Returns a single calculated value if `MultiValue` is a single number
-      T
-  : MultiValue extends HoneyCSSArrayValue<T>
+      number
+  : MultiValue extends HoneyCSSArrayValue<number>
     ? // Returns a shorthand CSS value for arrays with specified unit
       HoneyCSSDimensionShortHandValue<MultiValue, NonNullable<Unit>>
     : // Returns a single value with specified unit
-      `${T}${Unit}`;
+      `${number}${Unit}`;
 
 /**
- * Resolves the spacing value based on the provided `value`, `unit`, and `type`.
+ * Resolves a spacing value or multiple spacing values based on the provided input, CSS unit, and spacing type.
+ * This function calculates the appropriate spacing values from a theme and formats them with the specified CSS unit.
  *
- * @template MultiValue - Type of the spacing value, can be a single value or an array of values.
- * @template Unit - CSS length unit, which can be null or a specific unit type.
- * @template T - Type of the numeric value.
+ * @template MultiValue - Represents the spacing value(s), which could be a single number or an array of numbers (e.g., [1, 2, 3, 4]).
+ * @template Unit - The CSS unit used for the resolved spacing value, e.g., 'px', 'em'. Defaults to 'px'.
  *
- * @param value - The spacing factor to be applied, which can be a single number or an array of 2, 3, or 4 numbers.
- * @param unit - The CSS unit to be used for the calculated value, e.g., 'px', 'em'. Set `null` to apply no unit. Default: 'px'.
- * @param type - The type of spacing to be used from the theme, e.g., 'base', 'small', 'large'. Default: 'base'.
+ * @param {MultiValue} value - The spacing factor(s) to be applied. It can be:
+ * - A single number representing a multiplier for the base spacing value.
+ * - An array of numbers representing multiple multipliers for base spacing values (e.g., for margins or padding).
+ * @param {Unit} [unit='px'] - The CSS unit to use for the calculated value. If `null` or `undefined`, no unit is applied.
+ * Defaults to 'px'.
+ * @param {keyof HoneySpacings} [type='base'] - The type of spacing to use from the theme. Determines which base spacing
+ * value to use for calculations (e.g., 'base', 'small', 'large'). Defaults to 'base'.
  *
- * @returns The resolved spacing value, either as a single number or a string of space-separated numbers, optionally with the specified unit.
+ * @returns {(props: HoneyThemedProps) => ResolveSpacingResult<MultiValue, Unit>} - A function that takes `HoneyThemedProps`
+ * (containing the theme object) and returns the resolved spacing value(s). The result is either:
+ * - A single calculated value (e.g., '16px') if the input is a single number.
+ * - A string of space-separated values (e.g., '8px 16px 24px 32px') if the input is an array of numbers.
  */
 export const resolveSpacing =
   <
-    MultiValue extends HoneyCSSMultiValue<T>,
+    MultiValue extends HoneyCSSMultiValue<number>,
     Unit extends Nullable<HoneyCSSDimensionUnit> = 'px',
-    T extends number = number,
   >(
     value: MultiValue,
     unit: Unit = 'px' as Unit,
     type: keyof HoneySpacings = 'base',
-  ) =>
-  ({ theme }: HoneyThemedProps): ResolveSpacingResult<MultiValue, Unit, T> => {
+  ): ((props: HoneyThemedProps) => ResolveSpacingResult<MultiValue, Unit>) =>
+  ({ theme }: HoneyThemedProps): ResolveSpacingResult<MultiValue, Unit> => {
     const selectedSpacing = theme.spacings[type] ?? 0;
 
     if (typeof value === 'number') {
@@ -82,8 +88,7 @@ export const resolveSpacing =
 
       return (unit ? `${calculatedValue}${unit}` : calculatedValue) as ResolveSpacingResult<
         MultiValue,
-        Unit,
-        T
+        Unit
       >;
     }
 
@@ -93,7 +98,7 @@ export const resolveSpacing =
       return unit ? `${calculatedValue}${unit}` : calculatedValue;
     });
 
-    return calculatedValues.join(' ') as ResolveSpacingResult<MultiValue, Unit, T>;
+    return calculatedValues.join(' ') as ResolveSpacingResult<MultiValue, Unit>;
   };
 
 /**
@@ -126,7 +131,7 @@ export const resolveColor =
  */
 export const resolveFont =
   (fontName: HoneyFontName) =>
-  ({ theme }: HoneyThemedProps) => {
+  ({ theme }: HoneyThemedProps): FlattenSimpleInterpolation => {
     const font = theme.fonts[fontName];
 
     return css`
@@ -141,13 +146,13 @@ export const resolveFont =
 /**
  * Resolves a specific dimension value from the theme configuration.
  *
- * @param dimensionName - The name of the dimension to resolve.
+ * @param {HoneyDimensionName} dimensionName - The name of the dimension to resolve.
  *
  * @returns A function that takes the theme and returns the resolved dimension value from the theme.
  */
 export const resolveDimension =
   (dimensionName: HoneyDimensionName) =>
-  ({ theme }: HoneyThemedProps) =>
+  ({ theme }: HoneyThemedProps): HoneyCSSDimensionValue =>
     theme.dimensions[dimensionName];
 
 /**

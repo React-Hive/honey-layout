@@ -1,0 +1,104 @@
+import { HoneyLayoutProviderExample } from './examples'
+
+# Honey Layout Provider
+
+---
+
+The `HoneyLayoutProvider` is a React context provider that helps manage layout configurations, such as theme, spacing, breakpoints, and more.
+
+### Usage
+
+1. Start by defining your custom theme object. This object should extend the `HoneyTheme` interface from `@react-hive/honey-layout`.
+
+~~~ts
+// theme.ts
+import type { HoneyTheme } from '@react-hive/honey-layout';
+
+const theme: HoneyTheme = {
+  breakpoints: {
+    xs: 480,
+    sm: 768,
+    md: 992,
+    lg: 1200,
+  },
+  container: {
+    maxWidth: '1450px',
+  },
+  spacings: {
+    base: 8,
+  },
+  fonts: {
+    body2: {
+      size: 14,
+      lineHeight: 16,
+      letterSpacing: 0,
+    },
+  },
+  dimensions: {},
+  colors: {
+    primary: {},
+    secondary: {},
+    accent: {},
+    neutral: {
+      charcoalDark: '#231F20',
+    },
+    success: {},
+    warning: {},
+    error: {},
+  },
+};
+
+export default theme;
+~~~
+
+2. Wrap Your Application with the `HoneyLayoutProvider` and pass the theme object as a prop.
+This will ensure that your custom theme is accessible throughout your application components.
+
+~~~tsx
+// App.tsx
+import React from 'react';
+import { HoneyLayoutProvider } from '@react-hive/honey-layout';
+
+import { Main } from './Main';
+import theme from './theme';
+
+export const App = () => {
+  return (
+    <HoneyLayoutProvider theme={theme}>
+      <Main />
+    </HoneyLayoutProvider>
+  );
+};
+~~~
+
+3. Use the `useHoneyLayout` hook to access the layout configuration in any of your components. This hook provides access to the current screen state, some helper functions and other theme properties.
+
+```tsx
+// Main.tsx
+import React from 'react';
+import { useHoneyLayout } from '@react-hive/honey-layout';
+
+export const Main = () => {
+  const { screenState, resolveColor, resolveSpacing } = useHoneyLayout();
+
+  return (
+    <HoneyBox as="ol">
+      <li>
+        Screen State: <pre>{JSON.stringify(screenState, null, 2)}</pre>
+      </li>
+      <li>resolveColor('neutral.charcoalDark') // {resolveColor('neutral.charcoalDark')}</li>
+      <li>resolveSpacing([1, 2.5]) // {resolveSpacing([1, 2.5])}</li>
+    </HoneyBox>
+  );
+};
+```
+
+### Result
+
+<HoneyLayoutProviderExample/>
+
+### Key Points:
+
+*	**Flexibility:** Customize your application’s layout using a centralized theme object.
+*	**Consistency:** Ensure consistent spacing, colors, and typography across your application.
+*	**Responsiveness:** Manage breakpoints and responsive design easily.

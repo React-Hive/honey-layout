@@ -162,14 +162,61 @@ export type HoneyBreakpoints = {
 };
 
 export type HoneyBreakpointName = keyof HoneyBreakpoints;
+
+export type HoneyContainer = {
+  /**
+   * Max container width in any CSS distance value.
+   */
+  maxWidth: HoneyCSSDimensionValue;
+};
+
+/**
+ * Represents the theme configuration.
+ */
+export interface BaseHoneyTheme {
+  /**
+   * Breakpoints for responsive design, where keys are breakpoint names and values are breakpoint values.
+   */
+  breakpoints: Partial<HoneyBreakpoints>;
+  /**
+   * Configuration for the container.
+   */
+  container: Partial<HoneyContainer>;
+  /**
+   * Spacing values used throughout the theme.
+   */
+  spacings: HoneySpacings;
+  /**
+   * Font settings used throughout the theme.
+   */
+  fonts: HoneyFonts;
+  /**
+   * Color palette used throughout the theme.
+   */
+  colors: HoneyColors;
+  /**
+   * Dimension values used throughout the theme.
+   */
+  dimensions: HoneyDimensions;
+}
+
+export interface HoneyTheme extends BaseHoneyTheme {}
+
+declare module 'styled-components' {
+  // eslint-disable-next-line @typescript-eslint/no-empty-interface
+  interface DefaultTheme extends HoneyTheme {}
+}
+
+export type HoneyThemedProps<T = unknown> = { theme: DefaultTheme } & T;
+
 /**
  * A type representing a function that returns a value for a specific CSS property based on the provided theme.
  *
  * @template CSSProperty - The CSS property this function will generate a value for.
  */
-type HoneyCSSPropertyValueFn<CSSProperty extends keyof CSS.Properties> = (props: {
-  theme: DefaultTheme;
-}) => CSS.Properties[CSSProperty];
+type HoneyCSSPropertyValueFn<CSSProperty extends keyof CSS.Properties> = (
+  props: HoneyThemedProps,
+) => CSS.Properties[CSSProperty];
 
 /**
  * Type representing numeric values for CSS dimension properties.
@@ -254,13 +301,6 @@ export type HoneyScreenState = {
   isPortrait: boolean;
   /** Indicates if the screen orientation is landscape. */
   isLandscape: boolean;
-};
-
-export type HoneyContainer = {
-  /**
-   * Max container width in any CSS distance value.
-   */
-  maxWidth: HoneyCSSDimensionValue;
 };
 
 /**
@@ -400,50 +440,11 @@ export interface HoneyDimensions {
 
 export type HoneyDimensionName = keyof HoneyDimensions;
 
-/**
- * Represents the theme configuration.
- */
-export interface BaseHoneyTheme {
-  /**
-   * Breakpoints for responsive design, where keys are breakpoint names and values are breakpoint values.
-   */
-  breakpoints: Partial<HoneyBreakpoints>;
-  /**
-   * Configuration for the container.
-   */
-  container: Partial<HoneyContainer>;
-  /**
-   * Spacing values used throughout the theme.
-   */
-  spacings: HoneySpacings;
-  /**
-   * Font settings used throughout the theme.
-   */
-  fonts: HoneyFonts;
-  /**
-   * Color palette used throughout the theme.
-   */
-  colors: HoneyColors;
-  /**
-   * Dimension values used throughout the theme.
-   */
-  dimensions: HoneyDimensions;
-}
-
-export interface HoneyTheme extends BaseHoneyTheme {}
-
-declare module 'styled-components' {
-  // eslint-disable-next-line @typescript-eslint/no-empty-interface
-  interface DefaultTheme extends HoneyTheme {}
-}
-
-export type HoneyThemedProps<T = unknown> = { theme: HoneyTheme } & T;
-
 export type ComponentWithAs<T, P = object> = {
   as?: string | ComponentType<P>;
 } & T;
 
-export type HoneyModifierResultFn = () => Interpolation<{ theme: DefaultTheme }>;
+export type HoneyModifierResultFn = () => Interpolation<HoneyThemedProps>;
 
 export type HoneyModifier<Config = unknown> = (config?: Config) => HoneyModifierResultFn;
 

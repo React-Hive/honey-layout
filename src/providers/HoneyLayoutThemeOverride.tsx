@@ -1,12 +1,11 @@
 import type { PropsWithChildren } from 'react';
-import type { DefaultTheme } from 'styled-components';
 import React, { useContext, useMemo } from 'react';
 import { ThemeContext, ThemeProvider } from 'styled-components';
 import merge from 'lodash.merge';
 
-type HoneyLayoutThemeOverrideProps = {
-  theme: DefaultTheme;
-};
+import type { HoneyThemedProps } from '../types';
+
+type HoneyLayoutThemeOverrideProps = HoneyThemedProps;
 
 /**
  * Provides a theme override context to its children.

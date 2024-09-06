@@ -42,6 +42,9 @@ export const GlobalStyle = createGlobalStyle`
     }
 
     pre {
+      font-family: 'Roboto', sans-serif;
+      line-height: 1.5rem;
+
       border-radius: 4px;
       overflow: hidden;
     }
