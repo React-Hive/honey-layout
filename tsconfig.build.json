@@ -2,7 +2,7 @@
   "extends": "./tsconfig.json",
   "compilerOptions": {
     "sourceMap": true,
-    "declaration": true
+    "declaration": true,
   },
   "exclude": ["src/docs", "src/**/__tests__"]
 }

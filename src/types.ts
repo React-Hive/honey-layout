@@ -1,7 +1,7 @@
 import * as CSS from 'csstype';
 
-import type { ComponentType, ReactNode } from 'react';
-import type { DefaultTheme, Interpolation } from 'styled-components';
+import type { ElementType, ReactNode } from 'react';
+import type { ExecutionContext, Interpolation } from 'styled-components';
 import type { DataType } from 'csstype';
 
 export type TimeoutId = ReturnType<typeof setTimeout>;
@@ -207,15 +207,13 @@ declare module 'styled-components' {
   interface DefaultTheme extends HoneyTheme {}
 }
 
-export type HoneyThemedProps<T = unknown> = { theme: DefaultTheme } & T;
-
 /**
  * A type representing a function that returns a value for a specific CSS property based on the provided theme.
  *
  * @template CSSProperty - The CSS property this function will generate a value for.
  */
 type HoneyCSSPropertyValueFn<CSSProperty extends keyof CSS.Properties> = (
-  props: HoneyThemedProps,
+  props: ExecutionContext,
 ) => CSS.Properties[CSSProperty];
 
 /**
@@ -277,11 +275,28 @@ export type HoneyCSSPropertyValue<CSSProperty extends keyof CSS.Properties> =
   | HoneyResponsiveCSSPropertyValue<CSSProperty>;
 
 /**
- * Defines a type representing a set of CSS properties where each property key is prefixed with a dollar sign ($).
+ * A utility type to add a `$` prefix to a given CSS property name.
+ *
+ * @template CSSProperty - The string type representing a CSS property name.
  */
-export type HoneyCSSProperties = Partial<{
-  [CSSProperty in keyof CSS.Properties as `$${CSSProperty}`]: HoneyCSSPropertyValue<CSSProperty>;
-}>;
+export type HoneyPrefixedCSSProperty<
+  CSSProperty extends keyof CSS.Properties = keyof CSS.Properties,
+> = `$${CSSProperty}`;
+
+/**
+ * Represents an object where each key is a prefixed CSS property (with a `$` prefix),
+ *
+ * Example:
+ * ```
+ * const styles: HoneyPrefixedCSSProperties = {
+ *   $color: 'red',
+ *   $fontSize: '12px'
+ * };
+ * ```
+ */
+export type HoneyPrefixedCSSProperties = {
+  [CSSProperty in keyof CSS.Properties as HoneyPrefixedCSSProperty<CSSProperty>]?: HoneyCSSPropertyValue<CSSProperty>;
+};
 
 /**
  * Represents the state of the screen layout.
@@ -441,10 +456,10 @@ export interface HoneyDimensions {
 export type HoneyDimensionName = keyof HoneyDimensions;
 
 export type ComponentWithAs<T, P = object> = {
-  as?: string | ComponentType<P>;
+  as?: ElementType<P>;
 } & T;
 
-export type HoneyModifierResultFn = () => Interpolation<HoneyThemedProps>;
+export type HoneyModifierResultFn = () => Interpolation<object>;
 
 export type HoneyModifier<Config = unknown> = (config?: Config) => HoneyModifierResultFn;
 

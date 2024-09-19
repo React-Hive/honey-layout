@@ -187,9 +187,9 @@ export const getTransformationValues = (element: HTMLElement) => {
  * @param items - The array of items to be flattened. Can be undefined.
  * @param itemIdKey - The key in each item that uniquely identifies it.
  * @param nestedItemsKey - The key in each item that contains the nested list.
- * @param result - The array that accumulates the flattened items. Defaults to an empty array.
+ * @param flattenedItemsResult - The array that accumulates the flattened items. Defaults to an empty array.
  * @param parentId - Optional. The ID of the parent item in the flattened structure. Defaults to undefined for parent item.
- * @param depthLevel - Optional. The current depth level of the item in the nested structure. Defaults to 0.
+ * @param depthLevel - Optional. The current depth level of the item in the nested structure. Default to 0.
  *
  * @returns A flat array of items, excluding the nested list key and including `depthLevel`, `parentId`, and `totalNestedItems` properties.
  */
@@ -197,7 +197,7 @@ export const flattenNestedList = <OriginItem extends object>(
   items: OriginItem[] | undefined,
   itemIdKey: KeysWithNonArrayValues<OriginItem>,
   nestedItemsKey: KeysWithArrayValues<OriginItem>,
-  result: HoneyFlattenedItem<OriginItem, typeof nestedItemsKey>[] = [],
+  flattenedItemsResult: HoneyFlattenedItem<OriginItem, typeof nestedItemsKey>[] = [],
   parentId: OriginItem[KeysWithNonArrayValues<OriginItem>] | undefined = undefined,
   depthLevel = 0,
 ): HoneyFlattenedItem<OriginItem, typeof nestedItemsKey>[] => {
@@ -207,7 +207,7 @@ export const flattenNestedList = <OriginItem extends object>(
     const nestedItems = item[nestedItemsKey];
     const isNestedItemArray = Array.isArray(nestedItems);
 
-    result.push({
+    flattenedItemsResult.push({
       ...itemWithoutNestedListKey,
       parentId,
       depthLevel,
@@ -217,11 +217,18 @@ export const flattenNestedList = <OriginItem extends object>(
     if (isNestedItemArray) {
       const parentId = item[itemIdKey];
 
-      flattenNestedList(nestedItems, itemIdKey, nestedItemsKey, result, parentId, depthLevel + 1);
+      flattenNestedList(
+        nestedItems,
+        itemIdKey,
+        nestedItemsKey,
+        flattenedItemsResult,
+        parentId,
+        depthLevel + 1,
+      );
     }
   });
 
-  return result;
+  return flattenedItemsResult;
 };
 
 /**

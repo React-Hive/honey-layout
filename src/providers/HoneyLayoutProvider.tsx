@@ -1,5 +1,5 @@
 import type { PropsWithChildren } from 'react';
-import type { DefaultTheme, FlattenSimpleInterpolation } from 'styled-components';
+import type { DefaultTheme, Interpolation } from 'styled-components';
 import React, { createContext, useContext, useMemo } from 'react';
 import { ThemeProvider, useTheme } from 'styled-components';
 
@@ -13,7 +13,6 @@ import type {
   HoneyFontName,
   HoneyScreenState,
   HoneySpacings,
-  HoneyThemedProps,
   Nullable,
 } from '../types';
 import type { ResolveSpacingResult } from '../helpers';
@@ -64,9 +63,9 @@ type HoneyLayoutContextValue = {
    *
    * @param {HoneyFontName} fontName - The name of the font to resolve from the theme.
    *
-   * @returns {FlattenSimpleInterpolation} - The interpolated CSS styles for the specified font.
+   * @returns {Interpolation<object>} - The CSS style rules for the specified font.
    */
-  resolveFont: (fontName: HoneyFontName) => FlattenSimpleInterpolation;
+  resolveFont: (fontName: HoneyFontName) => Interpolation<object>;
   /**
    * Function to resolve dimension values based on the theme.
    *
@@ -106,7 +105,9 @@ const HoneyLayoutProviderContent = ({
   return <HoneyContext.Provider value={contextValue}>{children}</HoneyContext.Provider>;
 };
 
-type HoneyLayoutProviderProps = HoneyThemedProps<HoneyLayoutProviderContentProps>;
+type HoneyLayoutProviderProps = HoneyLayoutProviderContentProps & {
+  theme: DefaultTheme;
+};
 
 export const HoneyLayoutProvider = ({
   theme,

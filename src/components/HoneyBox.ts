@@ -1,10 +1,10 @@
 import type { HTMLAttributes } from 'react';
 import styled, { css } from 'styled-components';
 
-import type { HoneyCSSProperties, HoneyModifierResultFn } from '../types';
-import { generateMediaStyles, generateStyles } from '../helpers';
+import type { HoneyPrefixedCSSProperties, HoneyModifierResultFn } from '../types';
+import { applyBreakpointStyles, createStyles } from '../helpers';
 
-export type HoneyBoxProps = HoneyCSSProperties & {
+export type HoneyBoxProps = HoneyPrefixedCSSProperties & {
   modifiers?: HoneyModifierResultFn[];
 };
 
@@ -12,11 +12,11 @@ export const HoneyBox = styled.div<HTMLAttributes<HTMLDivElement> & HoneyBoxProp
   ${({ modifiers }) => css`
     ${modifiers?.map(modifier => modifier())};
 
-    ${generateStyles('xs')};
+    ${createStyles('xs')};
 
-    ${generateMediaStyles('sm')};
-    ${generateMediaStyles('md')};
-    ${generateMediaStyles('lg')};
-    ${generateMediaStyles('xl')};
+    ${applyBreakpointStyles('sm')};
+    ${applyBreakpointStyles('md')};
+    ${applyBreakpointStyles('lg')};
+    ${applyBreakpointStyles('xl')};
   `}
 `;

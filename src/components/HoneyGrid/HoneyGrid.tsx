@@ -1,13 +1,16 @@
 import type { PropsWithChildren } from 'react';
-import React, { createContext, useMemo } from 'react';
+import React, { forwardRef, createContext, useMemo } from 'react';
 
+import type { HoneyBreakpointName } from '../../types';
 import type { HoneyGridStyledProps } from './HoneyGrid.styled';
+import type { HoneyGridColumnStyledProps } from '../HoneyGridColumn';
 import { HoneyGridStyled } from './HoneyGrid.styled';
 
 type HoneyGridContextValue = {
   columns: number;
-  columnGrowing: boolean;
   spacing: number | undefined;
+  isColumnGrowing: boolean;
+  applyColumnMaxWidth: HoneyBreakpointName | false;
 };
 
 export const HoneyGridContext = createContext<HoneyGridContextValue | undefined>(undefined);
@@ -22,30 +25,37 @@ export type HoneyGridProps = HoneyGridStyledProps & {
    *
    * @default true
    */
-  columnGrowing?: boolean;
+  isColumnGrowing?: boolean;
+  /**
+   * Specifies the breakpoint at which the max-width should be applied to the columns or disables it if set to `false`.
+   * Can be a breakpoint name.
+   *
+   * @default false
+   */
+  applyColumnMaxWidth?: HoneyGridColumnStyledProps['applyMaxWidth'];
 };
 
-export const HoneyGrid = ({
-  children,
-  columns,
-  columnGrowing = true,
-  spacing,
-  ...props
-}: PropsWithChildren<HoneyGridProps>) => {
-  const contextValue = useMemo<HoneyGridContextValue>(
-    () => ({
-      columns,
-      columnGrowing,
-      spacing,
-    }),
-    [columns, columnGrowing, spacing],
-  );
+export const HoneyGrid = forwardRef<HTMLDivElement, PropsWithChildren<HoneyGridProps>>(
+  (
+    { children, columns, spacing, isColumnGrowing = true, applyColumnMaxWidth = false, ...props },
+    ref,
+  ) => {
+    const contextValue = useMemo<HoneyGridContextValue>(
+      () => ({
+        columns,
+        spacing,
+        isColumnGrowing,
+        applyColumnMaxWidth,
+      }),
+      [columns, spacing, isColumnGrowing, applyColumnMaxWidth],
+    );
 
-  return (
-    <HoneyGridContext.Provider value={contextValue}>
-      <HoneyGridStyled spacing={spacing} data-testid="honey-grid" {...props}>
-        {children}
-      </HoneyGridStyled>
-    </HoneyGridContext.Provider>
-  );
-};
+    return (
+      <HoneyGridContext.Provider value={contextValue}>
+        <HoneyGridStyled ref={ref} spacing={spacing} data-testid="honey-grid" {...props}>
+          {children}
+        </HoneyGridStyled>
+      </HoneyGridContext.Provider>
+    );
+  },
+);

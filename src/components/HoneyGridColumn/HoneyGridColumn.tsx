@@ -9,13 +9,14 @@ export const HoneyGridColumn = ({
   children,
   ...props
 }: PropsWithChildren<HoneyGridColumnProps>) => {
-  const { columns, columnGrowing, spacing } = useCurrentHoneyGrid();
+  const { columns, spacing, isColumnGrowing, applyColumnMaxWidth } = useCurrentHoneyGrid();
 
   return (
     <HoneyGridColumnStyled
       columns={columns}
       spacing={spacing}
-      $flexGrow={columnGrowing ? 1 : 0}
+      applyMaxWidth={applyColumnMaxWidth}
+      $flexGrow={isColumnGrowing ? 1 : 0}
       // Data
       data-testid="honey-grid-column"
       {...props}

@@ -1,11 +1,12 @@
 {
   "name": "@react-hive/honey-layout",
-  "version": "1.1.0",
+  "version": "2.0.0",
   "description": "",
   "keywords": [
     "react",
     "layout",
-    "theme"
+    "theme",
+    "responsive"
   ],
   "homepage": "https://react-honey-layout.netlify.app",
   "bugs": {
@@ -31,10 +32,10 @@
   ],
   "peerDependencies": {
     "@mdx-js/react": "3.0.1",
-    "react": "18.2.0",
-    "react-dom": "18.2.0",
-    "react-router-dom": "6.26.1",
-    "styled-components": "5.3.11",
+    "react": ">=18.0.0",
+    "react-dom": ">=18.0.0",
+    "react-router-dom": "6.26.2",
+    "styled-components": "6.1.13",
     "highlight.js": "11.10.0"
   },
   "dependencies": {
@@ -44,12 +45,11 @@
   },
   "devDependencies": {
     "@testing-library/react": "16.0.1",
-    "@types/jest": "29.5.12",
+    "@types/jest": "29.5.13",
     "@typescript-eslint/eslint-plugin": "7.18.0",
     "@typescript-eslint/parser": "7.18.0",
-    "@types/react": "18.2.79",
-    "@types/react-dom": "18.2.25",
-    "@types/styled-components": "5.1.34",
+    "@types/react": ">=18.0.0",
+    "@types/react-dom": ">=18.0.0",
     "@types/mdx": "2.0.13",
     "@types/lodash.merge": "4.6.9",
     "@types/lodash.debounce": "4.0.9",
@@ -65,9 +65,9 @@
     "jest-environment-jsdom": "29.7.0",
     "prettier": "3.3.3",
     "ts-jest": "29.2.5",
-    "typescript": "5.5.4",
-    "vite": "5.4.3",
-    "vite-plugin-dts": "4.1.0",
+    "typescript": "5.6.2",
+    "vite": "5.4.6",
+    "vite-plugin-dts": "4.2.1",
     "vite-plugin-checker": "0.8.0"
   },
   "jest": {

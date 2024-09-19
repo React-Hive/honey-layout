@@ -1,9 +1,10 @@
 import type { HTMLAttributes } from 'react';
-import type { FlattenSimpleInterpolation } from 'styled-components';
-import * as CSS from 'csstype';
+import type { DefaultTheme, ExecutionContext, StyleFunction } from 'styled-components';
 import { css } from 'styled-components';
+import * as CSS from 'csstype';
 
 import type {
+  Nullable,
   HoneyBreakpointName,
   HoneyCSSArrayValue,
   HoneyCSSDimensionShortHandValue,
@@ -12,20 +13,18 @@ import type {
   HoneyCSSPropertyValue,
   HoneyCSSMediaRule,
   HoneySpacings,
-  HoneyTheme,
-  HoneyThemedProps,
   HoneyColorKey,
   BaseHoneyColors,
   HoneyFontName,
   HoneyCSSColor,
   HoneyDimensionName,
-  Nullable,
-  HoneyCSSProperties,
+  HoneyPrefixedCSSProperties,
   HoneyCSSDimensionProperty,
   HoneyCSSColorProperty,
   HoneyBreakpoints,
   HoneyScreenState,
   HoneyCSSDimensionValue,
+  HoneyPrefixedCSSProperty,
 } from './types';
 import { camelToDashCase, convertHexToHexWithAlpha, media, pxToRem } from './utils';
 import { CSS_COLOR_PROPERTIES, CSS_DIMENSION_PROPERTIES } from './constants';
@@ -66,7 +65,7 @@ export type ResolveSpacingResult<
  * @param {keyof HoneySpacings} [type='base'] - The type of spacing to use from the theme. Determines which base spacing
  * value to use for calculations (e.g., 'base', 'small', 'large'). Defaults to 'base'.
  *
- * @returns {(props: HoneyThemedProps) => ResolveSpacingResult<MultiValue, Unit>} - A function that takes `HoneyThemedProps`
+ * @returns {(props: ExecutionContext) => ResolveSpacingResult<MultiValue, Unit>} - A function that takes `ExecutionContext`
  * (containing the theme object) and returns the resolved spacing value(s). The result is either:
  * - A single calculated value (e.g., '16px') if the input is a single number.
  * - A string of space-separated values (e.g., '8px 16px 24px 32px') if the input is an array of numbers.
@@ -79,8 +78,8 @@ export const resolveSpacing =
     value: MultiValue,
     unit: Unit = 'px' as Unit,
     type: keyof HoneySpacings = 'base',
-  ): ((props: HoneyThemedProps) => ResolveSpacingResult<MultiValue, Unit>) =>
-  ({ theme }: HoneyThemedProps): ResolveSpacingResult<MultiValue, Unit> => {
+  ): ((props: ExecutionContext) => ResolveSpacingResult<MultiValue, Unit>) =>
+  ({ theme }: ExecutionContext): ResolveSpacingResult<MultiValue, Unit> => {
     const selectedSpacing = theme.spacings[type] ?? 0;
 
     if (typeof value === 'number') {
@@ -114,7 +113,7 @@ export const resolveSpacing =
  */
 export const resolveColor =
   (colorKey: HoneyColorKey, alpha?: number) =>
-  ({ theme }: HoneyThemedProps): HoneyCSSColor => {
+  ({ theme }: ExecutionContext): HoneyCSSColor => {
     const [colorType, colorName] = colorKey.split('.');
 
     const color = theme.colors[colorType as keyof BaseHoneyColors][colorName];
@@ -125,13 +124,13 @@ export const resolveColor =
 /**
  * Resolves the font styles based on the provided font name from the theme.
  *
- * @param fontName - The name of the font to be resolved from the theme.
+ * @param {HoneyFontName} fontName - The name of the font to be resolved from the theme.
  *
- * @returns A function that takes the theme and returns the CSS for the specified font.
+ * @returns A style function that takes a theme object and returns the CSS styles for the specified font.
  */
 export const resolveFont =
   (fontName: HoneyFontName) =>
-  ({ theme }: HoneyThemedProps): FlattenSimpleInterpolation => {
+  ({ theme }: ExecutionContext) => {
     const font = theme.fonts[fontName];
 
     return css`
@@ -148,11 +147,11 @@ export const resolveFont =
  *
  * @param {HoneyDimensionName} dimensionName - The name of the dimension to resolve.
  *
- * @returns A function that takes the theme and returns the resolved dimension value from the theme.
+ * @returns A style function that takes the theme and returns the resolved dimension value from the theme.
  */
 export const resolveDimension =
   (dimensionName: HoneyDimensionName) =>
-  ({ theme }: HoneyThemedProps): HoneyCSSDimensionValue =>
+  ({ theme }: ExecutionContext): HoneyCSSDimensionValue =>
     theme.dimensions[dimensionName];
 
 /**
@@ -242,42 +241,87 @@ const getCSSPropertyValue = <CSSProperty extends keyof CSS.Properties>(
 };
 
 /**
- * Generates CSS styles based on the provided breakpoint and props.
- * Filters the props to include only those with breakpoints matching the specified breakpoint.
- * For each matching prop, it converts the property name to dash-case and retrieves the corresponding value.
+ * Determines if a given HTML attribute is a CSS property that is prefixed with a '$'.
+ * This convention is typically used for applying dynamic or responsive styles.
  *
- * @param {HoneyBreakpointName} breakpoint - The name of the breakpoint.
+ * @param {string} attribute - The HTML attribute or key to check.
+ *
+ * @returns {attribute is HoneyPrefixedCSSProperty} - Returns true if the attribute is a valid prefixed CSS property, otherwise false.
  */
-export const generateStyles =
-  <Props extends HTMLAttributes<HTMLElement>>(breakpoint: HoneyBreakpointName) =>
-  ({ theme, ...props }: HoneyThemedProps<Props>) => css`
-    ${Object.entries(props)
-      .filter(
-        ([propertyName, propertyValue]) =>
-          (propertyName[0] === '$' && breakpoint === 'xs') ||
-          (propertyValue && typeof propertyValue === 'object' && breakpoint in propertyValue),
-      )
-      .map(([propertyName, propertyValue]) => {
-        const cssPropertyName = camelToDashCase(propertyName).slice(1);
+const isCSSPrefixedProperty = (attribute: string): attribute is HoneyPrefixedCSSProperty =>
+  attribute[0] === '$';
 
-        return css`
-          ${cssPropertyName}: ${getCSSPropertyValue(
-            propertyName.slice(1) as keyof CSS.Properties,
-            propertyValue,
-            breakpoint,
-          )};
-        `;
-      })}
+/**
+ * Filters and matches CSS properties from the provided props object based on the specified breakpoint.
+ *
+ * @template Props - The type representing the HTML attributes and Honey-prefixed CSS properties.
+ *
+ * @param {Props} props - The props object containing CSS properties and other HTML attributes.
+ * @param {HoneyBreakpointName} breakpoint - The name of the breakpoint for filtering CSS properties.
+ *
+ * @returns {Array<[HoneyPrefixedCSSProperty, CSS.Properties[keyof CSS.Properties]]>}
+ *   An array of tuples where each tuple contains a Honey-prefixed CSS property and its value.
+ */
+const matchCSSProperties = <Props extends HTMLAttributes<HTMLElement> & HoneyPrefixedCSSProperties>(
+  props: Props,
+  breakpoint: HoneyBreakpointName,
+): [HoneyPrefixedCSSProperty, CSS.Properties[keyof CSS.Properties]][] =>
+  Object.entries(props).filter(
+    ([attribute, attributeValue]) =>
+      (isCSSPrefixedProperty(attribute) && breakpoint === 'xs') ||
+      (attributeValue && typeof attributeValue === 'object' && breakpoint in attributeValue),
+  ) as [HoneyPrefixedCSSProperty, CSS.Properties[keyof CSS.Properties]][];
+
+/**
+ * Generates CSS styles based on the provided breakpoint and properties.
+ * Filters the properties to include only those that match the specified breakpoint.
+ * Converts the property names from camelCase to dash-case and retrieves their values.
+ *
+ * @template Props - The type representing HTML attributes and Honey-prefixed CSS properties.
+ *
+ * @param {HoneyBreakpointName} breakpoint - The name of the breakpoint to filter properties by.
+ *
+ * @returns {(context: ExecutionContext & Props) => ReturnType<typeof css>} -
+ *   A function that takes an execution context and properties, and returns a CSS block
+ *   with styles generated for the specified breakpoint.
+ */
+export const createStyles =
+  <Props extends HTMLAttributes<HTMLElement> & HoneyPrefixedCSSProperties>(
+    breakpoint: HoneyBreakpointName,
+  ): ((context: ExecutionContext & Props) => ReturnType<typeof css>) =>
+  ({ theme, ...props }: ExecutionContext & Props) => css`
+    ${matchCSSProperties(props, breakpoint).map(([prefixedPropertyName, propertyValue]) => {
+      const propertyName = prefixedPropertyName.slice(1) as keyof CSS.Properties;
+
+      return css`
+        ${camelToDashCase(propertyName)}: ${getCSSPropertyValue(
+          propertyName,
+          propertyValue,
+          breakpoint,
+        )};
+      `;
+    })}
   `;
 
 /**
- * Checks if any of the props require a media query for the specified breakpoint.
- * Filters the props to include only those with responsive values containing the specified breakpoint.
+ * Determines if any of the given properties include styles that require a media query
+ * for the specified breakpoint. This function checks if there are any properties in `props`
+ * that are prefixed with `$` and have responsive values that include the given breakpoint.
+ *
+ * @param {HoneyBreakpointName} breakpoint - The name of the breakpoint to check within responsive values.
+ * @param {HTMLAttributes<HTMLElement> & HoneyPrefixedCSSProperties} props - The properties object that may contain responsive styles.
+ *
+ * @returns {boolean} - Returns true if at least one property in `props` has styles for the specified breakpoint; otherwise, false.
  */
-const checkIfApplyBreakpoint = (breakpoint: HoneyBreakpointName, props: HoneyCSSProperties) =>
+const hasBreakpointStyles = (
+  breakpoint: HoneyBreakpointName,
+  props: HTMLAttributes<HTMLElement> & HoneyPrefixedCSSProperties,
+): boolean =>
   Object.entries(props).some(
-    ([propertyName, propertyValue]) =>
-      propertyName[0] === '$' && typeof propertyValue === 'object' && breakpoint in propertyValue,
+    ([attribute, attributeValue]) =>
+      isCSSPrefixedProperty(attribute) &&
+      typeof attributeValue === 'object' &&
+      breakpoint in attributeValue,
   );
 
 /**
@@ -288,13 +332,13 @@ const checkIfApplyBreakpoint = (breakpoint: HoneyBreakpointName, props: HoneyCSS
  * @param {HoneyBreakpointName} breakpoint - The name of the breakpoint.
  * @param {HoneyCSSMediaRule} [ruleOptions={}] - Additional options for the media rule.
  *
- * @returns Functions for generating media queries.
+ * @returns Styled functions for generating media queries.
  */
 export const bpMedia = (
   breakpoint: HoneyBreakpointName,
   ruleOptions: Omit<HoneyCSSMediaRule, 'width' | 'minWidth' | 'maxWidth'> = {},
 ) => {
-  const resolveBpValue = (theme: HoneyTheme) => {
+  const resolveBpValue = (theme: DefaultTheme) => {
     const value = theme.breakpoints[breakpoint];
     if (!value) {
       throw new Error(`[honey-layout]: Setup for breakpoint "${breakpoint}" was not found.`);
@@ -303,7 +347,7 @@ export const bpMedia = (
     return value;
   };
 
-  const down = ({ theme }: HoneyThemedProps) =>
+  const down: StyleFunction<object> = ({ theme }) =>
     media([
       {
         maxWidth: `${resolveBpValue(theme)}px`,
@@ -311,7 +355,7 @@ export const bpMedia = (
       },
     ]);
 
-  const up = ({ theme }: HoneyThemedProps) =>
+  const up: StyleFunction<object> = ({ theme }) =>
     media([
       {
         minWidth: `${resolveBpValue(theme)}px`,
@@ -326,20 +370,31 @@ export const bpMedia = (
 };
 
 /**
- * Generates media query styles based on the provided breakpoint and props.
+ * Applies CSS styles wrapped in a media query for the specified breakpoint based on the provided properties.
+ * If no styles are found for the specified breakpoint or if the breakpoint configuration is missing,
+ * it returns `null`. Otherwise, it generates media query styles using the `createStyles` function.
+ *
+ * @template Props - The type representing HTML attributes and Honey-prefixed CSS properties.
+ *
+ * @param {HoneyBreakpointName} breakpoint - The name of the breakpoint to apply media query styles for.
+ *
+ * @returns {(context: ExecutionContext & Props) => Nullable<ReturnType<typeof css>>} - A function that takes context and properties
+ *   and returns a CSS block wrapped in a media query if styles exist for the specified breakpoint; otherwise, returns `null`.
  */
-export const generateMediaStyles =
-  <Props extends HoneyCSSProperties>(breakpoint: HoneyBreakpointName) =>
-  ({ theme, ...props }: HoneyThemedProps<Props>) => {
+export const applyBreakpointStyles =
+  <Props extends HTMLAttributes<HTMLElement> & HoneyPrefixedCSSProperties>(
+    breakpoint: HoneyBreakpointName,
+  ): ((context: ExecutionContext & Props) => Nullable<ReturnType<typeof css>>) =>
+  ({ theme, ...props }: ExecutionContext & Props) => {
     const breakpointConfig = theme.breakpoints[breakpoint];
 
-    if (!breakpointConfig || !checkIfApplyBreakpoint(breakpoint, props)) {
+    if (!breakpointConfig || !hasBreakpointStyles(breakpoint, props)) {
       return null;
     }
 
     return css`
       ${bpMedia(breakpoint).up} {
-        ${generateStyles(breakpoint)};
+        ${createStyles(breakpoint)};
       }
     `;
   };
