@@ -76,7 +76,7 @@ type HoneyLayoutContextValue = {
   resolveDimension: (dimensionName: HoneyDimensionName) => HoneyCSSDimensionValue;
 };
 
-const HoneyContext = createContext<HoneyLayoutContextValue | undefined>(undefined);
+const HoneyLayoutContext = createContext<HoneyLayoutContextValue | undefined>(undefined);
 
 type HoneyLayoutProviderContentProps = {
   mediaQueryOptions?: UseHoneyMediaQueryOptions;
@@ -102,7 +102,7 @@ const HoneyLayoutProviderContent = ({
     [theme, screenState],
   );
 
-  return <HoneyContext.Provider value={contextValue}>{children}</HoneyContext.Provider>;
+  return <HoneyLayoutContext.Provider value={contextValue}>{children}</HoneyLayoutContext.Provider>;
 };
 
 type HoneyLayoutProviderProps = HoneyLayoutProviderContentProps & {
@@ -128,7 +128,7 @@ export const HoneyLayoutProvider = ({
  * @returns {HoneyLayoutContextValue} - The context value providing theming utilities and screen state.
  */
 export const useHoneyLayout = (): HoneyLayoutContextValue => {
-  const context = useContext(HoneyContext);
+  const context = useContext(HoneyLayoutContext);
   if (!context) {
     throw new Error(
       'The `useHoneyLayout()` hook must be used inside <HoneyLayoutProvider/> component!',

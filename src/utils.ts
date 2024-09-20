@@ -180,23 +180,48 @@ export const getTransformationValues = (element: HTMLElement) => {
 };
 
 /**
- * Converts a nested list structure into a flat list, excluding the nested list key from the result and adding depth level, parent ID, and total nested items properties.
+ * Recursively converts a nested list structure into a flat list. It excludes the nested list key from the result
+ * while adding hierarchical metadata, such as `depthLevel`, `parentId`, and `totalNestedItems` to each flattened item.
  *
- * @template OriginItem - The type of the items in the list.
+ * This function is useful for flattening deeply nested tree-like structures (e.g., categories, folders)
+ * while preserving their relationships and depth levels in the hierarchy.
  *
- * @param items - The array of items to be flattened. Can be undefined.
- * @param itemIdKey - The key in each item that uniquely identifies it.
- * @param nestedItemsKey - The key in each item that contains the nested list.
- * @param flattenedItemsResult - The array that accumulates the flattened items. Defaults to an empty array.
- * @param parentId - Optional. The ID of the parent item in the flattened structure. Defaults to undefined for parent item.
- * @param depthLevel - Optional. The current depth level of the item in the nested structure. Default to 0.
+ * @template OriginItem - The type of the items in the nested list.
  *
- * @returns A flat array of items, excluding the nested list key and including `depthLevel`, `parentId`, and `totalNestedItems` properties.
+ * @param items - The array of items to be flattened. If undefined, it returns an empty array.
+ * @param itemIdKey - The key in each item that uniquely identifies it (e.g., 'id').
+ * @param nestedItemsKey - The key in each item that contains the nested items or list (e.g., 'children').
+ * @param flattenedItemsResult - An array that accumulates the flattened items. Defaults to an empty array.
+ * @param parentId - Optional. The ID of the parent item in the flattened structure. Defaults to undefined for top-level items.
+ * @param depthLevel - Optional. The current depth level of the item in the nested structure. Defaults to 0 for top-level items.
+ *
+ * @returns A flat array of items, where the nested list key is removed, and each item includes:
+ * - `parentId`: ID of its parent item in the flattened structure (undefined for top-level items).
+ * - `depthLevel`: The depth level of the item in the hierarchy, with 0 being the top-level.
+ * - `totalNestedItems`: The total number of direct child items within the current item (defaults to 0 for leaf nodes).
+ *
+ * @example
+ * ```ts
+ * const nestedData = [
+ *   { id: 1, name: 'Item 1', children: [{ id: 2, name: 'Item 1.1' }] },
+ *   { id: 3, name: 'Item 2', children: [] },
+ * ];
+ *
+ * const flatList = flattenNestedList(nestedData, 'id', 'children');
+ *
+ * // Output:
+ * // [
+ * //   { id: 1, name: 'Item 1', parentId: undefined, depthLevel: 0, totalNestedItems: 1 },
+ * //   { id: 2, name: 'Item 1.1', parentId: 1, depthLevel: 1, totalNestedItems: 0 },
+ * //   { id: 3, name: 'Item 2', parentId: undefined, depthLevel: 0, totalNestedItems: 0 }
+ * // ]
+ * ```
  */
 export const flattenNestedList = <OriginItem extends object>(
   items: OriginItem[] | undefined,
   itemIdKey: KeysWithNonArrayValues<OriginItem>,
   nestedItemsKey: KeysWithArrayValues<OriginItem>,
+  ///
   flattenedItemsResult: HoneyFlattenedItem<OriginItem, typeof nestedItemsKey>[] = [],
   parentId: OriginItem[KeysWithNonArrayValues<OriginItem>] | undefined = undefined,
   depthLevel = 0,
@@ -232,16 +257,27 @@ export const flattenNestedList = <OriginItem extends object>(
 };
 
 /**
- * Filters flattened items based on the specified parent ID and an optional predicate.
+ * Filters a list of flattened items based on a specified parent ID and an optional predicate function.
  *
- * @template OriginItem - The type of the items in the list.
- * @template NestedListKey - The key within `Item` that contains nested items or lists.
+ * This utility is useful for extracting items that share the same parent in a flattened hierarchical
+ * structure, such as categories or tree-like data. Optionally, it allows further filtering through a
+ * custom predicate function.
  *
- * @param flattenedItems - The array of flattened items to filter.
- * @param parentId - The parent ID to filter the items by.
- * @param predicate - Optional. A function to further filter the flattened items that match the parent ID.
+ * @template OriginItem - The type of the items in the flattened list.
+ * @template NestedListKey - The key within `OriginItem` that contains nested items or lists.
  *
- * @returns An array of flattened items that match the specified parent ID and predicate.
+ * @param flattenedItems - The array of flattened items to filter, which contains items with hierarchical metadata.
+ * @param parentId - The parent ID to filter the items by. Only items with this parent ID will be included in the result.
+ * @param predicate - Optional. A custom function to apply additional filtering logic on items that match the parent ID.
+ *
+ * @returns An array of flattened items that match the specified `parentId`, and if provided, the `predicate` function.
+ *
+ * @example
+ * ```ts
+ * const filteredItems = filterFlattenedItems(flatList, 1, item => item.depthLevel > 1);
+ *
+ * // This would return items with `parentId` equal to 1, and where `depthLevel` is greater than 1.
+ * ```
  */
 export const filterFlattenedItems = <OriginItem extends object, NestedListKey extends string>(
   flattenedItems: HoneyFlattenedItem<OriginItem, NestedListKey>[],
@@ -255,17 +291,29 @@ export const filterFlattenedItems = <OriginItem extends object, NestedListKey ex
 
 /**
  * Searches through a list of flattened items to find matches based on a search query.
- * The search considers both parent and nested items and ensures that matching items and their parents are included in the result.
+ * This function considers both the items themselves and their parents in the hierarchy, ensuring that
+ * any matching items and their respective parents are included in the result.
+ *
+ * The search is case-insensitive and can handle partial matches, making it useful for dynamic filtering
+ * of hierarchical data such as categories or trees.
  *
  * @template OriginItem - The type of the original item.
- * @template NestedListKey - The key within the item that contains nested items or lists.
+ * @template NestedListKey - The key within `OriginItem` that contains nested items or lists.
  *
- * @param flattenedItems - The array of flattened items to search through.
- * @param itemIdKey - The key used to identify each item uniquely.
- * @param valueKey - The key in each item that contains the searchable value.
- * @param searchQuery - The search query string used to match items.
+ * @param flattenedItems - The array of flattened items to search through, which may include hierarchical metadata.
+ * @param itemIdKey - The key used to uniquely identify each item (e.g., 'id').
+ * @param valueKey - The key in each item that contains the value to be searched (e.g., 'name').
+ * @param searchQuery - The query string used to filter items. Supports partial matches.
  *
- * @returns An array of matched flattened items, including their parents if applicable.
+ * @returns An array of matched flattened items, including their parent items if applicable.
+ *
+ * @example
+ * ```ts
+ * const searchResults = searchFlattenedItems(flatList, 'id', 'name', 'search term');
+ *
+ * // This will return items where the 'name' field matches the search term,
+ * // including any relevant parent items in the hierarchy.
+ * ```
  */
 export const searchFlattenedItems = <OriginItem extends object, NestedListKey extends string>(
   flattenedItems: HoneyFlattenedItem<OriginItem, NestedListKey>[],
@@ -285,7 +333,7 @@ export const searchFlattenedItems = <OriginItem extends object, NestedListKey ex
 
       return result;
     },
-    {} as never,
+    {},
   );
 
   return flattenedItems.reduce<HoneyFlattenedItem<OriginItem, NestedListKey>[]>(
@@ -367,6 +415,6 @@ export const searchFlattenedItems = <OriginItem extends object, NestedListKey ex
 
       return matchedFlattenedItems;
     },
-    [] as never,
+    [],
   );
 };

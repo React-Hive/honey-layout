@@ -14,7 +14,6 @@ import type {
   HoneyCSSMediaRule,
   HoneySpacings,
   HoneyColorKey,
-  BaseHoneyColors,
   HoneyFontName,
   HoneyCSSColor,
   HoneyDimensionName,
@@ -25,6 +24,7 @@ import type {
   HoneyScreenState,
   HoneyCSSDimensionValue,
   HoneyPrefixedCSSProperty,
+  HoneyColors,
 } from './types';
 import { camelToDashCase, convertHexToHexWithAlpha, media, pxToRem } from './utils';
 import { CSS_COLOR_PROPERTIES, CSS_DIMENSION_PROPERTIES } from './constants';
@@ -65,7 +65,7 @@ export type ResolveSpacingResult<
  * @param {keyof HoneySpacings} [type='base'] - The type of spacing to use from the theme. Determines which base spacing
  * value to use for calculations (e.g., 'base', 'small', 'large'). Defaults to 'base'.
  *
- * @returns {(props: ExecutionContext) => ResolveSpacingResult<MultiValue, Unit>} - A function that takes `ExecutionContext`
+ * @returns {(context: ExecutionContext) => ResolveSpacingResult<MultiValue, Unit>} - A function that takes `ExecutionContext`
  * (containing the theme object) and returns the resolved spacing value(s). The result is either:
  * - A single calculated value (e.g., '16px') if the input is a single number.
  * - A string of space-separated values (e.g., '8px 16px 24px 32px') if the input is an array of numbers.
@@ -78,7 +78,7 @@ export const resolveSpacing =
     value: MultiValue,
     unit: Unit = 'px' as Unit,
     type: keyof HoneySpacings = 'base',
-  ): ((props: ExecutionContext) => ResolveSpacingResult<MultiValue, Unit>) =>
+  ): ((context: ExecutionContext) => ResolveSpacingResult<MultiValue, Unit>) =>
   ({ theme }: ExecutionContext): ResolveSpacingResult<MultiValue, Unit> => {
     const selectedSpacing = theme.spacings[type] ?? 0;
 
@@ -104,7 +104,7 @@ export const resolveSpacing =
  * Resolves a color value based on the provided color key and optional alpha value.
  *
  * @param colorKey - The key representing the color to be resolved. This key is a string in the format 'colorType.colorName'.
- * @param alpha - Optional. The alpha transparency value between 0 (fully transparent) and 1 (fully opaque).
+ * @param alpha - Optional. The alpha transparency value between 0 (fully transparent) and 1 (fully opaque). Default to `undefined`.
  *
  * @returns The resolved color value from the theme, either in HEX format or in 8-character HEX with alpha format.
  *
@@ -116,7 +116,7 @@ export const resolveColor =
   ({ theme }: ExecutionContext): HoneyCSSColor => {
     const [colorType, colorName] = colorKey.split('.');
 
-    const color = theme.colors[colorType as keyof BaseHoneyColors][colorName];
+    const color = theme.colors[colorType as keyof HoneyColors][colorName];
 
     return alpha !== undefined ? convertHexToHexWithAlpha(color, alpha) : color;
   };
@@ -161,10 +161,10 @@ export const resolveDimension =
  *
  * @returns {propertyName is HoneyCSSDimensionProperty} - True if the property name is a dimension property, false otherwise.
  */
-const checkIsCSSDimensionProperty = (
+const isCSSDimensionProperty = (
   propertyName: keyof CSS.Properties,
 ): propertyName is HoneyCSSDimensionProperty => {
-  return (CSS_DIMENSION_PROPERTIES as readonly string[]).includes(propertyName as string);
+  return (CSS_DIMENSION_PROPERTIES as string[]).includes(propertyName as string);
 };
 
 /**
@@ -174,11 +174,22 @@ const checkIsCSSDimensionProperty = (
  *
  * @returns {propertyName is HoneyCSSColorProperty} - True if the property name is a color property, false otherwise.
  */
-const checkIsCSSColorProperty = (
+const isCSSColorProperty = (
   propertyName: keyof CSS.Properties,
 ): propertyName is HoneyCSSColorProperty => {
-  return (CSS_COLOR_PROPERTIES as readonly string[]).includes(propertyName as string);
+  return (CSS_COLOR_PROPERTIES as string[]).includes(propertyName as string);
 };
+
+/**
+ * Determines if a given HTML attribute is a CSS property that is prefixed with a '$'.
+ * This convention is typically used for applying dynamic or responsive styles.
+ *
+ * @param {string} attribute - The HTML attribute or key to check.
+ *
+ * @returns {attribute is HoneyPrefixedCSSProperty} - Returns true if the attribute is a valid prefixed CSS property, otherwise false.
+ */
+const isCSSPrefixedProperty = (attribute: string): attribute is HoneyPrefixedCSSProperty =>
+  attribute[0] === '$';
 
 /**
  * Type guard function to check if a string value follows the pattern of a theme color value.
@@ -189,7 +200,7 @@ const checkIsCSSColorProperty = (
  *
  * @returns {value is HoneyColorKey} - True if the string value is a theme color value, false otherwise.
  */
-const checkIsThemeColorValue = (propertyValue: string): propertyValue is HoneyColorKey =>
+const isThemeColorValue = (propertyValue: string): propertyValue is HoneyColorKey =>
   propertyValue.split('.').length === 2;
 
 /**
@@ -225,31 +236,20 @@ const getCSSPropertyValue = <CSSProperty extends keyof CSS.Properties>(
     return undefined;
   }
 
-  if (checkIsCSSDimensionProperty(propertyName)) {
+  if (isCSSDimensionProperty(propertyName)) {
     if (typeof resolvedValue === 'number' || Array.isArray(resolvedValue)) {
       return resolveSpacing(resolvedValue, 'px');
     }
   }
 
-  if (checkIsCSSColorProperty(propertyName)) {
-    if (typeof resolvedValue === 'string' && checkIsThemeColorValue(resolvedValue)) {
+  if (isCSSColorProperty(propertyName)) {
+    if (typeof resolvedValue === 'string' && isThemeColorValue(resolvedValue)) {
       return resolveColor(resolvedValue);
     }
   }
 
   return resolvedValue;
 };
-
-/**
- * Determines if a given HTML attribute is a CSS property that is prefixed with a '$'.
- * This convention is typically used for applying dynamic or responsive styles.
- *
- * @param {string} attribute - The HTML attribute or key to check.
- *
- * @returns {attribute is HoneyPrefixedCSSProperty} - Returns true if the attribute is a valid prefixed CSS property, otherwise false.
- */
-const isCSSPrefixedProperty = (attribute: string): attribute is HoneyPrefixedCSSProperty =>
-  attribute[0] === '$';
 
 /**
  * Filters and matches CSS properties from the provided props object based on the specified breakpoint.

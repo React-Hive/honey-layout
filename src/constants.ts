@@ -1,6 +1,6 @@
 import type { HoneyCSSColorProperty, HoneyCSSDimensionProperty } from './types';
 
-export const CSS_DIMENSION_PROPERTIES: HoneyCSSDimensionProperty[] = [
+export const CSS_DIMENSION_PROPERTIES: readonly HoneyCSSDimensionProperty[] = [
   'width',
   'height',
   'margin',
@@ -22,7 +22,7 @@ export const CSS_DIMENSION_PROPERTIES: HoneyCSSDimensionProperty[] = [
   'columnGap',
 ];
 
-export const CSS_COLOR_PROPERTIES: HoneyCSSColorProperty[] = [
+export const CSS_COLOR_PROPERTIES: readonly HoneyCSSColorProperty[] = [
   'color',
   'backgroundColor',
   'borderColor',
