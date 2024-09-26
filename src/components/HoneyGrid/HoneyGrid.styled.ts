@@ -16,9 +16,11 @@ export type HoneyGridStyledProps = HTMLAttributes<HTMLDivElement> &
     /**
      * The minimum height of each grid column.
      */
-    minColumnHeight?: CSS.Properties['height'];
+    minColumnHeight?: CSS.Properties['minHeight'];
     /**
      * The spacing between grid columns.
+     *
+     * @default 0
      */
     spacing?: number;
   };

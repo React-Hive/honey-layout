@@ -14,6 +14,8 @@ export type HoneyGridColumnStyledProps = HTMLAttributes<HTMLDivElement> &
     columns: number;
     /**
      * Spacing between grid columns.
+     *
+     * @default 0
      */
     spacing: number | undefined;
     /**

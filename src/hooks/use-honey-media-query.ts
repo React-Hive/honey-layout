@@ -12,10 +12,17 @@ export type UseHoneyMediaQueryOptions = {
    * @default 0
    */
   delay?: number;
+  /**
+   * Manually override screen state properties like isXs, isPortrait, etc.
+   *
+   * @remarks
+   * These values are only set once on initialization and will not dynamically update the state.
+   */
+  overrideScreenState?: Partial<HoneyScreenState>;
 };
 
 /**
- * A custom hook that tracks the current screen state based on the theme's media breakpoints.
+ * The hook that tracks the current screen state based on the theme's media breakpoints.
  * It updates the state on window resize and orientation change.
  *
  * @param options - Optional configuration object.
@@ -23,16 +30,20 @@ export type UseHoneyMediaQueryOptions = {
  * @returns The current screen state, indicating the orientation (portrait or landscape)
  *          and the active breakpoint (xs, sm, md, lg, xl).
  */
-export const useHoneyMediaQuery = ({ delay = 0 }: UseHoneyMediaQueryOptions = {}) => {
+export const useHoneyMediaQuery = ({
+  delay = 0,
+  overrideScreenState,
+}: UseHoneyMediaQueryOptions = {}) => {
   const theme = useTheme();
 
-  const [screenState, setScreenState] = useState<HoneyScreenState>(() =>
-    resolveScreenState(theme.breakpoints),
-  );
+  const [screenState, setScreenState] = useState<HoneyScreenState>(() => ({
+    ...resolveScreenState(theme.breakpoints),
+    ...overrideScreenState,
+  }));
 
   useEffect(() => {
     const handleResize = debounce(() => {
-      setScreenState(resolveScreenState(theme.breakpoints));
+      setScreenState({ ...resolveScreenState(theme.breakpoints), ...overrideScreenState });
     }, delay);
 
     handleResize();
