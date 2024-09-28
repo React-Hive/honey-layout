@@ -25,8 +25,6 @@ type SyntheticScrollableContainerOptions<Element extends HTMLElement> = Pick<
  *
  * @param {MutableRefObject<Nullable<Element>>} scrollableContainerRef - A ref to the scrollable container element to be assigned to the target element.
  * @param {SyntheticScrollableContainerOptions<Element>} options - Options for configuring the synthetic scrollable container.
- *
- * @returns {MutableRefObject<Nullable<Element>>} - A ref to the scrollable container element that should be assigned to the target element.
  */
 export const useHoneySyntheticScrollableContainer = <Element extends HTMLElement>(
   scrollableContainerRef: MutableRefObject<Nullable<Element>>,
@@ -35,7 +33,7 @@ export const useHoneySyntheticScrollableContainer = <Element extends HTMLElement
     onStartDrag,
     onEndDrag,
   }: SyntheticScrollableContainerOptions<Element> = {},
-): MutableRefObject<Nullable<Element>> => {
+) => {
   const onMoveDrag = useCallback<HoneyDragOnMoveHandler<Element>>(
     scrollableContainer =>
       ({ deltaX, deltaY }) => {
@@ -106,6 +104,4 @@ export const useHoneySyntheticScrollableContainer = <Element extends HTMLElement
       window.removeEventListener('resize', resizeHandler);
     };
   }, []);
-
-  return scrollableContainerRef;
 };

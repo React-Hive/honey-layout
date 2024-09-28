@@ -1,4 +1,3 @@
-import type { MutableRefObject } from 'react';
 import { useCallback, useRef } from 'react';
 
 import type { Nullable } from '../types';
@@ -9,7 +8,7 @@ export const useHoneyInfiniteScroll = <
   ScrollableContainerElement extends HTMLElement,
   TargetElement extends HTMLElement,
 >(
-  containerRef: MutableRefObject<Nullable<ScrollableContainerElement>> | undefined,
+  containerElement: Nullable<ScrollableContainerElement>,
   onFetchMoreItems: UseHoneyInfiniteScrollOnFetchMoreItems,
 ) => {
   const scrollableContainerRef = useRef<Nullable<ScrollableContainerElement>>(null);
