@@ -4,7 +4,7 @@ import styled, { css } from 'styled-components';
 import type { HoneyBreakpointName } from '../../types';
 import type { HoneyBoxProps } from '../HoneyBox';
 import { bpMedia, resolveSpacing } from '../../helpers';
-import { HoneyBox } from '../HoneyBox';
+import { HoneyFlexBox } from '../HoneyFlexBox';
 
 export type HoneyGridColumnStyledProps = HTMLAttributes<HTMLDivElement> &
   HoneyBoxProps & {
@@ -36,7 +36,7 @@ export type HoneyGridColumnStyledProps = HTMLAttributes<HTMLDivElement> &
  * It provides flexibility in specifying the number of columns to take, the total number of columns in the grid,
  * and the spacing between columns.
  */
-export const HoneyGridColumnStyled = styled(HoneyBox)<HoneyGridColumnStyledProps>`
+export const HoneyGridColumnStyled = styled(HoneyFlexBox)<HoneyGridColumnStyledProps>`
   ${({ columns, takeColumns = 1, spacing = 0, applyMaxWidth, theme }) => {
     const fractionalWidth = 100 / columns;
 
@@ -47,8 +47,6 @@ export const HoneyGridColumnStyled = styled(HoneyBox)<HoneyGridColumnStyledProps
     const columnWidth = `calc(${columnWidthPercent}% - ${columnGap}px)`;
 
     return css`
-      display: flex;
-      flex-direction: column;
       flex-basis: ${columnWidth};
 
       ${applyMaxWidth &&
