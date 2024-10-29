@@ -18,9 +18,9 @@ export const HoneyStatusContent = ({
     return errorContent;
   }
 
-  if (isNoContent) {
-    return noContent;
+  if (isLoading) {
+    return loadingContent;
   }
 
-  return isLoading ? loadingContent : children;
+  return isNoContent ? noContent : children;
 };

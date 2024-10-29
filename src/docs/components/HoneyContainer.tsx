@@ -1,10 +1,9 @@
 import styled, { css } from 'styled-components';
 
-export const HoneyContainer = styled.div`
-  ${({ theme }) => css`
-    display: flex;
-    flex-direction: column;
+import { HoneyFlexBox } from '../../components';
 
+export const HoneyContainer = styled(HoneyFlexBox)`
+  ${({ theme }) => css`
     width: 100%;
     max-width: ${theme.container.maxWidth};
     height: min-content;

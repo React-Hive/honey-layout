@@ -8,11 +8,11 @@ import { bpMedia, resolveSpacing } from '../../helpers';
 import { useHoneyLayout } from '../../providers';
 
 type MenuStyledProps = {
-  $isOpenMenu: boolean;
+  isOpenMenu: boolean;
 };
 
 const MenuStyled = styled.div<MenuStyledProps>`
-  ${({ $isOpenMenu, theme }) => css`
+  ${({ isOpenMenu, theme }) => css`
     position: relative;
 
     display: flex;
@@ -24,7 +24,7 @@ const MenuStyled = styled.div<MenuStyledProps>`
     background-color: ${theme.colors.neutral.charcoalGray};
     overflow: hidden auto;
 
-    ${$isOpenMenu
+    ${isOpenMenu
       ? css`
           width: 300px;
           padding: 16px;
@@ -35,7 +35,7 @@ const MenuStyled = styled.div<MenuStyledProps>`
         `}
 
     ${bpMedia('xs').down} {
-      width: ${$isOpenMenu && '100%'};
+      width: ${isOpenMenu && '100%'};
     }
 
     ${bpMedia('xs').up} {
@@ -100,7 +100,7 @@ export const Menu = () => {
   };
 
   return (
-    <MenuStyled $isOpenMenu={isOpenMenu}>
+    <MenuStyled isOpenMenu={isOpenMenu}>
       <List>
         {PAGES.map(page => (
           <ListItem key={page.path}>

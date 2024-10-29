@@ -37,7 +37,7 @@ export const App = () => {
       >
         <Menu />
 
-        <HoneyBox ref={contentRef} $display="flex" $height="100%" $flexGrow={1} $overflow="auto">
+        <HoneyBox ref={contentRef} $display="flex" $flexGrow={1} $height="100%" $overflow="auto">
           <HoneyContainer>
             <Routes>
               {PAGES.map(page => (
