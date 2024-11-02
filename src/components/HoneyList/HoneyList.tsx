@@ -5,11 +5,11 @@ import styled from 'styled-components';
 import type { ComponentWithAs, HoneyStatusContentOptions } from '../../types';
 import type { HoneyListGenericProps, HoneyListItem } from './HoneyList.types';
 import type { HoneyBoxProps } from '../HoneyBox';
-import { HoneyBox } from '../HoneyBox';
 import { HoneyStatusContent } from '../HoneyStatusContent';
 import { getHoneyListItemId } from './HoneyList.helpers';
+import { HoneyFlexBox } from '../HoneyFlexBox';
 
-const HoneyListStyled = styled(HoneyBox)`
+const HoneyListStyled = styled(HoneyFlexBox)`
   overflow: hidden auto;
 `;
 
