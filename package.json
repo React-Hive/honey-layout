@@ -1,6 +1,6 @@
 {
   "name": "@react-hive/honey-layout",
-  "version": "2.3.1",
+  "version": "2.3.2",
   "description": "",
   "keywords": [
     "react",
@@ -66,7 +66,7 @@
     "prettier": "3.3.3",
     "ts-jest": "29.2.5",
     "typescript": "5.6.3",
-    "vite": "5.4.10",
+    "vite": "5.4.11",
     "vite-plugin-dts": "4.3.0",
     "vite-plugin-checker": "0.8.0"
   },
