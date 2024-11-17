@@ -169,6 +169,86 @@ export const Dialog = ({ children, isOpen, onClose }: DialogProps) => {
 
 1.	**Centralized Overlay Handling:** Provides a consistent API for managing overlays, unifying keyboard interaction and cleanup logic across all overlay components.
 2.	**Lifecycle Management:** Automatically manages overlay registration and unregistration, preventing potential bugs like stale event listeners or overlays remaining active after closure.
-3.	**Keyboard Interaction:** Simplifies handling of common keyboard events (e.g., closing with the “Escape” key) through a declarative configuration.
+3.	**Keyboard Interaction:** Simplifies handling of common keyboard events (e.g., closing with the "Escape" key) through a declarative configuration.
 Note: The keyup event listener is attached to `window.document`, ensuring overlays are responsive to key events regardless of focus location.
 4.	**Customizability:** Allows developers to customize overlay behavior with flexible configuration options (`listenKeys`, `onKeyUp`, etc.), enabling support for various use cases.
+
+
+# useHoneyOverlay
+
+---
+
+The `useHoneyOverlay` hook is a utility for interacting with overlays managed by the `HoneyLayoutProvider`.
+It allows you to access and interact with a specific overlay from any nested component in your application, providing a way to manage events and lifecycle behavior in a decentralized manner.
+
+```tsx
+// ParentComponent.tsx
+import { useState, useCallback } from 'react';
+import { useRegisterHoneyOverlay } from '@react-hive/honey-layout';
+import { NestedComponent } from './NestedComponent';
+
+export const ParentComponent = () => {
+  const [isOverlayActive, setIsOverlayActive] = useState(false);
+
+  // Register the overlay when it's active
+  useRegisterHoneyOverlay(isOverlayActive, {
+    id: 'example-overlay-id',
+    listenKeys: ['Escape'],
+    onKeyUp: useCallback(() => {
+      console.log('Escape key pressed in parent overlay');
+
+      setIsOverlayActive(false);
+    }, []),
+  });
+
+  return (
+    <div>
+      <button onClick={() => setIsOverlayActive(true)}>Open Overlay</button>
+
+      {isOverlayActive && (
+        <div role="dialog" aria-hidden={!isOverlayActive}>
+          <h2>Parent Overlay</h2>
+
+          <NestedComponent />
+        </div>
+      )}
+    </div>
+  );
+};
+```
+
+```tsx
+// NestedComponent.tsx
+import { useHoneyOverlay } from '@react-hive/honey-layout';
+
+export const ExampleComponent = () => {
+  // Access the overlay with ID 'example-overlay-id' from a nested level
+  const overlay = useHoneyOverlay('example-overlay-id', {
+    onKeyUp: keyCode => {
+      if (keyCode === 'Escape') {
+        console.log('Escape key pressed');
+      }
+    },
+  });
+
+  return (
+    <div>
+      {overlay ? <p>Overlay is active!</p> : <p>Overlay not found.</p>}
+    </div>
+  );
+};
+```
+
+### Key Features
+
+1. **Access Overlays from Any Level:** Provides access to overlays from any point in the component tree, enabling decentralized event handling and overlay management.
+2. **Event Listener Integration:** Automatically attaches and removes event listeners (e.g., keyup) for the specified overlay.
+3. **Centralized Overlay Context:** Works seamlessly with the `HoneyLayoutProvider` to retrieve and interact with overlays.
+4. **Automatic Cleanup:** Ensures that event listeners are cleaned up when the overlay is unregistered or the component unmounts.
+5. **Customizable Event Handling:** Allows developers to define overlay-specific behavior using the `onKeyUp` option.
+
+### Notes
+
+1. The `keyup` event is globally attached to `window.document`, ensuring overlays respond to keyboard interactions regardless of focus.
+2. The hook relies on the `HoneyLayoutProvider` context, so make sure the provider is properly set up in your application.
+3. If no overlay matches the `targetOverlayId`, `useHoneyOverlay` will return `undefined`. Ensure that the overlay has been created and registered before using this hook.

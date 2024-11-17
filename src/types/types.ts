@@ -228,7 +228,7 @@ interface BaseHoneyColors {
  * Example of augmenting the colors interface.
  *
  * @example
- * ```typescript
+ * ```ts
  * declare module '@react-hive/honey-layout' {
  *  export interface HoneyColors {
  *    neutral: Record<'charcoalDark' | 'charcoalGray' | 'crimsonRed', HoneyCSSColor>;
@@ -247,7 +247,7 @@ export interface HoneyColors extends BaseHoneyColors {}
  * @example
  *
  * Given the `HoneyColors` interface:
- * ```typescript
+ * ```ts
  * interface HoneyColors {
  *   primary: Record<'blue' | 'green', HoneyCSSColor>;
  *   neutral: Record<'charcoalDark' | 'charcoalGray' | 'crimsonRed', HoneyCSSColor>;
@@ -255,7 +255,7 @@ export interface HoneyColors extends BaseHoneyColors {}
  * ```
  *
  * The resulting `HoneyColorKey` type will be:
- * ```typescript
+ * ```ts
  * type HoneyColorKey = 'neutral.charcoalDark' | 'neutral.charcoalGray' | 'neutral.crimsonRed' | 'primary.blue' | 'primary.green';
  * ```
  */
@@ -275,7 +275,7 @@ export type HoneyFont = {
  * Example of augmenting the fonts interface.
  *
  * @example
- * ```typescript
+ * ```ts
  * declare module '@react-hive/honey-layout' {
  *  export interface HoneyFonts {
  *    body: HoneyFont;
