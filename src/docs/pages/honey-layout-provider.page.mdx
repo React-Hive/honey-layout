@@ -102,3 +102,73 @@ export const Main = () => {
 *	**Flexibility:** Customize your application’s layout using a centralized theme object.
 *	**Consistency:** Ensure consistent spacing, colors, and typography across your application.
 *	**Responsiveness:** Manage breakpoints and responsive design easily.
+
+
+# Overlays
+
+---
+
+The `HoneyLayoutProvider` simplifies the management of overlays, such as dialogs, modals, and other layered UI elements.
+Overlays can be registered and managed using the `useRegisterHoneyOverlay` hook, providing seamless integration with keyboard events and overlay stacking.
+
+### Overlay Management
+
+The `useRegisterHoneyOverlay` hook is a core utility for overlay lifecycle management.
+It automates the process of handling overlays and ensures proper cleanup to avoid memory leaks or unintended interactions.
+
+### Key Features
+
+1. **Automatic Registration:** Automatically registers the overlay when `isRegister` property is set to true.
+2. **Keyboard Event Handling:** Listens for specified keyboard events, such as "Escape" and triggers callback actions.
+3. **Automatic Cleanup:** Unregisters the overlay when it becomes inactive or unmounts, ensuring stack integrity.
+4. **Configurable Behavior:** Supports customization through options like `listenKeys` and `onKeyUp` callbacks.
+
+### Example
+
+```tsx
+import type { PropsWithChildren } from 'react';
+import { createPortal } from 'react-dom';
+import { useRegisterHoneyOverlay } from '@react-hive/honey-layout';
+
+export type DialogProps = PropsWithChildren<{
+  /**
+   * Determines whether the dialog is open.
+   */
+  isOpen: boolean;
+  /**
+   * Callback function to handle closing the dialog.
+   */
+  onClose: () => void;
+}>;
+
+export const Dialog = ({ children, isOpen, onClose }: DialogProps) => {
+  // Registers the dialog as an overlay and listens for the "Escape" key to close it.
+  useRegisterHoneyOverlay(isOpen, {
+    listenKeys: ['Escape'],
+    onKeyUp: onClose,
+  });
+
+  return createPortal(
+    <div
+      role="dialog"
+      aria-hidden={!isOpen}
+      style={{
+        display: isOpen ? 'block' : 'none',
+      }}
+    >
+      <div className="backdrop" onClick={onClose} />
+
+      <div className="content">{children}</div>
+    </div>,
+    document.body
+  );
+};
+```
+
+### Benefits
+
+1.	**Centralized Overlay Handling:** Provides a consistent API for managing overlays, unifying keyboard interaction and cleanup logic across all overlay components.
+2.	**Lifecycle Management:** Automatically manages overlay registration and unregistration, preventing potential bugs like stale event listeners or overlays remaining active after closure.
+3.	**Keyboard Interaction:** Simplifies handling of common keyboard events (e.g., closing with the “Escape” key) through a declarative configuration.
+Note: The keyup event listener is attached to `window.document`, ensuring overlays are responsive to key events regardless of focus location.
+4.	**Customizability:** Allows developers to customize overlay behavior with flexible configuration options (`listenKeys`, `onKeyUp`, etc.), enabling support for various use cases.

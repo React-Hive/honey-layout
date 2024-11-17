@@ -3,7 +3,7 @@ import type { PropsWithChildren } from 'react';
 import styled, { css, useTheme } from 'styled-components';
 
 import type { HoneyBreakpointName } from '../../types';
-import { useHoneyLayout } from '../../providers';
+import { useHoneyLayout } from '../../hooks';
 import { HoneyBox } from '../../components';
 
 const StyledDemoContainer = styled(HoneyBox)`

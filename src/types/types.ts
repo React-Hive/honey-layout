@@ -9,6 +9,7 @@ import type {
   HoneyCSSDimensionNumericValue,
   HoneyCSSDimensionValue,
 } from './css.types';
+import type { HoneyKeyboardEventCode } from './dom.types';
 
 export type TimeoutId = ReturnType<typeof setTimeout>;
 
@@ -305,3 +306,90 @@ export type ComponentWithAs<T, P = object> = {
 export type HoneyModifierResultFn = () => Interpolation<object>;
 
 export type HoneyModifier<Config = unknown> = (config?: Config) => HoneyModifierResultFn;
+
+export type HoneyOverlayId = string;
+
+export type HoneyOverlayEventListenerType = 'keyup';
+
+/**
+ * Handler function for an overlay event listener.
+ *
+ * @param keyCode - The code of the key that triggered the event.
+ * @param e - The original keyboard event.
+ */
+export type HoneyOverlayEventListenerHandler = (
+  keyCode: HoneyKeyboardEventCode,
+  e: KeyboardEvent,
+) => void;
+
+/**
+ * A tuple representing an event listener, including the event type and the handler function.
+ */
+export type HoneyOverlayEventListener = [
+  HoneyOverlayEventListenerType,
+  HoneyOverlayEventListenerHandler,
+];
+
+/**
+ * Configuration object for an overlay, used to specify the overlay's behavior and event handling.
+ */
+export type HoneyOverlayConfig = {
+  /**
+   * Custom overlay ID. Automatically generated if not passed.
+   */
+  id?: HoneyOverlayId;
+  /**
+   * List of keyboard event codes to listen for (e.g., "Escape", "Enter").
+   * If undefined or empty, all key codes will be listened to.
+   *
+   * @default undefined
+   */
+  listenKeys?: HoneyKeyboardEventCode[];
+  /**
+   * Callback function to be invoked when a key event occurs for the specified key(s).
+   * If `listenKeys` is provided, this will only be triggered for those keys.
+   */
+  onKeyUp: HoneyOverlayEventListenerHandler;
+};
+
+/**
+ * Represents an overlay in the layout, allowing the registration of event listeners and notifying them when events occur.
+ */
+export type HoneyOverlay = {
+  /**
+   * Unique identifier for the overlay.
+   */
+  id: HoneyOverlayId;
+  /**
+   * Adds an event listener to the overlay.
+   *
+   * @param type - The type of event to listen for.
+   * @param handler - The handler function to execute when the event is triggered.
+   */
+  addListener: (
+    type: HoneyOverlayEventListenerType,
+    handler: HoneyOverlayEventListenerHandler,
+  ) => void;
+  /**
+   * Removes a specific event listener from the overlay.
+   *
+   * @param type - The type of event for the listener.
+   * @param handler - The handler function to remove.
+   */
+  removeListener: (
+    type: HoneyOverlayEventListenerType,
+    handler: HoneyOverlayEventListenerHandler,
+  ) => void;
+  /**
+   * Notifies all listeners of a specific event type.
+   *
+   * @param type - The type of event that occurred.
+   * @param keyCode - The code of the key that triggered the event.
+   * @param e - The original keyboard event.
+   */
+  notifyListeners: (
+    type: HoneyOverlayEventListenerType,
+    keyCode: HoneyKeyboardEventCode,
+    e: KeyboardEvent,
+  ) => void;
+};

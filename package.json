@@ -1,6 +1,6 @@
 {
   "name": "@react-hive/honey-layout",
-  "version": "2.3.2",
+  "version": "2.4.0",
   "description": "",
   "keywords": [
     "react",
@@ -34,7 +34,7 @@
     "@mdx-js/react": "3.1.0",
     "react": ">=18.0.0",
     "react-dom": ">=18.0.0",
-    "react-router-dom": "6.27.0",
+    "react-router-dom": "6.28.0",
     "styled-components": "6.1.13",
     "highlight.js": "11.10.0"
   },

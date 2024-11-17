@@ -3,9 +3,9 @@ import { NavLink } from 'react-router-dom';
 import styled, { css } from 'styled-components';
 
 import { PAGES } from '../constants';
+import { useHoneyLayout } from '../../hooks';
 import { useCurrentApp } from '../providers';
 import { bpMedia, resolveSpacing } from '../../helpers';
-import { useHoneyLayout } from '../../providers';
 
 type MenuStyledProps = {
   isOpenMenu: boolean;

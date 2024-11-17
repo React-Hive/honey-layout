@@ -29,6 +29,15 @@ import type {
 import { camelToDashCase, convertHexToHexWithAlpha, media, pxToRem } from './utils';
 import { CSS_COLOR_PROPERTIES, CSS_DIMENSION_PROPERTIES } from './constants';
 
+export const generateUniqueId = () => {
+  const timestamp = Date.now().toString();
+  const randomNum = Math.floor(Math.random() * 10000)
+    .toString()
+    .padStart(4, '0');
+
+  return `${timestamp}${randomNum}`;
+};
+
 /**
  * Conditional type to determine the return type of the `resolveSpacing` function.
  *

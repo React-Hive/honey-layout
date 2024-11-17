@@ -1,6 +1,7 @@
 import React from 'react';
 
-import { HoneyLayoutProvider, useHoneyLayout } from '../../../providers';
+import { HoneyLayoutProvider } from '../../../providers';
+import { useHoneyLayout } from '../../../hooks';
 import { HoneyBox } from '../../../components';
 import theme from './theme';
 

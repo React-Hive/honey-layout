@@ -4,3 +4,4 @@ export * from './state.types';
 export * from './css.types';
 export * from './component.types';
 export * from './types';
+export * from './dom.types';
