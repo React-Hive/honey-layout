@@ -240,6 +240,9 @@ export const useHoneyDrag = <Element extends HTMLElement>(
     };
 
     const touchStartHandler = (e: TouchEvent) => {
+      e.preventDefault();
+      e.stopPropagation();
+
       const touch = e.touches[0];
 
       startDrag(touch.clientX, touch.clientY);
@@ -260,6 +263,9 @@ export const useHoneyDrag = <Element extends HTMLElement>(
     };
 
     const mouseDownHandler = (e: MouseEvent) => {
+      e.preventDefault();
+      e.stopPropagation();
+
       startDrag(e.clientX, e.clientY);
 
       window.addEventListener('mousemove', mouseMoveHandler);
