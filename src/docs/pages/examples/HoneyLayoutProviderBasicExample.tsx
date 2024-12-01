@@ -19,7 +19,7 @@ const Main = () => {
   );
 };
 
-export const HoneyLayoutProviderExample = () => {
+export const HoneyLayoutProviderBasicExample = () => {
   return (
     <HoneyLayoutProvider theme={theme}>
       <Main />

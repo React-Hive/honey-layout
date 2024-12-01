@@ -1,7 +1,7 @@
 import * as CSS from 'csstype';
 
 import type { ElementType, MutableRefObject } from 'react';
-import type { ExecutionContext, Interpolation } from 'styled-components';
+import type { ExecutionContext, StyleFunction } from 'styled-components';
 import type { DataType } from 'csstype';
 
 import type {
@@ -303,9 +303,11 @@ export type ComponentWithAs<T, P = object> = {
   as?: ElementType<P>;
 } & T;
 
-export type HoneyModifierResultFn = () => Interpolation<object>;
+export type HoneyModifierResultFn<Props extends object> = StyleFunction<Props>;
 
-export type HoneyModifier<Config = unknown> = (config?: Config) => HoneyModifierResultFn;
+export type HoneyModifier<Config = unknown, Props extends object = object> = (
+  config: Config,
+) => HoneyModifierResultFn<Props>;
 
 export type HoneyOverlayId = string;
 

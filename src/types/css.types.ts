@@ -32,6 +32,11 @@ export type HoneyCSSArrayValue<T> = [T, T] | [T, T, T] | [T, T, T, T];
 export type HoneyCSSMultiValue<T> = T | HoneyCSSArrayValue<T>;
 
 /**
+ * Defining the allowed timing functions for the transition
+ */
+export type HoneyCSSTimingFunction = 'ease' | 'linear' | 'ease-in' | 'ease-out' | 'ease-in-out';
+
+/**
  * Type representing CSS properties related to spacing and positioning.
  */
 export type HoneyCSSDimensionProperty = keyof Pick<

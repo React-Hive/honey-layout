@@ -5,12 +5,12 @@ import type { HoneyPrefixedCSSProperties, HoneyModifierResultFn } from '../types
 import { applyBreakpointStyles, createStyles } from '../helpers';
 
 export type HoneyBoxProps = HoneyPrefixedCSSProperties & {
-  modifiers?: HoneyModifierResultFn[];
+  modifiers?: HoneyModifierResultFn<object>[];
 };
 
 export const HoneyBox = styled.div<HTMLAttributes<HTMLDivElement> & HoneyBoxProps>`
   ${({ modifiers }) => css`
-    ${modifiers?.map(modifier => modifier())};
+    ${modifiers};
 
     ${createStyles('xs')};
 

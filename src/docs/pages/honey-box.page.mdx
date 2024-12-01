@@ -2,6 +2,7 @@ import { useTheme } from 'styled-components';
 
 import { HoneyBox } from '../../components';
 import { resolveColor } from '../../helpers';
+import { HoneyModifiersBasicExample } from './examples';
 
 export const SquareBox = () => {
   const { colors } = useTheme();
@@ -91,24 +92,30 @@ Modifiers are functions that return CSS styles, which can be dynamically applied
 
 Below is an example of how to create and use a modifier with the component.
 
+<HoneyModifiersBasicExample/>
+
 ~~~tsx
 import { css } from 'styled-components';
 import type { HoneyModifier } from '@react-hive/honey-layout';
-import { HoneyBox, resolveColor } from '@react-hive/honey-layout';
+import { HoneyBox } from '@react-hive/honey-layout';
 
-const hoverableModifier: HoneyModifier = () => () => css`
-  &:hover {
-    background-color: ${resolveColor('neutral.coralRed')};
-  }
-`;
+const hoverableModifier: HoneyModifier =
+  () =>
+  ({ theme: { colors } }) => css`
+    &:hover {
+      background-color: ${colors.neutral.coralRed};
+    }
+  `;
 
-export const SquareBox = () => {
-  return <HoneyBox
-    modifiers={[hoverableModifier()]}
-    $width="100px"
-    $height="100px"
-    $margin="0 auto"
-    $backgroundColor="neutral.forestGreen"
-  />
-}
+export const HoneyModifiersBasicExample = () => {
+  return (
+    <HoneyBox
+      modifiers={[hoverableModifier({})]}
+      $width="100px"
+      $height="100px"
+      $margin="0 auto"
+      $backgroundColor="neutral.forestGreen"
+    />
+  );
+};
 ~~~
