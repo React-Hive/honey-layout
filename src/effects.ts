@@ -66,8 +66,11 @@ export const honeyVisibilityTransitionEffect: HoneyEffect<
       ? timingFunction.join(', ')
       : timingFunction};
 
-    &.${activeClassName} {
-      opacity: 1;
-      visibility: visible;
-    }
+    ${activeClassName &&
+    css`
+      &.${activeClassName} {
+        opacity: 1;
+        visibility: visible;
+      }
+    `}
   `;
