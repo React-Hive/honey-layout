@@ -6,7 +6,7 @@ import { Button } from './components';
 export const BasicHoneyOverlayBasixExample = () => {
   const [isOpen, setIsOpen] = useState(false);
 
-  const handleClose = useCallback(() => {
+  const handleDeactivate = useCallback(() => {
     setIsOpen(false);
   }, []);
 
@@ -16,13 +16,13 @@ export const BasicHoneyOverlayBasixExample = () => {
 
       <HoneyOverlay
         isActive={isOpen}
-        onClose={handleClose}
+        onDeactivate={handleDeactivate}
         $display={isOpen ? undefined : 'none'} // Toggle visibility with display CSS prop
       >
         <div>This is the overlay content.</div>
 
-        <Button onClick={handleClose} $color="default">
-          Close Overlay
+        <Button onClick={handleDeactivate} $color="default">
+          Deactivate Overlay
         </Button>
       </HoneyOverlay>
     </HoneyBox>

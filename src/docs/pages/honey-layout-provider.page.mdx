@@ -259,14 +259,14 @@ export const ExampleComponent = () => {
 
 ---
 
-The `HoneyOverlay` component is a flexible tool for creating overlays such as modals, dialogs, and popups.
-It simplifies managing overlay state and supports keyboard interactions like closing with the "Escape" key.
+The `HoneyOverlay` component is a powerful and versatile utility for creating and managing overlays, including modals, dialogs, and popups.
+It provides seamless integration with state management and user interactions, ensuring a smooth developer experience.
 
 ### Key Features
 
-1. **Declarative Overlay State Management:** Activate or deactivate the overlay using the `isActive` prop.
-2. **Keyboard Interaction**: Built-in support for handling keyboard events like closing the overlay with the "Escape" key.
-3. **Customizable Content:** Render static or dynamic content, passing the overlay object as needed.
+1. **Declarative State Management:** Use the `isActive` prop to control the visibility of the overlay in a straightforward and intuitive way. Automatically manages lifecycle events like registering and deregistering the overlay as it becomes active or inactive.
+2. **Keyboard Interaction:** Built-in support for handling keyboard events such as closing the overlay with the "Escape" key.
+3. **Customizable Content:** Render static content directly within the overlay. Pass a render function as children to dynamically update content based on the overlay's state or provide additional functionality using the overlay context.
 
 ### Usage
 
@@ -279,7 +279,7 @@ import { HoneyOverlay } from '@react-hive/honey-layout';
 export const BasicHoneyOverlayExample = () => {
   const [isOpen, setIsOpen] = useState(false);
 
-  const handleClose = useCallback(() => {
+  const handleDeactivate = useCallback(() => {
     setIsOpen(false);
   }, []);
 
@@ -289,12 +289,12 @@ export const BasicHoneyOverlayExample = () => {
 
       <HoneyOverlay
         isActive={isOpen}
-        onClose={handleClose}
+        onClose={handleDeactivate}
         $display={isOpen ? undefined : 'none'} // Toggle visibility with display CSS prop
       >
         <div>This is the overlay content.</div>
 
-        <button onClick={handleClose}>Close Overlay</button>
+        <button onClick={handleDeactivate}>Deactivate Overlay</button>
       </HoneyOverlay>
     </div>
   );
