@@ -6,7 +6,7 @@ import type { HoneyBoxProps } from './HoneyBox';
 import { HoneyFlexBox } from './HoneyFlexBox';
 import { useRegisterHoneyOverlay } from '../hooks';
 
-type HoneyOverlayProps = HTMLAttributes<HTMLDivElement> &
+export type HoneyOverlayProps = HTMLAttributes<HTMLDivElement> &
   HoneyBoxProps & {
     /**
      * The content of the overlay, either as static nodes or a function that receives the active overlay object.
