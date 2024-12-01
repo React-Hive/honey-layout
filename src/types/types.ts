@@ -303,11 +303,11 @@ export type ComponentWithAs<T, P = object> = {
   as?: ElementType<P>;
 } & T;
 
-export type HoneyModifierResultFn<Props extends object> = StyleFunction<Props>;
+export type HoneyEffectResultFn<Props extends object> = StyleFunction<Props>;
 
-export type HoneyModifier<Config = unknown, Props extends object = object> = (
+export type HoneyEffect<Config = unknown, Props extends object = object> = (
   config: Config,
-) => HoneyModifierResultFn<Props>;
+) => HoneyEffectResultFn<Props>;
 
 export type HoneyOverlayId = string;
 

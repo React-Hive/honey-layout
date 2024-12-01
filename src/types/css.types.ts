@@ -31,10 +31,34 @@ export type HoneyCSSArrayValue<T> = [T, T] | [T, T, T] | [T, T, T, T];
  */
 export type HoneyCSSMultiValue<T> = T | HoneyCSSArrayValue<T>;
 
+// https://developer.mozilla.org/en-US/docs/Web/CSS/easing-function/steps#step-position
+type HoneyCSSStepFunctionPosition =
+  | 'jump-start'
+  | 'jump-end'
+  | 'jump-none'
+  | 'jump-both'
+  | 'start'
+  | 'end';
+
 /**
  * Defining the allowed timing functions for the transition
  */
-export type HoneyCSSTimingFunction = 'ease' | 'linear' | 'ease-in' | 'ease-out' | 'ease-in-out';
+export type HoneyCSSTimingFunction =
+  // https://developer.mozilla.org/en-US/docs/Web/CSS/easing-function
+  | 'ease'
+  // https://developer.mozilla.org/en-US/docs/Web/CSS/easing-function/linear
+  | 'linear'
+  | `linear(${string})`
+  // https://developer.mozilla.org/en-US/docs/Web/CSS/easing-function/cubic-bezier
+  | `cubic-bezier(${number}, ${number}, ${number}, ${number})`
+  | 'ease-in'
+  | 'ease-out'
+  | 'ease-in-out'
+  | 'step-start'
+  | 'step-end'
+  // https://developer.mozilla.org/en-US/docs/Web/CSS/easing-function/steps
+  | `steps(${number})`
+  | `steps(${number}, ${HoneyCSSStepFunctionPosition})`;
 
 /**
  * Type representing CSS properties related to spacing and positioning.

@@ -1,16 +1,16 @@
 import type { HTMLAttributes } from 'react';
 import styled, { css } from 'styled-components';
 
-import type { HoneyPrefixedCSSProperties, HoneyModifierResultFn } from '../types';
+import type { HoneyPrefixedCSSProperties, HoneyEffectResultFn } from '../types';
 import { applyBreakpointStyles, createStyles } from '../helpers';
 
 export type HoneyBoxProps = HoneyPrefixedCSSProperties & {
-  modifiers?: HoneyModifierResultFn<object>[];
+  effects?: HoneyEffectResultFn<object>[];
 };
 
 export const HoneyBox = styled.div<HTMLAttributes<HTMLDivElement> & HoneyBoxProps>`
-  ${({ modifiers }) => css`
-    ${modifiers};
+  ${({ effects }) => css`
+    ${effects};
 
     ${createStyles('xs')};
 

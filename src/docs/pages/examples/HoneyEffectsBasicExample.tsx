@@ -1,10 +1,10 @@
 import React from 'react';
 import { css } from 'styled-components';
 
-import type { HoneyModifier } from '../../../types';
+import type { HoneyEffect } from '../../../types';
 import { HoneyBox } from '../../../components';
 
-const hoverableModifier: HoneyModifier =
+const hoverableEffect: HoneyEffect =
   () =>
   ({ theme: { colors } }) => css`
     &:hover {
@@ -12,10 +12,10 @@ const hoverableModifier: HoneyModifier =
     }
   `;
 
-export const HoneyModifiersBasicExample = () => {
+export const HoneyEffectsBasicExample = () => {
   return (
     <HoneyBox
-      modifiers={[hoverableModifier({})]}
+      effects={[hoverableEffect({})]}
       $width="100px"
       $height="100px"
       $margin="0 auto"

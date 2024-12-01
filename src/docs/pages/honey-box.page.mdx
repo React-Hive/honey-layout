@@ -2,7 +2,7 @@ import { useTheme } from 'styled-components';
 
 import { HoneyBox } from '../../components';
 import { resolveColor } from '../../helpers';
-import { HoneyModifiersBasicExample } from './examples';
+import { HoneyEffectsBasicExample } from './examples';
 
 export const SquareBox = () => {
   const { colors } = useTheme();
@@ -83,23 +83,23 @@ export const SquareBox = () => {
 }
 ~~~
 
-### Modifiers
+### Effects
 
-Modifiers allow for additional custom styling to be applied to the `HoneyBox` component.
-Modifiers are functions that return CSS styles, which can be dynamically applied to the `HoneyBox` component.
+Effects allow for additional custom styling to be applied to the `HoneyBox` component.
+Effects are functions that return CSS styles, which can be dynamically applied to the `HoneyBox` component.
 
 ### Usage
 
-Below is an example of how to create and use a modifier with the component.
+Below is an example of how to create and use an effect with the component.
 
-<HoneyModifiersBasicExample/>
+<HoneyEffectsBasicExample/>
 
 ~~~tsx
 import { css } from 'styled-components';
-import type { HoneyModifier } from '@react-hive/honey-layout';
+import type { HoneyEffect } from '@react-hive/honey-layout';
 import { HoneyBox } from '@react-hive/honey-layout';
 
-const hoverableModifier: HoneyModifier =
+const hoverableEffect: HoneyEffect =
   () =>
   ({ theme: { colors } }) => css`
     &:hover {
@@ -107,10 +107,10 @@ const hoverableModifier: HoneyModifier =
     }
   `;
 
-export const HoneyModifiersBasicExample = () => {
+export const HoneyEffectsBasicExample = () => {
   return (
     <HoneyBox
-      modifiers={[hoverableModifier({})]}
+      effects={[hoverableEffect({})]}
       $width="100px"
       $height="100px"
       $margin="0 auto"

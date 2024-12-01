@@ -4,4 +4,4 @@ export * from './providers';
 export * from './hooks';
 export * from './utils';
 export * from './helpers';
-export * from './modifiers';
+export * from './effects';
