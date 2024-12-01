@@ -1,6 +1,6 @@
 import * as CSS from 'csstype';
 
-import type { ElementType } from 'react';
+import type { ElementType, MutableRefObject } from 'react';
 import type { ExecutionContext, Interpolation } from 'styled-components';
 import type { DataType } from 'csstype';
 
@@ -315,10 +315,12 @@ export type HoneyOverlayEventListenerType = 'keyup';
  * Handler function for an overlay event listener.
  *
  * @param keyCode - The code of the key that triggered the event.
+ * @param overlay - The overlay.
  * @param e - The original keyboard event.
  */
 export type HoneyOverlayEventListenerHandler = (
   keyCode: HoneyKeyboardEventCode,
+  overlay: HoneyActiveOverlay,
   e: KeyboardEvent,
 ) => void;
 
@@ -336,6 +338,8 @@ export type HoneyOverlayEventListener = [
 export type HoneyOverlayConfig = {
   /**
    * Custom overlay ID. Automatically generated if not passed.
+   *
+   * @default generates
    */
   id?: HoneyOverlayId;
   /**
@@ -355,11 +359,21 @@ export type HoneyOverlayConfig = {
 /**
  * Represents an overlay in the layout, allowing the registration of event listeners and notifying them when events occur.
  */
-export type HoneyOverlay = {
+export type HoneyActiveOverlay = {
   /**
    * Unique identifier for the overlay.
    */
   id: HoneyOverlayId;
+  /**
+   * Reference to the container element of the overlay.
+   */
+  containerRef: MutableRefObject<Nullable<HTMLDivElement>>;
+  /**
+   * Sets the container reference for the overlay.
+   *
+   * @param element - The HTMLDivElement to set as the container.
+   */
+  setContainerRef: (element: HTMLDivElement) => void;
   /**
    * Adds an event listener to the overlay.
    *

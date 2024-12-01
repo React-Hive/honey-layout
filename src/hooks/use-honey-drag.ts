@@ -140,10 +140,10 @@ export const useHoneyDrag = <Element extends HTMLElement>(
 
     let isDragging = false;
 
-    let startPositionX = 0;
-    let startPositionY = 0;
-    let lastPositionX = 0;
-    let lastPositionY = 0;
+    let startX = 0;
+    let startY = 0;
+    let lastX = 0;
+    let lastY = 0;
 
     // Store the start time of the drag to calculate speed later.
     let startTime = 0;
@@ -158,10 +158,10 @@ export const useHoneyDrag = <Element extends HTMLElement>(
 
       isDragging = true;
 
-      startPositionX = clientX;
-      startPositionY = clientY;
-      lastPositionX = clientX;
-      lastPositionY = clientY;
+      startX = clientX;
+      startY = clientY;
+      lastX = clientX;
+      lastY = clientY;
 
       // Record the start time for speed calculations.
       startTime = Date.now();
@@ -178,8 +178,8 @@ export const useHoneyDrag = <Element extends HTMLElement>(
         // Calculate the elapsed time for speed calculations.
         const elapsedTime = Date.now() - startTime;
 
-        const deltaX = lastPositionX - startPositionX;
-        const deltaY = lastPositionY - startPositionY;
+        const deltaX = lastX - startX;
+        const deltaY = lastY - startY;
 
         const endContext: HoneyDragEndContext = {
           deltaX,
@@ -211,36 +211,35 @@ export const useHoneyDrag = <Element extends HTMLElement>(
 
       const moveContext: HoneyDragMoveContext = {
         get deltaX() {
-          return clientX - lastPositionX;
+          return clientX - lastX;
         },
         get deltaY() {
-          return clientY - lastPositionY;
+          return clientY - lastY;
         },
         get distanceX() {
-          return clientX - startPositionX;
+          return clientX - startX;
         },
         get distanceY() {
-          return clientY - startPositionY;
+          return clientY - startY;
         },
         get euclideanDistance() {
-          return calculateEuclideanDistance(startPositionX, startPositionY, clientX, clientY);
+          return calculateEuclideanDistance(startX, startY, clientX, clientY);
         },
       };
 
       if (onMove(moveContext) === false) {
-        lastPositionX = clientX;
-        lastPositionY = clientY;
+        lastX = clientX;
+        lastY = clientY;
 
         releaseDrag();
         return;
       }
 
-      lastPositionX = clientX;
-      lastPositionY = clientY;
+      lastX = clientX;
+      lastY = clientY;
     };
 
     const touchStartHandler = (e: TouchEvent) => {
-      e.preventDefault();
       e.stopPropagation();
 
       const touch = e.touches[0];
@@ -263,7 +262,6 @@ export const useHoneyDrag = <Element extends HTMLElement>(
     };
 
     const mouseDownHandler = (e: MouseEvent) => {
-      e.preventDefault();
       e.stopPropagation();
 
       startDrag(e.clientX, e.clientY);

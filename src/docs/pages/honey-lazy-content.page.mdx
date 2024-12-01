@@ -1,27 +1,8 @@
 import { useState } from 'react';
-import styled, { css } from 'styled-components';
 
 import { HoneyBox, HoneyLazyContent } from '../../components';
-import { resolveSpacing } from '../../helpers';
+import { Button } from './examples';
 
-export const Button = styled.button`
-  ${({ theme: { colors } }) => css`
-    padding: ${resolveSpacing(1)};
-
-    border: 0;
-    border-radius: 4px;
-    background-color: ${colors.neutral.forestGreen};
-    cursor: pointer;
-
-    &:hover {
-        background-color: ${colors.neutral.forestGreenLight};
-    }
-
-    &:active {
-        background-color: ${colors.neutral.forestGreenDark};
-    }
-  `}
-`
 
 export const LazyContentExample = () => {
   const [isShow, setIsShow] = useState(false);

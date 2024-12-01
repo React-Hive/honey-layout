@@ -1,15 +1,21 @@
+import type { MutableRefObject } from 'react';
 import { useCallback, useEffect, useState } from 'react';
 
-import type { HoneyKeyboardEventCode, HoneyOverlay, HoneyOverlayEventListener } from '../../types';
+import type {
+  HoneyKeyboardEventCode,
+  HoneyActiveOverlay,
+  HoneyOverlayEventListener,
+  Nullable,
+} from '../../types';
 import type { HoneyRegisterOverlay, HoneyUnregisterOverlay } from '../../contexts';
 import { generateUniqueId } from '../../helpers';
 
 /**
  * Hook to manage a stack of overlays, allowing registration and unregistration of overlays,
- * as well as handling keyboard events.
+ * as well as handling keyboard events for the topmost overlay.
  */
 export const useHoneyOverlays = () => {
-  const [overlays, setOverlays] = useState<HoneyOverlay[]>([]);
+  const [overlays, setOverlays] = useState<HoneyActiveOverlay[]>([]);
 
   useEffect(() => {
     if (!overlays.length) {
@@ -30,13 +36,27 @@ export const useHoneyOverlays = () => {
     };
   }, [overlays]);
 
+  /**
+   * Registers a new overlay and adds it to the stack.
+   *
+   * @param overlayConfig - The configuration for the overlay, including optional ID and event handlers.
+   *
+   * @returns The registered overlay object.
+   */
   const registerOverlay = useCallback<HoneyRegisterOverlay>(overlayConfig => {
     const overlayId = overlayConfig.id ?? generateUniqueId();
 
     const listeners: HoneyOverlayEventListener[] = [['keyup', overlayConfig.onKeyUp]];
+    const containerRef: MutableRefObject<Nullable<HTMLDivElement>> = {
+      current: null,
+    };
 
-    const overlay: HoneyOverlay = {
+    const overlay: HoneyActiveOverlay = {
+      containerRef,
       id: overlayId,
+      setContainerRef: element => {
+        containerRef.current = element;
+      },
       addListener: (type, handler) => {
         listeners.push([type, handler]);
       },
@@ -55,7 +75,7 @@ export const useHoneyOverlays = () => {
 
           listeners.forEach(([type, listenerHandler]) => {
             if (type === targetType) {
-              listenerHandler(keyCode, e);
+              listenerHandler(keyCode, overlay, e);
             }
           });
         }
@@ -67,6 +87,11 @@ export const useHoneyOverlays = () => {
     return overlay;
   }, []);
 
+  /**
+   * Unregisters an overlay by its ID and removes it from the stack.
+   *
+   * @param targetOverlayId - The ID of the overlay to be removed.
+   */
   const unregisterOverlay = useCallback<HoneyUnregisterOverlay>(targetOverlayId => {
     setOverlays(prevActiveOverlays =>
       prevActiveOverlays.filter(overlay => overlay.id !== targetOverlayId),

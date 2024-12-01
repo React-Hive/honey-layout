@@ -25,9 +25,9 @@ import type {
   HoneyCSSDimensionValue,
   HoneyPrefixedCSSProperty,
   HoneyColors,
-} from './types';
-import { camelToDashCase, convertHexToHexWithAlpha, media, pxToRem } from './utils';
-import { CSS_COLOR_PROPERTIES, CSS_DIMENSION_PROPERTIES } from './constants';
+} from '../types';
+import { camelToDashCase, convertHexToHexWithAlpha, media, pxToRem } from '../utils';
+import { CSS_COLOR_PROPERTIES, CSS_DIMENSION_PROPERTIES } from '../constants';
 
 export const generateUniqueId = () => {
   const timestamp = Date.now().toString();

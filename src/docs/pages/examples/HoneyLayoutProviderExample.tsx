@@ -5,7 +5,7 @@ import { useHoneyLayout } from '../../../hooks';
 import { HoneyBox } from '../../../components';
 import theme from './theme';
 
-export const Main = () => {
+const Main = () => {
   const { screenState, resolveColor, resolveSpacing } = useHoneyLayout();
 
   return (

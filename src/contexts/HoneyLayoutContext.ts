@@ -15,7 +15,7 @@ import type {
   HoneyCSSDimensionValue,
   HoneyCSSMultiValue,
   HoneyOverlayId,
-  HoneyOverlay,
+  HoneyActiveOverlay,
 } from '../types';
 import type { ResolveSpacingResult } from '../helpers';
 
@@ -29,7 +29,7 @@ export type HoneyUnregisterOverlay = (targetOverlayId: HoneyOverlayId) => void;
  *
  * @param {HoneyOverlayConfig} overlayConfig - Configuration object for the overlay.
  */
-export type HoneyRegisterOverlay = (overlayConfig: HoneyOverlayConfig) => HoneyOverlay;
+export type HoneyRegisterOverlay = (overlayConfig: HoneyOverlayConfig) => HoneyActiveOverlay;
 
 export type HoneyLayoutContextValue = {
   /**
@@ -41,9 +41,9 @@ export type HoneyLayoutContextValue = {
    */
   screenState: HoneyScreenState;
   /**
-   * Overlays.
+   * Active overlays.
    */
-  overlays: HoneyOverlay[];
+  overlays: HoneyActiveOverlay[];
   /**
    * Function to register a new overlay.
    */
