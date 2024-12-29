@@ -76,11 +76,11 @@ export const PAGES: Page[] = [
     menuLabel: 'List',
     element: <HoneyListPage components={MDX_COMPONENTS} />,
   },
-  {
-    path: 'looping-list',
-    menuLabel: 'Looping List',
-    element: <HoneyLoopingListPage components={MDX_COMPONENTS} />,
-  },
+  // {
+  //   path: 'looping-list',
+  //   menuLabel: 'Looping List',
+  //   element: <HoneyLoopingListPage components={MDX_COMPONENTS} />,
+  // },
   {
     path: 'utils',
     menuLabel: 'Utils',

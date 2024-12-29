@@ -3,7 +3,7 @@ import React, { useCallback, useState } from 'react';
 import { HoneyBox, HoneyOverlay } from '../../../components';
 import { Button } from './components';
 
-export const BasicHoneyOverlayBasixExample = () => {
+export const HoneyOverlayBasicExample = () => {
   const [isOpen, setIsOpen] = useState(false);
 
   const handleDeactivate = useCallback(() => {
