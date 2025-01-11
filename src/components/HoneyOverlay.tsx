@@ -69,13 +69,7 @@ export const HoneyOverlay = ({
   });
 
   return (
-    <HoneyFlexBox
-      ref={overlay?.setContainerRef}
-      {...(!isActive && {
-        inert: 'true',
-      })}
-      {...props}
-    >
+    <HoneyFlexBox ref={overlay?.setContainerRef} inert={!isActive} {...props}>
       {typeof children === 'function'
         ? children({
             overlay,
