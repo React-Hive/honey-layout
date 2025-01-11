@@ -1,4 +1,4 @@
-import type { RefObject } from 'react';
+import type { MutableRefObject } from 'react';
 import { useCallback, useEffect, useState } from 'react';
 
 import type {
@@ -47,7 +47,7 @@ export const useHoneyOverlays = () => {
     const overlayId = overlayConfig.id ?? generateUniqueId();
 
     const listeners: HoneyOverlayEventListener[] = [['keyup', overlayConfig.onKeyUp]];
-    const containerRef: RefObject<Nullable<HTMLDivElement>> = {
+    const containerRef: MutableRefObject<Nullable<HTMLDivElement>> = {
       current: null,
     };
 

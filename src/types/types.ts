@@ -1,6 +1,6 @@
 import * as CSS from 'csstype';
 
-import type { ElementType, RefObject } from 'react';
+import type { ElementType, MutableRefObject } from 'react';
 import type { ExecutionContext, StyleFunction } from 'styled-components';
 import type { DataType } from 'csstype';
 
@@ -368,7 +368,7 @@ export type HoneyActiveOverlay = {
   /**
    * Reference to the container element of the overlay.
    */
-  containerRef: RefObject<Nullable<HTMLDivElement>>;
+  containerRef: MutableRefObject<Nullable<HTMLDivElement>>;
   /**
    * Sets the container reference for the overlay.
    *

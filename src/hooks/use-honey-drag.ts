@@ -1,4 +1,4 @@
-import type { RefObject } from 'react';
+import type { MutableRefObject } from 'react';
 import { useEffect } from 'react';
 
 import type { Nullable } from '../types';
@@ -120,12 +120,12 @@ export type HoneyDragOptions = {
  *
  * @template Element - The type of the HTML element that is being dragged.
  *
- * @param {RefObject<Nullable<Element>>} draggableElementRef - A reference to the element that can be dragged.
+ * @param {MutableRefObject<Nullable<Element>>} draggableElementRef - A reference to the element that can be dragged.
  * @param {HoneyDragHandlers<Element>} handlers - The drag event handlers for different stages of the drag operation (start, move, end).
  * @param {HoneyDragOptions} options - Configuration options.
  */
 export const useHoneyDrag = <Element extends HTMLElement>(
-  draggableElementRef: RefObject<Nullable<Element>>,
+  draggableElementRef: MutableRefObject<Nullable<Element>>,
   { onMoveDrag, onStartDrag, onEndDrag }: HoneyDragHandlers<Element>,
   { isEnabled = true }: HoneyDragOptions = {},
 ) => {
