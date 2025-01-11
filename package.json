@@ -1,6 +1,6 @@
 {
   "name": "@react-hive/honey-layout",
-  "version": "3.2.0",
+  "version": "3.3.0",
   "description": "",
   "keywords": [
     "react",
@@ -33,10 +33,10 @@
   "peerDependencies": {
     "@mdx-js/react": "3.1.0",
     "highlight.js": "11.11.1",
-    "react": ">=18.0.0",
-    "react-dom": ">=18.0.0",
-    "react-router-dom": "6.28.0",
-    "styled-components": "6.1.14"
+    "react": "^18.0.0 || ^19.0.0",
+    "react-dom": "^18.0.0 || ^19.0.0",
+    "react-router-dom": "^6.0.0",
+    "styled-components": "^6.0.0"
   },
   "dependencies": {
     "@emotion/is-prop-valid": "1.3.1",
@@ -45,15 +45,15 @@
     "lodash.merge": "4.6.2"
   },
   "devDependencies": {
-    "@eslint/js": "^9.17.0",
+    "@eslint/js": "9.17.0",
     "@mdx-js/rollup": "3.1.0",
     "@testing-library/react": "16.1.0",
     "@types/jest": "29.5.14",
     "@types/lodash.debounce": "4.0.9",
     "@types/lodash.merge": "4.6.9",
     "@types/mdx": "2.0.13",
-    "@types/react": ">=18.0.0",
-    "@types/react-dom": ">=18.0.0",
+    "@types/react": "^18.0.0 || ^19.0.0",
+    "@types/react-dom": "^18.0.0 || ^19.0.0",
     "@vitejs/plugin-react": "4.3.4",
     "eslint": "9.17.0",
     "eslint-plugin-react": "7.37.3",

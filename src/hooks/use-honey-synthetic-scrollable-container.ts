@@ -1,4 +1,4 @@
-import type { MutableRefObject } from 'react';
+import type { RefObject } from 'react';
 import { useCallback, useEffect } from 'react';
 
 import type { Nullable } from '../types';
@@ -23,11 +23,11 @@ type SyntheticScrollableContainerOptions<Element extends HTMLElement> = Pick<
  * It allows horizontal and vertical dragging within a specified window percentage when the content overflows.
  * The hook handles touch and mouse events for dragging and resets the scroll position upon window resize.
  *
- * @param {MutableRefObject<Nullable<Element>>} scrollableContainerRef - A ref to the scrollable container element to be assigned to the target element.
+ * @param {RefObject<Nullable<Element>>} scrollableContainerRef - A ref to the scrollable container element to be assigned to the target element.
  * @param {SyntheticScrollableContainerOptions<Element>} options - Options for configuring the synthetic scrollable container.
  */
 export const useHoneySyntheticScrollableContainer = <Element extends HTMLElement>(
-  scrollableContainerRef: MutableRefObject<Nullable<Element>>,
+  scrollableContainerRef: RefObject<Nullable<Element>>,
   {
     availableWindowPercentage = 0,
     onStartDrag,

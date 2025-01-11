@@ -7,7 +7,7 @@ import type {
   KeysWithStringValues,
 } from './types';
 
-export const camelToDashCase = (inputString: string) =>
+export const camelToDashCase = (inputString: string): string =>
   inputString.replace(/[A-Z]/g, letter => `-${letter.toLowerCase()}`);
 
 /**
@@ -149,14 +149,19 @@ export const media = (rules: HoneyCSSMediaRule[]): string => {
   return `@media ${mediaRules.join(', ')}`;
 };
 
+type HTMLElementTransformationValues = {
+  translateX: number;
+  translateY: number;
+};
+
 /**
  * Get various transformation values from the transformation matrix of an element.
  *
  * @param {HTMLElement} element - The element with a transformation applied.
  *
- * @returns An object containing transformation values.
+ * @returns {HTMLElementTransformationValues} An object containing transformation values.
  */
-export const getTransformationValues = (element: HTMLElement) => {
+export const getTransformationValues = (element: HTMLElement): HTMLElementTransformationValues => {
   const computedStyles = window.getComputedStyle(element);
   const transformValue = computedStyles.getPropertyValue('transform');
 

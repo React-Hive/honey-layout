@@ -59,3 +59,5 @@ export const HoneyGrid = forwardRef<HTMLDivElement, PropsWithChildren<HoneyGridP
     );
   },
 );
+
+HoneyGrid.displayName = 'HoneyGrid';

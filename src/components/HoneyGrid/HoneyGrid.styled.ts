@@ -8,7 +8,8 @@ import { HoneyBox } from '../HoneyBox';
 import { HoneyGridColumnStyled } from '../HoneyGridColumn/HoneyGridColumn.styled';
 
 export type HoneyGridStyledProps = HTMLAttributes<HTMLDivElement> &
-  HoneyBoxProps & {
+  // Omit the `$gap` because `spacing` prop overrides that value
+  Omit<HoneyBoxProps, '$gap'> & {
     /**
      * The height of each grid column.
      */

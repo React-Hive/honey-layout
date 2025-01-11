@@ -190,15 +190,15 @@ const isCSSColorProperty = (
 };
 
 /**
- * Determines if a given HTML attribute is a CSS property that is prefixed with a '$'.
+ * Determines if a given HTML property is a CSS property that is prefixed with a '$'.
  * This convention is typically used for applying dynamic or responsive styles.
  *
- * @param {string} attribute - The HTML attribute or key to check.
+ * @param {string} propertyName - The HTML property or key to check.
  *
- * @returns {attribute is HoneyPrefixedCSSProperty} - Returns true if the attribute is a valid prefixed CSS property, otherwise false.
+ * @returns {property is HoneyPrefixedCSSProperty} - Returns true if the property is a valid prefixed CSS property, otherwise false.
  */
-const isCSSPrefixedProperty = (attribute: string): attribute is HoneyPrefixedCSSProperty =>
-  attribute[0] === '$';
+const isCSSPrefixedProperty = (propertyName: string): propertyName is HoneyPrefixedCSSProperty =>
+  propertyName[0] === '$';
 
 /**
  * Type guard function to check if a string value follows the pattern of a theme color value.
@@ -268,7 +268,7 @@ const getCSSPropertyValue = <CSSProperty extends keyof CSS.Properties>(
  * @param {Props} props - The props object containing CSS properties and other HTML attributes.
  * @param {HoneyBreakpointName} breakpoint - The name of the breakpoint for filtering CSS properties.
  *
- * @returns {Array<[HoneyPrefixedCSSProperty, CSS.Properties[keyof CSS.Properties]]>}
+ * @returns {[HoneyPrefixedCSSProperty, CSS.Properties[keyof CSS.Properties]][]}
  *   An array of tuples where each tuple contains a Honey-prefixed CSS property and its value.
  */
 const matchCSSProperties = <Props extends HTMLAttributes<HTMLElement> & HoneyPrefixedCSSProperties>(
@@ -276,9 +276,9 @@ const matchCSSProperties = <Props extends HTMLAttributes<HTMLElement> & HoneyPre
   breakpoint: HoneyBreakpointName,
 ): [HoneyPrefixedCSSProperty, CSS.Properties[keyof CSS.Properties]][] =>
   Object.entries(props).filter(
-    ([attribute, attributeValue]) =>
-      (isCSSPrefixedProperty(attribute) && breakpoint === 'xs') ||
-      (attributeValue && typeof attributeValue === 'object' && breakpoint in attributeValue),
+    ([propertyName, propertyValue]) =>
+      (isCSSPrefixedProperty(propertyName) && breakpoint === 'xs') ||
+      (propertyValue && typeof propertyValue === 'object' && breakpoint in propertyValue),
   ) as [HoneyPrefixedCSSProperty, CSS.Properties[keyof CSS.Properties]][];
 
 /**
@@ -327,10 +327,10 @@ const hasBreakpointStyles = (
   props: HTMLAttributes<HTMLElement> & HoneyPrefixedCSSProperties,
 ): boolean =>
   Object.entries(props).some(
-    ([attribute, attributeValue]) =>
-      isCSSPrefixedProperty(attribute) &&
-      typeof attributeValue === 'object' &&
-      breakpoint in attributeValue,
+    ([propertyName, propertyValue]) =>
+      isCSSPrefixedProperty(propertyName) &&
+      typeof propertyValue === 'object' &&
+      breakpoint in propertyValue,
   );
 
 /**

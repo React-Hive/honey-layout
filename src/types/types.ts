@@ -1,6 +1,6 @@
 import * as CSS from 'csstype';
 
-import type { ElementType, MutableRefObject } from 'react';
+import type { ElementType, RefObject } from 'react';
 import type { ExecutionContext, StyleFunction } from 'styled-components';
 import type { DataType } from 'csstype';
 
@@ -79,7 +79,6 @@ export interface BaseHoneyTheme {
 export interface HoneyTheme extends BaseHoneyTheme {}
 
 declare module 'styled-components' {
-  // eslint-disable-next-line @typescript-eslint/no-empty-interface
   interface DefaultTheme extends HoneyTheme {}
 }
 
@@ -369,7 +368,7 @@ export type HoneyActiveOverlay = {
   /**
    * Reference to the container element of the overlay.
    */
-  containerRef: MutableRefObject<Nullable<HTMLDivElement>>;
+  containerRef: RefObject<Nullable<HTMLDivElement>>;
   /**
    * Sets the container reference for the overlay.
    *
