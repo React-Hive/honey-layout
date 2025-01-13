@@ -1,6 +1,6 @@
 import * as CSS from 'csstype';
 
-import type { ElementType, MutableRefObject } from 'react';
+import type { MutableRefObject } from 'react';
 import type { ExecutionContext, StyleFunction } from 'styled-components';
 import type { DataType } from 'csstype';
 
@@ -297,10 +297,6 @@ export interface HoneyDimensions {
 }
 
 export type HoneyDimensionName = keyof HoneyDimensions;
-
-export type ComponentWithAs<T, P = object> = {
-  as?: ElementType<P>;
-} & T;
 
 export type HoneyEffectResultFn<Props extends object> = StyleFunction<Props>;
 

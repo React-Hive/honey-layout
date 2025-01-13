@@ -1,17 +1,12 @@
 import type { Ref, RefAttributes } from 'react';
 import React, { forwardRef, Fragment } from 'react';
-import styled from 'styled-components';
 
-import type { ComponentWithAs, HoneyStatusContentOptions } from '../../types';
+import type { HoneyStatusContentOptions } from '../../types';
 import type { HoneyListGenericProps, HoneyListItem } from './HoneyList.types';
 import type { HoneyBoxProps } from '../HoneyBox';
 import { HoneyStatusContent } from '../HoneyStatusContent';
 import { getHoneyListItemId } from './HoneyList.helpers';
-import { HoneyFlexBox } from '../HoneyFlexBox';
-
-const HoneyListStyled = styled(HoneyFlexBox)`
-  overflow: hidden auto;
-`;
+import { HoneyListStyled } from './HoneyList.styled';
 
 type HoneyListProps<Item extends HoneyListItem> = HoneyBoxProps &
   HoneyListGenericProps<Item, Omit<HoneyStatusContentOptions, 'isNoContent'>>;
@@ -41,12 +36,11 @@ const HoneyListComponent = <Item extends HoneyListItem, Element extends HTMLElem
     errorContent,
     noContent,
     ...props
-  }: ComponentWithAs<HoneyListProps<Item>>,
+  }: HoneyListProps<Item>,
   ref: Ref<Element>,
 ) => {
   return (
     <HoneyListStyled
-      // @ts-expect-error
       ref={ref}
       role="list"
       // ARIA

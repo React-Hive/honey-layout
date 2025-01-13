@@ -26,7 +26,9 @@ export type HoneyGridStyledProps = HTMLAttributes<HTMLDivElement> &
     spacing?: number;
   };
 
-export const HoneyGridStyled = styled(HoneyBox)<HoneyGridStyledProps>`
+export const HoneyGridStyled = styled(HoneyBox).attrs(({ $flexWrap }) => ({
+  $flexWrap: $flexWrap ?? 'wrap',
+}))<HoneyGridStyledProps>`
   ${({ columnHeight, minColumnHeight, spacing = 0 }) => css`
     display: flex;
     gap: ${resolveSpacing(spacing)};
@@ -37,7 +39,3 @@ export const HoneyGridStyled = styled(HoneyBox)<HoneyGridStyledProps>`
     }
   `}
 `;
-
-HoneyGridStyled.defaultProps = {
-  $flexWrap: 'wrap',
-};
