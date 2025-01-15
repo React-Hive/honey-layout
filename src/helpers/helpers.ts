@@ -110,24 +110,32 @@ export const resolveSpacing =
   };
 
 /**
- * Resolves a color value based on the provided color key and optional alpha value.
+ * Resolves a color value from the theme or returns the input color directly if it's a standalone color name or HEX value.
  *
- * @param colorKey - The key representing the color to be resolved. This key is a string in the format 'colorType.colorName'.
+ * @param colorKey - A string representing the color to resolve. This can be:
+ *  - A theme key in the format 'colorType.colorName'.
+ *  - A standalone color name (e.g., "red", "blue").
+ *  - A HEX color value (e.g., "#RRGGBB").
  * @param alpha - Optional. The alpha transparency value between 0 (fully transparent) and 1 (fully opaque). Default to `undefined`.
  *
- * @returns The resolved color value from the theme, either in HEX format or in 8-character HEX with alpha format.
+ * @returns A function that takes an `ExecutionContext` with a `theme` and resolves the color value:
+ *  - A HEX color string from the theme (e.g., "#RRGGBB").
+ *  - A HEX color string with alpha (e.g., "#RRGGBBAA") if `alpha` is provided.
+ *  - The input `colorKey` value directly if it's a standalone color name or HEX value.
  *
  * @throws Will throw an error if the provided alpha value is not within the valid range (0 to 1).
  * @throws Will throw an error if the color format is invalid.
  */
 export const resolveColor =
-  (colorKey: HoneyColorKey, alpha?: number) =>
+  (colorKey: HoneyColorKey | HoneyCSSColor, alpha?: number) =>
   ({ theme }: ExecutionContext): HoneyCSSColor => {
     const [colorType, colorName] = colorKey.split('.');
 
-    const color = theme.colors[colorType as keyof HoneyColors][colorName];
+    const color = colorName
+      ? theme.colors[colorType as keyof HoneyColors][colorName]
+      : (colorType as HoneyCSSColor);
 
-    return alpha !== undefined ? convertHexToHexWithAlpha(color, alpha) : color;
+    return alpha === undefined ? color : convertHexToHexWithAlpha(color, alpha);
   };
 
 /**
