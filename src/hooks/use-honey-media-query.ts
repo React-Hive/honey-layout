@@ -43,7 +43,10 @@ export const useHoneyMediaQuery = ({
 
   useEffect(() => {
     const handleResize = debounce(() => {
-      setScreenState({ ...resolveScreenState(theme.breakpoints), ...overrideScreenState });
+      setScreenState({
+        ...resolveScreenState(theme.breakpoints),
+        ...overrideScreenState,
+      });
     }, delay);
 
     handleResize();

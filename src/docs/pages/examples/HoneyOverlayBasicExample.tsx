@@ -17,7 +17,7 @@ export const HoneyOverlayBasicExample = () => {
       <HoneyOverlay
         isActive={isOpen}
         onDeactivate={handleDeactivate}
-        $display={isOpen ? undefined : 'none'} // Toggle visibility with display CSS prop
+        $display={isOpen ? undefined : 'none'}
       >
         <div>This is the overlay content.</div>
 

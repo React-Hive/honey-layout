@@ -8,7 +8,7 @@ import { HoneyStatusContent } from '../HoneyStatusContent';
 import { getHoneyListItemId } from './HoneyList.helpers';
 import { HoneyListStyled } from './HoneyList.styled';
 
-type HoneyListProps<Item extends HoneyListItem> = HoneyBoxProps &
+export type HoneyListProps<Item extends HoneyListItem> = HoneyBoxProps &
   HoneyListGenericProps<Item, Omit<HoneyStatusContentOptions, 'isNoContent'>>;
 
 /**

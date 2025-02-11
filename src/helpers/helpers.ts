@@ -180,9 +180,8 @@ export const resolveDimension =
  */
 const isCSSDimensionProperty = (
   propertyName: keyof CSS.Properties,
-): propertyName is HoneyCSSDimensionProperty => {
-  return (CSS_DIMENSION_PROPERTIES as string[]).includes(propertyName as string);
-};
+): propertyName is HoneyCSSDimensionProperty =>
+  (CSS_DIMENSION_PROPERTIES as string[]).includes(propertyName as string);
 
 /**
  * Type guard function to check if a property name is a color property.
@@ -193,9 +192,8 @@ const isCSSDimensionProperty = (
  */
 const isCSSColorProperty = (
   propertyName: keyof CSS.Properties,
-): propertyName is HoneyCSSColorProperty => {
-  return (CSS_COLOR_PROPERTIES as string[]).includes(propertyName as string);
-};
+): propertyName is HoneyCSSColorProperty =>
+  (CSS_COLOR_PROPERTIES as string[]).includes(propertyName as string);
 
 /**
  * Determines if a given HTML property is a CSS property that is prefixed with a '$'.

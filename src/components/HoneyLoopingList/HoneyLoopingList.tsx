@@ -47,7 +47,7 @@ export const HoneyLoopingList = <Item extends HoneyListItem>({
 
     const loopingListHeightCenter = loopingListContainer.clientHeight / 2;
 
-    return ({ deltaX, deltaY }) => {
+    return async ({ deltaX, deltaY }) => {
       const { translateX, translateY } = getTransformationValues(loopingList);
 
       const newContainerPositionX = direction === 'horizontal' ? translateX + deltaX : 0;
@@ -77,6 +77,8 @@ export const HoneyLoopingList = <Item extends HoneyListItem>({
       //
       //   return false;
       // });
+
+      return true;
     };
   }, []);
 

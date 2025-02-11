@@ -36,13 +36,13 @@ export const useHoneySyntheticScrollableContainer = <Element extends HTMLElement
 ) => {
   const onMoveDrag = useCallback<HoneyDragOnMoveHandler<Element>>(
     scrollableContainer =>
-      ({ deltaX, deltaY }) => {
+      async ({ deltaX, deltaY }) => {
         const overflowWidth = scrollableContainer.scrollWidth - scrollableContainer.clientWidth;
         const overflowHeight = scrollableContainer.scrollHeight - scrollableContainer.clientHeight;
 
         // If there is no overflow, exit early
         if (overflowWidth <= 0 && overflowHeight <= 0) {
-          return;
+          return false;
         }
 
         const horizontalThreshold = calculatePercentage(
@@ -83,6 +83,8 @@ export const useHoneySyntheticScrollableContainer = <Element extends HTMLElement
         if (shouldUpdateTransform) {
           scrollableContainer.style.transform = `translate(${updatedTranslateX}px, ${updatedTranslateY}px)`;
         }
+
+        return true;
       },
     [availableWindowPercentage],
   );
