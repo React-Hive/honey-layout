@@ -22,11 +22,12 @@ The component offers flexibility in rendering list items and integrates seamless
 * **items**: An array of items to be rendered in the list.
 * **itemKey**: Optional. A key used to uniquely identify each item in the list.
   If not provided, the index of the item will be used as the key.
-* **isLoading**: A boolean flag indicating whether the list is in a loading state.
-* **loadingBlockContent**: The content to display when the list is in a loading state.
-* **isError**: A boolean flag indicating whether an error occurred while fetching the list data.
-* **errorBlockContent**: The content to display when an error occurred while fetching the list data.
-* **noContent**: The content to display when the list has no items.
+* **isLoading**: Optional. A boolean flag indicating whether the list is in a loading state.
+* **isLoadingOverContent**: Optional. A boolean flag indicating whether the loading content should appear on top of the content.
+* **loadingContent**: Optional. The content to display when the list is in a loading state.
+* **isError**: Optional. A boolean flag indicating whether an error occurred while fetching the list data.
+* **errorContent**: Optional. The content to display when an error occurred while fetching the list data.
+* **noContent**: Optional. The content to display when the list has no items.
 
 ### Usage
 
@@ -36,7 +37,7 @@ The component offers flexibility in rendering list items and integrates seamless
 import styled, { css } from 'styled-components';
 import { HoneyBox, HoneyList, resolveSpacing } from '@react-hive/honey-layout';
 
-const ListItemStyled = styled.li`
+export const ListItemStyled = styled.li`
   ${({ theme: { colors } }) => css`
     padding: ${resolveSpacing([0, 1])};
 
@@ -44,28 +45,23 @@ const ListItemStyled = styled.li`
     cursor: pointer;
 
     &:hover {
-        background-color: ${colors.neutral.charcoalDark};
+      background-color: ${colors.neutral.charcoalDark};
     }
   `}
 `;
 
-const ListExample = () => {
-  const items = Array.from(new Array(5)).map((_, index) => ({
+export const HoneyListBasicExample = () => {
+  const items = Array.from(Array(5)).map((_, index) => ({
     id: index,
-    name: `name-${index}`
+    name: `name-${index}`,
   }));
 
   return (
     <HoneyBox $marginTop="16px" $border="1px solid #cccccc" $borderRadius="4px">
-      <HoneyList
-        items={items}
-        itemKey="id"
-        $gap="8px"
-        as="ul"
-      >
+      <HoneyList items={items} itemKey="id" $gap="8px" as="ul">
         {item => <HoneyBox as={ListItemStyled}>{item.name}</HoneyBox>}
       </HoneyList>
     </HoneyBox>
   );
-}
+};
 ```

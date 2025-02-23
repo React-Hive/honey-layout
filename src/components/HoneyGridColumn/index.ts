@@ -1,3 +1,3 @@
 export * from './HoneyGridColumn.types';
-export * from './HoneyGridColumn.styled';
+export * from './HoneyGridColumnStyled';
 export * from './HoneyGridColumn';

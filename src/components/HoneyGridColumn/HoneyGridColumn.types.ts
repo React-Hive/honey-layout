@@ -1,4 +1,4 @@
-import type { HoneyGridColumnStyledProps } from './HoneyGridColumn.styled';
+import type { HoneyGridColumnStyledProps } from './HoneyGridColumnStyled';
 
 export type HoneyGridColumnProps = Omit<
   HoneyGridColumnStyledProps,

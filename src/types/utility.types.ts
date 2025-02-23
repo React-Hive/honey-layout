@@ -4,6 +4,10 @@
  * They aim to assist in working with types more effectively and flexibly.
  */
 
+export type TimeoutId = ReturnType<typeof setTimeout>;
+
+export type Nullable<T> = T | null;
+
 /**
  * Extracts the keys from a given type `T` whose values match the specified `Condition`.
  *

@@ -2,7 +2,7 @@ import type { PropsWithChildren } from 'react';
 import React from 'react';
 
 import type { HoneyGridColumnProps } from './HoneyGridColumn.types';
-import { HoneyGridColumnStyled } from './HoneyGridColumn.styled';
+import { HoneyGridColumnStyled } from './HoneyGridColumnStyled';
 import { useCurrentHoneyGrid } from '../HoneyGrid/hooks';
 
 export const HoneyGridColumn = ({

@@ -1,36 +1,26 @@
-import type { Ref, RefAttributes } from 'react';
+import type { HTMLAttributes, Ref, RefAttributes } from 'react';
 import React, { forwardRef, Fragment } from 'react';
 
-import type { HoneyStatusContentOptions } from '../../types';
 import type { HoneyListGenericProps, HoneyListItem } from './HoneyList.types';
 import type { HoneyBoxProps } from '../HoneyBox';
+import type { HoneyStatusContentProps } from '../HoneyStatusContent';
 import { HoneyStatusContent } from '../HoneyStatusContent';
 import { getHoneyListItemId } from './HoneyList.helpers';
-import { HoneyListStyled } from './HoneyList.styled';
+import { HoneyListStyled } from './HoneyListStyled';
 
-export type HoneyListProps<Item extends HoneyListItem> = HoneyBoxProps &
-  HoneyListGenericProps<Item, Omit<HoneyStatusContentOptions, 'isNoContent'>>;
+type InheritedHTMLAttributes = Omit<HTMLAttributes<HTMLDivElement>, 'children'>;
 
-/**
- * A generic and reusable list component that handles different states such as loading, error, or no content,
- * and dynamically renders a list of items with custom content for each item.
- *
- * This component provides a flexible and accessible way to display lists, with built-in support for
- * various states to enhance user experience. It accepts a `ref` to access the underlying HTML element
- * for greater control and customization.
- *
- * @template Item - Represents the type of the items to be rendered in the list. This allows the component
- * to be used with any item type, making it highly versatile.
- *
- * @template Element - Represents the type of the HTML element (e.g., `HTMLDivElement`, `HTMLUListElement`)
- * that will receive the forwarded ref. This allows precise typing for the element, enhancing TypeScript support.
- */
+export type HoneyListProps<Item extends HoneyListItem> = InheritedHTMLAttributes &
+  HoneyBoxProps &
+  HoneyListGenericProps<Item, Omit<HoneyStatusContentProps, 'isNoContent'>>;
+
 const HoneyListComponent = <Item extends HoneyListItem, Element extends HTMLElement>(
   {
     children,
     items,
     itemKey,
     isLoading,
+    isLoadingOverContent,
     loadingContent,
     isError,
     errorContent,
@@ -51,6 +41,7 @@ const HoneyListComponent = <Item extends HoneyListItem, Element extends HTMLElem
     >
       <HoneyStatusContent
         isLoading={isLoading}
+        isLoadingOverContent={isLoadingOverContent}
         loadingContent={loadingContent}
         isError={isError}
         errorContent={errorContent}
@@ -68,11 +59,18 @@ const HoneyListComponent = <Item extends HoneyListItem, Element extends HTMLElem
 };
 
 /**
- * The `HoneyList` is a forward-ref component that renders a list of items
- * and allows a ref to be forwarded to the underlying DOM element.
+ * A generic and reusable list component that handles different states such as loading, error, or no content,
+ * and dynamically renders a list of items with custom content for each item.
  *
- * @template Item - Represents the type of items to be rendered in the list.
- * @template Element - Represents the type of the HTML element that will receive the ref.
+ * This component provides a flexible and accessible way to display lists, with built-in support for
+ * various states to enhance user experience. It accepts a `ref` to access the underlying HTML element
+ * for greater control and customization.
+ *
+ * @template Item - Represents the type of the items to be rendered in the list. This allows the component
+ * to be used with any item type.
+ *
+ * @template Element - Represents the type of the HTML element (e.g., `HTMLDivElement`, `HTMLUListElement`)
+ * that will receive the forwarded ref. This allows precise typing for the element.
  */
 export const HoneyList = forwardRef(HoneyListComponent) as <
   Item extends HoneyListItem,

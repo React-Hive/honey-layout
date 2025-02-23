@@ -2,9 +2,9 @@ import type { PropsWithChildren } from 'react';
 import React, { forwardRef, createContext, useMemo } from 'react';
 
 import type { HoneyBreakpointName } from '../../types';
-import type { HoneyGridStyledProps } from './HoneyGrid.styled';
+import type { HoneyGridStyledProps } from './HoneyGridStyled';
 import type { HoneyGridColumnStyledProps } from '../HoneyGridColumn';
-import { HoneyGridStyled } from './HoneyGrid.styled';
+import { HoneyGridStyled } from './HoneyGridStyled';
 
 type HoneyGridContextValue = {
   columns: number;

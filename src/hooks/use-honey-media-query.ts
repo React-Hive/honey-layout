@@ -1,17 +1,18 @@
 import { useTheme } from 'styled-components';
 import { useEffect, useState } from 'react';
-import debounce from 'lodash.debounce';
+import throttle from 'lodash.throttle';
 
 import type { HoneyScreenState } from '../types';
 import { resolveScreenState } from '../helpers';
 
 export type UseHoneyMediaQueryOptions = {
   /**
-   * The delay in milliseconds before the resize event is processed.
+   * Throttle interval (in milliseconds) for the resize event handler.
+   * This limits how often the handler runs during continuous resize events.
    *
    * @default 0
    */
-  delay?: number;
+  resizeThrottle?: number;
   /**
    * Manually override screen state properties like isXs, isPortrait, etc.
    *
@@ -31,7 +32,7 @@ export type UseHoneyMediaQueryOptions = {
  *          and the active breakpoint (xs, sm, md, lg, xl).
  */
 export const useHoneyMediaQuery = ({
-  delay = 0,
+  resizeThrottle = 0,
   overrideScreenState,
 }: UseHoneyMediaQueryOptions = {}) => {
   const theme = useTheme();
@@ -42,12 +43,12 @@ export const useHoneyMediaQuery = ({
   }));
 
   useEffect(() => {
-    const handleResize = debounce(() => {
+    const handleResize = throttle(() => {
       setScreenState({
         ...resolveScreenState(theme.breakpoints),
         ...overrideScreenState,
       });
-    }, delay);
+    }, resizeThrottle);
 
     handleResize();
 

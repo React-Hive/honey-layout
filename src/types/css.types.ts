@@ -1,7 +1,10 @@
 /**
  * The types for handling CSS properties and values, focusing on dimensions, colors, media queries, and other essential CSS concepts.
  */
+import type { ExecutionContext } from 'styled-components';
 import * as CSS from 'csstype';
+
+import type { HoneyBreakpointName, HoneyColorKey } from './types';
 
 export type HoneyCSSResolutionUnit = 'dpi' | 'dpcm' | 'dppx' | 'x';
 
@@ -11,6 +14,10 @@ export type HoneyCSSMediaOrientation = 'landscape' | 'portrait';
 
 type HoneyCSSAbsoluteDimensionUnit = 'px' | 'cm' | 'mm' | 'in' | 'pt' | 'pc';
 type HoneyCSSRelativeDimensionUnit = 'em' | 'rem' | '%' | 'vh' | 'vw' | 'vmin' | 'vmax';
+
+export type HoneyHEXColor = `#${string}`;
+
+export type HoneyCSSColor = CSS.DataType.NamedColor | HoneyHEXColor;
 
 /**
  * Represents a CSS dimension unit, which can be either an absolute or relative.
@@ -138,6 +145,85 @@ export type HoneyCSSDimensionShortHandValue<
     : Value extends [unknown, unknown, unknown, unknown]
       ? `${HoneyCSSDimensionValue<Unit>} ${HoneyCSSDimensionValue<Unit>} ${HoneyCSSDimensionValue<Unit>} ${HoneyCSSDimensionValue<Unit>}`
       : never;
+
+/**
+ * A type representing a function that returns a value for a specific CSS property based on the provided theme.
+ *
+ * @template CSSProperty - The CSS property this function will generate a value for.
+ */
+type HoneyCSSPropertyValueFn<CSSProperty extends keyof CSS.Properties> = (
+  context: ExecutionContext,
+) => CSS.Properties[CSSProperty];
+
+/**
+ * Type representing possible values for CSS color properties.
+ *
+ * This type can be either a color from the theme or a valid CSS color value.
+ *
+ * @template CSSProperty - The key of a CSS property to check.
+ */
+type HoneyCSSColorValue<CSSProperty extends keyof CSS.Properties> =
+  CSSProperty extends HoneyCSSColorProperty
+    ? HoneyCSSColor | HoneyColorKey
+    : CSS.Properties[CSSProperty] | HoneyCSSDimensionNumericValue<CSSProperty>;
+
+/**
+ * Represents a responsive CSS property value for a specific CSS property.
+ *
+ * This type maps each breakpoint name to a corresponding CSS property value.
+ * The values can include:
+ * - A standard CSS property value.
+ * - A numeric value for dimension properties.
+ * - A function returning a value based on the CSS property.
+ *
+ * @template CSSProperty - The key of a CSS property for which values are defined.
+ */
+type HoneyResponsiveCSSPropertyValue<CSSProperty extends keyof CSS.Properties> = Partial<
+  Record<
+    HoneyBreakpointName,
+    HoneyCSSColorValue<CSSProperty> | HoneyCSSPropertyValueFn<CSSProperty>
+  >
+>;
+
+/**
+ * Represents a CSS property value that can be either a single value or a responsive value.
+ *
+ * This type can be one of the following:
+ * - A standard CSS property value.
+ * - A numeric value for dimension properties.
+ * - A function that generates the value based on the CSS property.
+ * - A responsive value where each breakpoint maps to a specific CSS property value.
+ *
+ * @template CSSProperty - The key of a CSS property to check.
+ */
+export type HoneyCSSPropertyValue<CSSProperty extends keyof CSS.Properties> =
+  | HoneyCSSColorValue<CSSProperty>
+  | HoneyCSSPropertyValueFn<CSSProperty>
+  | HoneyResponsiveCSSPropertyValue<CSSProperty>;
+
+/**
+ * A utility type to add a `$` prefix to a given CSS property name.
+ *
+ * @template CSSProperty - The string type representing a CSS property name.
+ */
+export type HoneyPrefixedCSSProperty<
+  CSSProperty extends keyof CSS.Properties = keyof CSS.Properties,
+> = `$${CSSProperty}`;
+
+/**
+ * Represents an object where each key is a prefixed CSS property (with a `$` prefix),
+ *
+ * Example:
+ * ```
+ * const styles: HoneyPrefixedCSSProperties = {
+ *   $color: 'red',
+ *   $fontSize: '12px'
+ * };
+ * ```
+ */
+export type HoneyPrefixedCSSProperties = {
+  [CSSProperty in keyof CSS.Properties as HoneyPrefixedCSSProperty<CSSProperty>]?: HoneyCSSPropertyValue<CSSProperty>;
+};
 
 /**
  * Options for CSS @media at-rule.

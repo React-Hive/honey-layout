@@ -5,7 +5,7 @@ import styled, { css } from 'styled-components';
 import type { HoneyBoxProps } from '../HoneyBox';
 import { resolveSpacing } from '../../helpers';
 import { HoneyBox } from '../HoneyBox';
-import { HoneyGridColumnStyled } from '../HoneyGridColumn/HoneyGridColumn.styled';
+import { HoneyGridColumnStyled } from '../HoneyGridColumn/HoneyGridColumnStyled';
 
 export type HoneyGridStyledProps = HTMLAttributes<HTMLDivElement> &
   // Omit the `$gap` because `spacing` prop overrides that value
