@@ -5,10 +5,10 @@ import styled, { css } from 'styled-components';
 import type { HoneyPrefixedCSSProperties, HoneyEffectResultFn } from '../types';
 import { applyBreakpointStyles, createStyles } from '../helpers';
 
-export type HoneyBoxProps = HoneyPrefixedCSSProperties & {
+export interface HoneyBoxProps extends HoneyPrefixedCSSProperties {
   as?: StyledTarget<'web'>;
   effects?: HoneyEffectResultFn<object>[];
-};
+}
 
 export const HoneyBox = styled.div<HTMLAttributes<HTMLDivElement> & HoneyBoxProps>`
   ${({ effects }) => css`

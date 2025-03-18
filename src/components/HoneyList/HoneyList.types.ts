@@ -12,27 +12,23 @@ export type HoneyListItemId<Item extends HoneyListItem> = Item[keyof Item] | str
  * @template Item - The type of the items to be rendered in the list.
  * @template T - Additional props type.
  */
-export type HoneyListGenericProps<Item extends HoneyListItem, T = unknown> = {
+export interface HoneyListGenericProps<Item extends HoneyListItem> {
   /**
    * Function to render each item in the list.
    *
-   * @param {Item} item - The current item to be rendered.
-   * @param {number} itemIndex - The index of the current item.
-   * @param {Item[]} thisItems - The array of all items.
+   * @param item - The current item to be rendered.
+   * @param itemIndex - The index of the current item.
+   * @param thisItems - The array of all items.
    *
-   * @returns {ReactNode} - The node to be rendered for each item.
+   * @returns The node to be rendered for each item.
    */
   children: (item: Item, itemIndex: number, thisItems: Item[]) => ReactNode;
   /**
    * The array of items to be displayed in the list.
-   *
-   * @type {Item[] | undefined}
    */
   items: Item[] | undefined;
   /**
    * Optional function or key to uniquely identify each item in the list.
-   *
-   * @type {HoneyListItemKey<Item>}
    */
   itemKey?: HoneyListItemKey<Item>;
-} & T;
+}

@@ -41,12 +41,12 @@ export type HoneyOverlayEventListener = [
 /**
  * Configuration object for an overlay, used to specify the overlay's behavior and event handling.
  */
-export type HoneyOverlayConfig = {
+export interface HoneyOverlayConfig {
   /**
    * Custom overlay ID.
    * Automatically generated if not passed.
    *
-   * @default generates
+   * @default It generates automatically
    */
   id?: HoneyOverlayId;
   /**
@@ -61,12 +61,12 @@ export type HoneyOverlayConfig = {
    * If `listenKeys` is provided, this will only be triggered for those keys.
    */
   onKeyUp: HoneyOverlayEventListenerHandler;
-};
+}
 
 /**
  * Represents an overlay in the layout, allowing the registration of event listeners and notifying them when events occur.
  */
-export type HoneyActiveOverlay = {
+export interface HoneyActiveOverlay {
   /**
    * Unique identifier for the overlay.
    */
@@ -113,7 +113,7 @@ export type HoneyActiveOverlay = {
     keyCode: HoneyKeyboardEventCode,
     e: KeyboardEvent,
   ) => void;
-};
+}
 
 /**
  * Represents an item that has been flattened from a hierarchical data structure, with additional

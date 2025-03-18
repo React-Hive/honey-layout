@@ -18,14 +18,12 @@ export const HoneyLoopingListStyled = styled(HoneyBox)`
 
 export const HoneyLoopingListItemStyled = styled.div``;
 
-type HoneyLoopingListProps<Item extends HoneyListItem> = HoneyBoxProps &
-  HoneyListGenericProps<
-    Item,
-    {
-      activeItemIndex: number;
-      direction?: HoneyLoopingListDirection;
-    }
-  >;
+interface HoneyLoopingListProps<Item extends HoneyListItem>
+  extends HoneyBoxProps,
+    HoneyListGenericProps<Item> {
+  activeItemIndex: number;
+  direction?: HoneyLoopingListDirection;
+}
 
 export const HoneyLoopingList = <Item extends HoneyListItem>({
   children,

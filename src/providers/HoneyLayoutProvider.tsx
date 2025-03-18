@@ -10,9 +10,9 @@ import { resolveDimension, resolveFont, resolveColor, resolveSpacing } from '../
 import { HoneyLayoutContext } from '../contexts';
 import { useHoneyOverlays } from './hooks';
 
-type HoneyLayoutProviderContentProps = {
+interface HoneyLayoutProviderContentProps {
   mediaQueryOptions?: UseHoneyMediaQueryOptions;
-};
+}
 
 const HoneyLayoutProviderContent = ({
   children,

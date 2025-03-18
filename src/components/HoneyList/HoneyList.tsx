@@ -8,11 +8,11 @@ import { HoneyStatusContent } from '../HoneyStatusContent';
 import { getHoneyListItemId } from './HoneyList.helpers';
 import { HoneyListStyled } from './HoneyListStyled';
 
-type InheritedHTMLAttributes = Omit<HTMLAttributes<HTMLDivElement>, 'children'>;
-
-export type HoneyListProps<Item extends HoneyListItem> = InheritedHTMLAttributes &
-  HoneyBoxProps &
-  HoneyListGenericProps<Item, Omit<HoneyStatusContentProps, 'isNoContent'>>;
+export interface HoneyListProps<Item extends HoneyListItem>
+  extends Omit<HTMLAttributes<HTMLDivElement>, 'children'>,
+    HoneyBoxProps,
+    HoneyListGenericProps<Item>,
+    Omit<HoneyStatusContentProps, 'isNoContent'> {}
 
 const HoneyListComponent = <Item extends HoneyListItem, Element extends HTMLElement>(
   {

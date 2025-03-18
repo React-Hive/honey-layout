@@ -4,15 +4,15 @@ import React, { useContext, useMemo } from 'react';
 import { ThemeContext, ThemeProvider } from 'styled-components';
 import merge from 'lodash.merge';
 
-type HoneyLayoutThemeOverrideProps = {
+interface HoneyLayoutThemeOverrideProps {
   theme: DefaultTheme;
-};
+}
 
 /**
  * Provides a theme override context to its children.
  * Merges the provided theme with the existing theme from the `ThemeContext`.
  *
- * @param {PropsWithChildren<HoneyLayoutThemeOverrideProps>} props - The props for `HoneyLayoutThemeOverride`.
+ * @param props - The props for `HoneyLayoutThemeOverride`.
  *
  * @returns The ThemeProvider with the merged theme applied to its children.
  */

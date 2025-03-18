@@ -6,10 +6,10 @@ import { useHoneyLayout } from './use-honey-layout';
 /**
  * A hook for registering and managing an overlay in the layout system.
  *
- * @param {boolean} isRegister - A flag indicating whether the overlay should be registered.
- * @param {HoneyOverlayConfig} overlayConfig - Configuration object specifying overlay behavior.
+ * @param isRegister - A flag indicating whether the overlay should be registered.
+ * @param overlayConfig - Configuration object specifying overlay behavior.
  *
- * @returns {Nullable<HoneyActiveOverlay>} - The registered overlay instance, or null if not registered.
+ * @returns The registered overlay instance, or null if not registered.
  */
 export const useRegisterHoneyOverlay = (
   isRegister: boolean,

@@ -3,9 +3,9 @@ import { useEffect, useMemo } from 'react';
 import type { HoneyOverlayId, HoneyOverlayEventListenerHandler } from '../types';
 import { useHoneyLayout } from './use-honey-layout';
 
-type UseHoneyOverlayOptions = {
+interface UseHoneyOverlayOptions {
   onKeyUp?: HoneyOverlayEventListenerHandler;
-};
+}
 
 /**
  * Hook to interact with a specific overlay managed by the `HoneyLayoutProvider`.

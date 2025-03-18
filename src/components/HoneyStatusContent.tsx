@@ -5,7 +5,7 @@ import type { ReactNode, PropsWithChildren } from 'react';
  * This type is used to provide properties for handling different states of a component,
  * such as loading, error, and no content states, along with the content to display in each state.
  */
-export type HoneyStatusContentProps = {
+export interface HoneyStatusContentProps {
   /**
    * A flag indicating whether the component is in a loading state.
    *
@@ -48,7 +48,7 @@ export type HoneyStatusContentProps = {
    * @default null
    */
   noContent?: ReactNode;
-};
+}
 
 /**
  * A component that conditionally renders blocks based on specified boolean flags.

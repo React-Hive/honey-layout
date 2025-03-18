@@ -5,7 +5,7 @@
 /**
  * Represents the state of the screen layout.
  */
-export type HoneyScreenState = {
+export interface HoneyScreenState {
   /** Indicates if the screen size is extra-small (xs). */
   isXs: boolean;
   /** Indicates if the screen size is small (sm). */
@@ -20,4 +20,4 @@ export type HoneyScreenState = {
   isPortrait: boolean;
   /** Indicates if the screen orientation is landscape. */
   isLandscape: boolean;
-};
+}

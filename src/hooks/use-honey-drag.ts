@@ -22,7 +22,7 @@ export type HoneyDragOnStartHandler<Element extends HTMLElement> = (
 /**
  * Context provided to the move handler, containing information about the drag's movement.
  */
-type HoneyDragMoveContext = {
+interface HoneyDragMoveContext {
   /**
    * The horizontal distance has moved since the last frame.
    */
@@ -43,7 +43,7 @@ type HoneyDragMoveContext = {
    * The straight-line distance from the starting position to the current position.
    */
   euclideanDistance: number;
-};
+}
 
 /**
  * Handler triggered during a drag operation.
@@ -70,7 +70,7 @@ export type HoneyDragOnMoveHandler<Element extends HTMLElement> = (
 /**
  * Context provided to the end handler, containing information about the drag's end state.
  */
-type HoneyDragEndContext = {
+interface HoneyDragEndContext {
   /**
    * The total horizontal movement from the starting position to the ending position.
    */
@@ -87,7 +87,7 @@ type HoneyDragEndContext = {
    * The speed of movement in the vertical direction (Y axis).
    */
   movingSpeedY: number;
-};
+}
 
 /**
  * Handler triggered when a drag operation ends.
@@ -109,7 +109,7 @@ export type HoneyDragOnEndHandler<Element extends HTMLElement> = (
  * Object containing the handlers for various stages of the drag operation.
  * These handlers can be customized to manage the behavior of the drag process.
  */
-export type HoneyDragHandlers<Element extends HTMLElement> = {
+export interface HoneyDragHandlers<Element extends HTMLElement> {
   /**
    * Optional handler triggered when the drag operation starts.
    * This can be used to capture the initial state or perform setup actions.
@@ -125,19 +125,19 @@ export type HoneyDragHandlers<Element extends HTMLElement> = {
    * This can be used for cleanup or finalizing the state after the drag ends.
    */
   onEndDrag?: HoneyDragOnEndHandler<Element>;
-};
+}
 
 /**
  * Options passed to the `useHoneyDrag` hook.
  */
-export type HoneyDragOptions = {
+export interface HoneyDragOptions {
   /**
    * Determines whether the drag functionality is enabled or not.
    *
    * @default true
    */
   isEnabled?: boolean;
-};
+}
 
 /**
  * A hook that provides touch and mouse-based dragging functionality for an element.
@@ -145,9 +145,9 @@ export type HoneyDragOptions = {
  *
  * @template Element - The type of the HTML element that is being dragged.
  *
- * @param {MutableRefObject<Nullable<Element>>} draggableElementRef - A reference to the element that can be dragged.
- * @param {HoneyDragHandlers<Element>} handlers - The drag event handlers for different stages of the drag operation (start, move, end).
- * @param {HoneyDragOptions} options - Configuration options.
+ * @param draggableElementRef - A reference to the element that can be dragged.
+ * @param handlers - The drag event handlers for different stages of the drag operation (start, move, end).
+ * @param options - Configuration options.
  */
 export const useHoneyDrag = <Element extends HTMLElement>(
   draggableElementRef: MutableRefObject<Nullable<Element>>,

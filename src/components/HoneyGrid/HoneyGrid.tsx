@@ -15,7 +15,7 @@ type HoneyGridContextValue = {
 
 export const HoneyGridContext = createContext<HoneyGridContextValue | undefined>(undefined);
 
-export type HoneyGridProps = HoneyGridStyledProps & {
+export interface HoneyGridProps extends HoneyGridStyledProps {
   /**
    * The number of columns in the grid layout.
    */
@@ -33,7 +33,7 @@ export type HoneyGridProps = HoneyGridStyledProps & {
    * @default false
    */
   applyColumnMaxWidth?: HoneyGridColumnStyledProps['applyMaxWidth'];
-};
+}
 
 export const HoneyGrid = forwardRef<HTMLDivElement, PropsWithChildren<HoneyGridProps>>(
   (

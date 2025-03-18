@@ -6,25 +6,23 @@ import type { HoneyDragOnMoveHandler, HoneyDragHandlers } from './use-honey-drag
 import { useHoneyDrag } from './use-honey-drag';
 import { calculatePercentage, getTransformationValues } from '../utils';
 
-type SyntheticScrollableContainerOptions<Element extends HTMLElement> = Pick<
-  HoneyDragHandlers<Element>,
-  'onStartDrag' | 'onEndDrag'
-> & {
+interface SyntheticScrollableContainerOptions<Element extends HTMLElement>
+  extends Pick<HoneyDragHandlers<Element>, 'onStartDrag' | 'onEndDrag'> {
   /**
    * The percentage of the window width and height within which dragging is allowed.
    *
    * @default 0
    */
   availableWindowPercentage?: number;
-};
+}
 
 /**
  * A hook that enables synthetic scrolling behavior for a container element.
  * It allows horizontal and vertical dragging within a specified window percentage when the content overflows.
  * The hook handles touch and mouse events for dragging and resets the scroll position upon window resize.
  *
- * @param {MutableRefObject<Nullable<Element>>} scrollableContainerRef - A ref to the scrollable container element to be assigned to the target element.
- * @param {SyntheticScrollableContainerOptions<Element>} options - Options for configuring the synthetic scrollable container.
+ * @param scrollableContainerRef - A ref to the scrollable container element to be assigned to the target element.
+ * @param options - Options for configuring the synthetic scrollable container.
  */
 export const useHoneySyntheticScrollableContainer = <Element extends HTMLElement>(
   scrollableContainerRef: MutableRefObject<Nullable<Element>>,

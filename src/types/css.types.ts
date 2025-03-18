@@ -228,7 +228,7 @@ export type HoneyPrefixedCSSProperties = {
 /**
  * Options for CSS @media at-rule.
  */
-export type HoneyCSSMediaRule = {
+export interface HoneyCSSMediaRule {
   operator?: 'not' | 'only';
   mediaType?: 'all' | 'print' | 'screen' | 'speech';
   width?: HoneyCSSDimensionValue;
@@ -242,4 +242,4 @@ export type HoneyCSSMediaRule = {
   minResolution?: HoneyCSSResolutionValue;
   maxResolution?: HoneyCSSResolutionValue;
   update?: 'none' | 'slow' | 'fast';
-};
+}

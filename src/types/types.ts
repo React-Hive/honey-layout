@@ -10,22 +10,22 @@ import type { HoneyCSSColor, HoneyCSSDimensionValue } from './css.types';
  * - `lg`: Large devices
  * - `xl`: Extra large devices
  */
-export type HoneyBreakpoints = {
+export interface HoneyBreakpoints {
   xs: number;
   sm: number;
   md: number;
   lg: number;
   xl: number;
-};
+}
 
 export type HoneyBreakpointName = keyof HoneyBreakpoints;
 
-export type HoneyContainer = {
+export interface HoneyContainer {
   /**
    * Max container width in any CSS distance value.
    */
   maxWidth: HoneyCSSDimensionValue;
-};
+}
 
 /**
  * Represents the theme configuration.
@@ -66,7 +66,7 @@ declare module 'styled-components' {
 /**
  * Defines different spacing sizes available in the theme.
  */
-export type HoneySpacings = {
+export interface HoneySpacings {
   /**
    * The base spacing value in pixels.
    */
@@ -75,7 +75,7 @@ export type HoneySpacings = {
   small?: number;
   medium?: number;
   large?: number;
-};
+}
 
 /**
  * Defines the color palette used in the theme.
@@ -164,13 +164,13 @@ export type HoneyColorKey = {
   [ColorType in keyof HoneyColors]: `${ColorType}.${keyof HoneyColors[ColorType] & string}`;
 }[keyof HoneyColors];
 
-export type HoneyFont = {
+export interface HoneyFont {
   size: number;
   family?: string;
   weight?: number;
   lineHeight?: number;
   letterSpacing?: number;
-};
+}
 
 /**
  * Example of augmenting the fonts interface.

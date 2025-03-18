@@ -72,18 +72,18 @@ export type ResolveSpacingResult<
  * @template MultiValue - Represents the spacing value(s), which could be a single number or an array of numbers (e.g., [1, 2, 3, 4]).
  * @template Unit - The CSS unit used for the resolved spacing value, e.g., 'px', 'em'. Defaults to 'px'.
  *
- * @param {MultiValue} value - The spacing factor(s) to be applied. It can be:
- * - A single number representing a multiplier for the base spacing value.
- * - An array of numbers representing multiple multipliers for base spacing values (e.g., for margins or padding).
- * @param {Unit} [unit='px'] - The CSS unit to use for the calculated value. If `null` or `undefined`, no unit is applied.
- * Defaults to 'px'.
- * @param {keyof HoneySpacings} [type='base'] - The type of spacing to use from the theme. Determines which base spacing
- * value to use for calculations (e.g., 'base', 'small', 'large'). Defaults to 'base'.
+ * @param value - The spacing factor(s) to be applied. It can be:
+ *                - A single number representing a multiplier for the base spacing value.
+ *                - An array of numbers representing multiple multipliers for base spacing values (e.g., for margins or padding).
+ * @param [unit='px'] - The CSS unit to use for the calculated value. If `null` or `undefined`, no unit is applied.
+ *                      Defaults to 'px'.
+ * @param [type='base'] - The type of spacing to use from the theme. Determines which base spacing
+ *                        value to use for calculations (e.g., 'base', 'small', 'large'). Defaults to 'base'.
  *
- * @returns {(context: ExecutionContext) => ResolveSpacingResult<MultiValue, Unit>} - A function that takes `ExecutionContext`
- * (containing the theme object) and returns the resolved spacing value(s). The result is either:
- * - A single calculated value (e.g., '16px') if the input is a single number.
- * - A string of space-separated values (e.g., '8px 16px 24px 32px') if the input is an array of numbers.
+ * @returns A function that takes `ExecutionContext` (containing the theme object) and returns the resolved spacing value(s).
+ *          The result is either:
+ *            - A single calculated value (e.g., '16px') if the input is a single number.
+ *            - A string of space-separated values (e.g., '8px 16px 24px 32px') if the input is an array of numbers.
  */
 export const resolveSpacing =
   <
@@ -118,16 +118,18 @@ export const resolveSpacing =
 /**
  * Resolves a color value from the theme or returns the input color directly if it's a standalone color name or HEX value.
  *
- * @param colorKey - A string representing the color to resolve. This can be:
- *  - A theme key in the format 'colorType.colorName'.
- *  - A standalone color name (e.g., "red", "blue").
- *  - A HEX color value (e.g., "#RRGGBB").
- * @param alpha - Optional. The alpha transparency value between 0 (fully transparent) and 1 (fully opaque). Default to `undefined`.
+ * @param colorKey - A string representing the color to resolve.
+ *                 This can be:
+ *                  - A theme key in the format 'colorType.colorName'.
+ *                  - A standalone color name (e.g., "red", "blue").
+ *                  - A HEX color value (e.g., "#RRGGBB").
+ * @param [alpha] - The alpha transparency value between 0 (fully transparent) and 1 (fully opaque).
+ *                  Default to `undefined`.
  *
  * @returns A function that takes an `ExecutionContext` with a `theme` and resolves the color value:
- *  - A HEX color string from the theme (e.g., "#RRGGBB").
- *  - A HEX color string with alpha (e.g., "#RRGGBBAA") if `alpha` is provided.
- *  - The input `colorKey` value directly if it's a standalone color name or HEX value.
+ *           - A HEX color string from the theme (e.g., "#RRGGBB").
+ *           - A HEX color string with alpha (e.g., "#RRGGBBAA") if `alpha` is provided.
+ *           - The input `colorKey` value directly if it's a standalone color name or HEX value.
  *
  * @throws Will throw an error if the provided alpha value is not within the valid range (0 to 1).
  * @throws Will throw an error if the color format is invalid.
@@ -147,7 +149,7 @@ export const resolveColor =
 /**
  * Resolves the font styles based on the provided font name from the theme.
  *
- * @param {HoneyFontName} fontName - The name of the font to be resolved from the theme.
+ * @param fontName - The name of the font to be resolved from the theme.
  *
  * @returns A style function that takes a theme object and returns the CSS styles for the specified font.
  */
@@ -168,7 +170,7 @@ export const resolveFont =
 /**
  * Resolves a specific dimension value from the theme configuration.
  *
- * @param {HoneyDimensionName} dimensionName - The name of the dimension to resolve.
+ * @param dimensionName - The name of the dimension to resolve.
  *
  * @returns A style function that takes the theme and returns the resolved dimension value from the theme.
  */
@@ -180,9 +182,9 @@ export const resolveDimension =
 /**
  * Type guard function to check if a property name is a dimension property.
  *
- * @param {keyof CSS.Properties} propertyName - The name of the CSS property.
+ * @param propertyName - The name of the CSS property.
  *
- * @returns {propertyName is HoneyCSSDimensionProperty} - True if the property name is a dimension property, false otherwise.
+ * @returns True if the property name is a dimension property, false otherwise.
  */
 const isCSSDimensionProperty = (
   propertyName: keyof CSS.Properties,
@@ -192,9 +194,9 @@ const isCSSDimensionProperty = (
 /**
  * Type guard function to check if a property name is a color property.
  *
- * @param {keyof CSS.Properties} propertyName - The name of the CSS property.
+ * @param propertyName - The name of the CSS property.
  *
- * @returns {propertyName is HoneyCSSColorProperty} - True if the property name is a color property, false otherwise.
+ * @returns True if the property name is a color property, false otherwise.
  */
 const isCSSColorProperty = (
   propertyName: keyof CSS.Properties,
@@ -205,9 +207,9 @@ const isCSSColorProperty = (
  * Determines if a given HTML property is a CSS property that is prefixed with a '$'.
  * This convention is typically used for applying dynamic or responsive styles.
  *
- * @param {string} propertyName - The HTML property or key to check.
+ * @param propertyName - The HTML property or key to check.
  *
- * @returns {property is HoneyPrefixedCSSProperty} - Returns true if the property is a valid prefixed CSS property, otherwise false.
+ * @returns Returns true if the property is a valid prefixed CSS property, otherwise false.
  */
 const isCSSPrefixedProperty = (propertyName: string): propertyName is HoneyPrefixedCSSProperty =>
   propertyName[0] === '$';
@@ -217,9 +219,9 @@ const isCSSPrefixedProperty = (propertyName: string): propertyName is HoneyPrefi
  *
  * A theme color value is assumed to be a string containing exactly one dot (e.g., 'primary.main').
  *
- * @param {string} propertyValue - The string value to check.
+ * @param propertyValue - The string value to check.
  *
- * @returns {value is HoneyColorKey} - True if the string value is a theme color value, false otherwise.
+ * @returns True if the string value is a theme color value, false otherwise.
  */
 const isThemeColorValue = (propertyValue: string): propertyValue is HoneyColorKey =>
   propertyValue.split('.').length === 2;
@@ -229,18 +231,20 @@ const isThemeColorValue = (propertyValue: string): propertyValue is HoneyColorKe
  *
  * This function handles different types of property values:
  * - If `propertyValue` is an object (indicating a responsive value), it extracts the value corresponding to the specified `breakpoint`.
- * - If the property is related to dimensions or spacing (e.g., `width`, `margin`), it uses the `resolveSpacing` function to calculate and format the value with the appropriate unit (e.g., 'px').
+ * - If the property is related to dimensions or spacing (e.g., `width`, `margin`),
+ *   it uses the `resolveSpacing` function to calculate and format the value with the appropriate unit (e.g., 'px').
  *
- * Note:
- * The `resolveSpacing` function returns a function that requires the `theme` object to perform the resolution, which needs to be provided in the context where `getCSSPropertyValue` is used.
+ * @remarks
+ * The `resolveSpacing` function returns a function that requires the `theme` object to perform the resolution,
+ * which needs to be provided in the context where `getCSSPropertyValue` is used.
  *
- * @param {CSSProperty} propertyName - The name of the CSS property to retrieve. Must be a key of `CSS.Properties`.
- * @param {HoneyCSSPropertyValue<CSSProperty>} propertyValue - The value associated with the CSS property, which can be a direct value, a responsive object, or a function.
- * @param {HoneyBreakpointName} breakpoint - The name of the breakpoint used to extract the value from a responsive object, if applicable.
+ * @param propertyName - The name of the CSS property to retrieve. Must be a key of `CSS.Properties`.
+ * @param propertyValue - The value associated with the CSS property, which can be a direct value, a responsive object, or a function.
+ * @param breakpoint - The name of the breakpoint used to extract the value from a responsive object, if applicable.
  *
  * @returns The resolved CSS property value. This could be:
- *   - A direct value (if `propertyValue` was not an object or the property is not related to dimensions).
- *   - A value formatted with units (if the property is related to dimensions or spacing and `resolveSpacing` was applied).
+ *           - A direct value (if `propertyValue` was not an object or the property is not related to dimensions).
+ *           - A value formatted with units (if the property is related to dimensions or spacing and `resolveSpacing` was applied).
  */
 const getCSSPropertyValue = <CSSProperty extends keyof CSS.Properties>(
   propertyName: CSSProperty,
@@ -277,11 +281,10 @@ const getCSSPropertyValue = <CSSProperty extends keyof CSS.Properties>(
  *
  * @template Props - The type representing the HTML attributes and Honey-prefixed CSS properties.
  *
- * @param {Props} props - The props object containing CSS properties and other HTML attributes.
- * @param {HoneyBreakpointName} breakpoint - The name of the breakpoint for filtering CSS properties.
+ * @param props - The object containing CSS properties and other HTML attributes.
+ * @param breakpoint - The name of the breakpoint for filtering CSS properties.
  *
- * @returns {[HoneyPrefixedCSSProperty, CSS.Properties[keyof CSS.Properties]][]}
- *   An array of tuples where each tuple contains a Honey-prefixed CSS property and its value.
+ * @returns An array of tuples where each tuple contains a Honey-prefixed CSS property and its value.
  */
 const matchCSSProperties = <Props extends HTMLAttributes<HTMLElement> & HoneyPrefixedCSSProperties>(
   props: Props,
@@ -300,11 +303,10 @@ const matchCSSProperties = <Props extends HTMLAttributes<HTMLElement> & HoneyPre
  *
  * @template Props - The type representing HTML attributes and Honey-prefixed CSS properties.
  *
- * @param {HoneyBreakpointName} breakpoint - The name of the breakpoint to filter properties by.
+ * @param breakpoint - The name of the breakpoint to filter properties by.
  *
- * @returns {(context: ExecutionContext & Props) => ReturnType<typeof css>} -
- *   A function that takes an execution context and properties, and returns a CSS block
- *   with styles generated for the specified breakpoint.
+ * @returns A function that takes an execution context and properties, and returns a CSS block
+ *          with styles generated for the specified breakpoint.
  */
 export const createStyles =
   <Props extends HTMLAttributes<HTMLElement> & HoneyPrefixedCSSProperties>(
@@ -329,10 +331,10 @@ export const createStyles =
  * for the specified breakpoint. This function checks if there are any properties in `props`
  * that are prefixed with `$` and have responsive values that include the given breakpoint.
  *
- * @param {HoneyBreakpointName} breakpoint - The name of the breakpoint to check within responsive values.
- * @param {HTMLAttributes<HTMLElement> & HoneyPrefixedCSSProperties} props - The properties object that may contain responsive styles.
+ * @param breakpoint - The name of the breakpoint to check within responsive values.
+ * @param props - The object that may contain responsive styles.
  *
- * @returns {boolean} - Returns true if at least one property in `props` has styles for the specified breakpoint; otherwise, false.
+ * @returns Returns true if at least one property in `props` has styles for the specified breakpoint; otherwise, false.
  */
 const hasBreakpointStyles = (
   breakpoint: HoneyBreakpointName,
@@ -350,8 +352,8 @@ const hasBreakpointStyles = (
  * The down function creates a media query for screen sizes smaller than the breakpoint,
  * while the up function creates a media query for screen sizes larger than the breakpoint.
  *
- * @param {HoneyBreakpointName} breakpoint - The name of the breakpoint.
- * @param {HoneyCSSMediaRule} [ruleOptions={}] - Additional options for the media rule.
+ * @param breakpoint - The name of the breakpoint.
+ * @param [ruleOptions={}] - Additional options for the media rule.
  *
  * @returns Styled functions for generating media queries.
  */
@@ -397,10 +399,10 @@ export const bpMedia = (
  *
  * @template Props - The type representing HTML attributes and Honey-prefixed CSS properties.
  *
- * @param {HoneyBreakpointName} breakpoint - The name of the breakpoint to apply media query styles for.
+ * @param breakpoint - The name of the breakpoint to apply media query styles for.
  *
- * @returns {(context: ExecutionContext & Props) => Nullable<ReturnType<typeof css>>} - A function that takes context and properties
- *   and returns a CSS block wrapped in a media query if styles exist for the specified breakpoint; otherwise, returns `null`.
+ * @returns A function that takes context and properties and returns a CSS block wrapped in a media query
+ *          if styles exist for the specified breakpoint; otherwise, returns `null`.
  */
 export const applyBreakpointStyles =
   <Props extends HTMLAttributes<HTMLElement> & HoneyPrefixedCSSProperties>(

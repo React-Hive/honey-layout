@@ -5,7 +5,7 @@ import type { HoneyCSSTimingFunction, HoneyEffect } from './types';
 /**
  * Configuration object for defining the transition effect on visibility and opacity.
  */
-type HoneyVisibilityTransitionEffectConfig = {
+interface HoneyVisibilityTransitionEffectConfig {
   /**
    * Duration of the transition in milliseconds.
    * Determines how long the transition will take to complete.
@@ -29,12 +29,12 @@ type HoneyVisibilityTransitionEffectConfig = {
    * will also be applied when the element has this class.
    */
   activeClassName?: string;
-};
+}
 
 /**
  * Context props used to control the transition effect.
  */
-export type HoneyVisibilityTransitionEffectContextProps = {
+export interface HoneyVisibilityTransitionEffectContextProps {
   /**
    * Specifies whether the transition should be applied.
    * When true, the element becomes visible and transitions in; when false, it transitions out and becomes hidden.
@@ -42,7 +42,7 @@ export type HoneyVisibilityTransitionEffectContextProps = {
    * @default false
    */
   isActive?: boolean;
-};
+}
 
 /**
  * A styled-components effect that applies smooth transitions to the `visibility`, `opacity`, and optional extra properties of an element.

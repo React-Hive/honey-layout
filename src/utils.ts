@@ -13,9 +13,9 @@ export const camelToDashCase = (inputString: string): string =>
 /**
  * Splits a string into an array of filtered from redundant spaces words.
  *
- * @param {string} inputString - The input string to be split.
+ * @param inputString - The input string to be split.
  *
- * @returns {string[]} An array of words from the input string.
+ * @returns An array of words from the input string.
  */
 export const splitStringIntoWords = (inputString: string): string[] =>
   inputString.split(' ').filter(v => v);
@@ -33,12 +33,12 @@ export const pxToRem = (px: number, base: number = 16): string => `${px / base}r
 /**
  * Calculates the Euclidean distance between two points in 2D space.
  *
- * @param {number} startX - The X coordinate of the starting point.
- * @param {number} startY - The Y coordinate of the starting point.
- * @param {number} endX - The X coordinate of the ending point.
- * @param {number} endY - The Y coordinate of the ending point.
+ * @param startX - The X coordinate of the starting point.
+ * @param startY - The Y coordinate of the starting point.
+ * @param endX - The X coordinate of the ending point.
+ * @param endY - The Y coordinate of the ending point.
  *
- * @returns {number} - The Euclidean distance between the two points.
+ * @returns The Euclidean distance between the two points.
  */
 export const calculateEuclideanDistance = (
   startX: number,
@@ -55,10 +55,10 @@ export const calculateEuclideanDistance = (
 /**
  * Calculates the moving speed.
  *
- * @param {number} delta - The change in position (distance).
- * @param {number} elapsedTime - The time taken to move the distance.
+ * @param delta - The change in position (distance).
+ * @param elapsedTime - The time taken to move the distance.
  *
- * @returns {number} - The calculated speed, which is the absolute value of delta divided by elapsed time.
+ * @returns The calculated speed, which is the absolute value of delta divided by elapsed time.
  */
 export const calculateMovingSpeed = (delta: number, elapsedTime: number): number =>
   Math.abs(delta / elapsedTime);
@@ -66,10 +66,10 @@ export const calculateMovingSpeed = (delta: number, elapsedTime: number): number
 /**
  * Calculates the specified percentage of a given value.
  *
- * @param {number} value - The value to calculate the percentage of.
- * @param {number} percentage - The percentage to calculate.
+ * @param value - The value to calculate the percentage of.
+ * @param percentage - The percentage to calculate.
  *
- * @returns {number} - The calculated percentage of the value.
+ * @returns The calculated percentage of the value.
  */
 export const calculatePercentage = (value: number, percentage: number): number => {
   return (value * percentage) / 100;
@@ -83,7 +83,7 @@ export const calculatePercentage = (value: number, percentage: number): number =
  *
  * @throws {Error} If alpha value is not between 0 and 1, or if the hex code is invalid.
  *
- * @returns {HoneyHEXColor} - The 8-character HEX with alpha (RRGGBBAA) format color code, or null if input is invalid.
+ * @returns The 8-character HEX with alpha (RRGGBBAA) format color code, or null if input is invalid.
  */
 export const convertHexToHexWithAlpha = (hex: string, alpha: number): HoneyHEXColor => {
   if (alpha < 0 || alpha > 1) {
@@ -117,9 +117,9 @@ export const convertHexToHexWithAlpha = (hex: string, alpha: number): HoneyHEXCo
 /**
  * Builds a media query string based on the provided options.
  *
- * @param {HoneyCSSMediaRule[]} rules - Conditions for the media query.
+ * @param rules - Conditions for the media query.
  *
- * @returns {string} The generated media query string.
+ * @returns The generated media query string.
  */
 export const media = (rules: HoneyCSSMediaRule[]): string => {
   const mediaRules = rules.map(rule => {
@@ -149,17 +149,17 @@ export const media = (rules: HoneyCSSMediaRule[]): string => {
   return `@media ${mediaRules.join(', ')}`;
 };
 
-type HTMLElementTransformationValues = {
+interface HTMLElementTransformationValues {
   translateX: number;
   translateY: number;
-};
+}
 
 /**
  * Get various transformation values from the transformation matrix of an element.
  *
- * @param {HTMLElement} element - The element with a transformation applied.
+ * @param element - The element with a transformation applied.
  *
- * @returns {HTMLElementTransformationValues} An object containing transformation values.
+ * @returns An object containing transformation values.
  */
 export const getTransformationValues = (element: HTMLElement): HTMLElementTransformationValues => {
   const computedStyles = window.getComputedStyle(element);

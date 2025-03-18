@@ -5,7 +5,7 @@ import throttle from 'lodash.throttle';
 import type { HoneyScreenState } from '../types';
 import { resolveScreenState } from '../helpers';
 
-export type UseHoneyMediaQueryOptions = {
+export interface UseHoneyMediaQueryOptions {
   /**
    * Throttle interval (in milliseconds) for the resize event handler.
    * This limits how often the handler runs during continuous resize events.
@@ -20,7 +20,7 @@ export type UseHoneyMediaQueryOptions = {
    * These values are only set once on initialization and will not dynamically update the state.
    */
   overrideScreenState?: Partial<HoneyScreenState>;
-};
+}
 
 /**
  * The hook that tracks the current screen state based on the theme's media breakpoints.

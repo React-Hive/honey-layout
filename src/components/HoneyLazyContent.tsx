@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from 'react';
 
 import type { TimeoutId } from '../types';
 
-type HoneyLazyContentProps = {
+interface HoneyLazyContentProps {
   /**
    * Determines whether the content should be mounted or unmounted.
    */
@@ -26,7 +26,7 @@ type HoneyLazyContentProps = {
    * @default false
    */
   isKeepAfterMount?: boolean;
-};
+}
 
 /**
  * Component for lazy loading/unloading content based on a mount/unmount state.
