@@ -15,7 +15,7 @@ export type HoneyEffect<Config = unknown, Props extends object = object> = (
 
 export type HoneyOverlayId = string;
 
-export type HoneyOverlayEventListenerType = 'keyup';
+export type HoneyOverlayEventType = 'keyup';
 
 /**
  * Handler function for an overlay event listener.
@@ -33,10 +33,7 @@ export type HoneyOverlayEventListenerHandler = (
 /**
  * A tuple representing an event listener, including the event type and the handler function.
  */
-export type HoneyOverlayEventListener = [
-  HoneyOverlayEventListenerType,
-  HoneyOverlayEventListenerHandler,
-];
+export type HoneyOverlayEventListener = [HoneyOverlayEventType, HoneyOverlayEventListenerHandler];
 
 /**
  * Configuration object for an overlay, used to specify the overlay's behavior and event handling.
@@ -87,29 +84,23 @@ export interface HoneyActiveOverlay {
    * @param type - The type of event to listen for.
    * @param handler - The handler function to execute when the event is triggered.
    */
-  addListener: (
-    type: HoneyOverlayEventListenerType,
-    handler: HoneyOverlayEventListenerHandler,
-  ) => void;
+  addListener: (type: HoneyOverlayEventType, handler: HoneyOverlayEventListenerHandler) => void;
   /**
    * Removes a specific event listener from the overlay.
    *
    * @param type - The type of event for the listener.
    * @param handler - The handler function to remove.
    */
-  removeListener: (
-    type: HoneyOverlayEventListenerType,
-    handler: HoneyOverlayEventListenerHandler,
-  ) => void;
+  removeListener: (type: HoneyOverlayEventType, handler: HoneyOverlayEventListenerHandler) => void;
   /**
    * Notifies all listeners of a specific event type.
    *
-   * @param type - The type of event that occurred.
+   * @param targetEventType - The type of event that occurred.
    * @param keyCode - The code of the key that triggered the event.
    * @param e - The original keyboard event.
    */
   notifyListeners: (
-    type: HoneyOverlayEventListenerType,
+    targetEventType: HoneyOverlayEventType,
     keyCode: HoneyKeyboardEventCode,
     e: KeyboardEvent,
   ) => void;

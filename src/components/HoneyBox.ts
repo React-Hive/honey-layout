@@ -10,7 +10,9 @@ export interface HoneyBoxProps extends HoneyPrefixedCSSProperties {
   effects?: HoneyEffectResultFn<object>[];
 }
 
-export const HoneyBox = styled.div<HTMLAttributes<HTMLDivElement> & HoneyBoxProps>`
+type HoneyBoxInnerProps = HTMLAttributes<HTMLDivElement> & HoneyBoxProps;
+
+export const HoneyBox = styled.div<HoneyBoxInnerProps>`
   ${({ effects }) => css`
     ${effects};
 

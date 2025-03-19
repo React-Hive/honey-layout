@@ -1,5 +1,5 @@
 import type { MutableRefObject } from 'react';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 
 import type {
   HoneyKeyboardEventCode,
@@ -15,15 +15,16 @@ import { generateUniqueId } from '../../helpers';
  * as well as handling keyboard events for the topmost overlay.
  */
 export const useHoneyOverlays = () => {
-  const [overlays, setOverlays] = useState<HoneyActiveOverlay[]>([]);
+  const overlaysRef = useRef<HoneyActiveOverlay[]>([]);
 
   useEffect(() => {
-    if (!overlays.length) {
-      // No overlays to handle key events if the stack is empty
-      return;
-    }
-
     const handleKeyUp = (e: KeyboardEvent) => {
+      const overlays = overlaysRef.current;
+      if (!overlays.length) {
+        // No overlays to handle key events
+        return;
+      }
+
       const topLevelOverlay = overlays[overlays.length - 1];
 
       topLevelOverlay.notifyListeners('keyup', e.code as HoneyKeyboardEventCode, e);
@@ -34,7 +35,7 @@ export const useHoneyOverlays = () => {
     return () => {
       document.removeEventListener('keyup', handleKeyUp);
     };
-  }, [overlays]);
+  }, []);
 
   /**
    * Registers a new overlay and adds it to the stack.
@@ -69,20 +70,22 @@ export const useHoneyOverlays = () => {
           listeners.splice(targetListenerIndex, 1);
         }
       },
-      notifyListeners: (targetType, keyCode, e) => {
-        if (!overlayConfig.listenKeys?.length || overlayConfig.listenKeys.includes(keyCode)) {
+      notifyListeners: (targetEventType, keyCode, e) => {
+        const listenKeys = overlayConfig.listenKeys ?? [];
+
+        if (!listenKeys.length || listenKeys.includes(keyCode)) {
           e.preventDefault();
 
-          listeners.forEach(([type, listenerHandler]) => {
-            if (type === targetType) {
-              listenerHandler(keyCode, overlay, e);
+          listeners.forEach(([eventType, listener]) => {
+            if (eventType === targetEventType) {
+              listener(keyCode, overlay, e);
             }
           });
         }
       },
     };
 
-    setOverlays(prevActiveOverlays => [...prevActiveOverlays, overlay]);
+    overlaysRef.current.push(overlay);
 
     return overlay;
   }, []);
@@ -93,13 +96,11 @@ export const useHoneyOverlays = () => {
    * @param targetOverlayId - The ID of the overlay to be removed.
    */
   const unregisterOverlay = useCallback<HoneyUnregisterOverlay>(targetOverlayId => {
-    setOverlays(prevActiveOverlays =>
-      prevActiveOverlays.filter(overlay => overlay.id !== targetOverlayId),
-    );
+    overlaysRef.current = overlaysRef.current.filter(overlay => overlay.id !== targetOverlayId);
   }, []);
 
   return {
-    overlays,
+    overlays: overlaysRef.current,
     registerOverlay,
     unregisterOverlay,
   };
