@@ -62,7 +62,7 @@ export interface HoneyLayoutContextValue {
    * @param [unit] - The CSS unit to use for the calculated value. Defaults to 'px'.
    * @param [type] - The type of spacing to use from the theme (e.g., 'base', 'small', 'large').
    *
-   * @returns {ResolveSpacingResult<MultiValue, Unit>} - The resolved spacing value, formatted as a string with the appropriate unit.
+   * @returns The resolved spacing value, formatted as a string with the appropriate unit.
    */
   resolveSpacing: <
     MultiValue extends HoneyCSSMultiValue<number>,

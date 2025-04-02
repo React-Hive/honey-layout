@@ -3,13 +3,13 @@ import React from 'react';
 
 import type { HoneyGridColumnProps } from './HoneyGridColumn.types';
 import { HoneyGridColumnStyled } from './HoneyGridColumnStyled';
-import { useCurrentHoneyGrid } from '../HoneyGrid/hooks';
+import { useHoneyGridContext } from '../HoneyGrid/hooks';
 
 export const HoneyGridColumn = ({
   children,
   ...props
 }: PropsWithChildren<HoneyGridColumnProps>) => {
-  const { columns, spacing, isColumnGrowing, applyColumnMaxWidth } = useCurrentHoneyGrid();
+  const { columns, spacing, isColumnGrowing, applyColumnMaxWidth } = useHoneyGridContext();
 
   return (
     <HoneyGridColumnStyled

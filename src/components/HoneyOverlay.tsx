@@ -1,12 +1,13 @@
-import React, { useCallback } from 'react';
+import React, { forwardRef, useCallback } from 'react';
 import type { ReactNode, HTMLAttributes } from 'react';
 
 import type { HoneyActiveOverlay, HoneyOverlayId, Nullable } from '../types';
-import type { HoneyBoxProps } from './HoneyBox';
+import type { HoneyFlexBoxProps } from './HoneyFlexBox';
 import { HoneyFlexBox } from './HoneyFlexBox';
 import { useRegisterHoneyOverlay } from '../hooks';
+import { mergeRefs } from '../helpers';
 
-interface OverlayContext {
+export interface HoneyOverlayContext {
   /**
    * The current overlay instance, including methods and metadata for managing the overlay.
    */
@@ -19,16 +20,16 @@ interface OverlayContext {
 
 export interface HoneyOverlayProps
   extends Omit<HTMLAttributes<HTMLDivElement>, 'children'>,
-    HoneyBoxProps {
+    HoneyFlexBoxProps {
   /**
    * The content of the overlay, either as static nodes or a function that receives the object
    * with the current overlay state and helper methods.
    */
-  children: ReactNode | ((overlayContext: OverlayContext) => ReactNode);
+  children: ReactNode | ((overlayContext: HoneyOverlayContext) => ReactNode);
   /**
    * Determines whether the overlay is currently active.
    */
-  isActive: boolean;
+  active: boolean;
   /**
    * An optional unique identifier for the overlay.
    */
@@ -50,39 +51,39 @@ export interface HoneyOverlayProps
  *
  * @param props - The properties used to configure the overlay.
  */
-export const HoneyOverlay = ({
-  children,
-  isActive,
-  overlayId,
-  onDeactivate,
-  ...props
-}: HoneyOverlayProps) => {
-  const overlay = useRegisterHoneyOverlay(isActive, {
-    id: overlayId,
-    onKeyUp: useCallback(
-      keyCode => {
-        if (keyCode === 'Escape') {
-          onDeactivate();
-        }
-      },
-      [onDeactivate],
-    ),
-  });
+export const HoneyOverlay = forwardRef<HTMLDivElement, HoneyOverlayProps>(
+  ({ children, active, overlayId, onDeactivate, ...props }, ref) => {
+    const overlay = useRegisterHoneyOverlay(active, {
+      id: overlayId,
+      onKeyUp: useCallback(
+        keyCode => {
+          if (keyCode === 'Escape') {
+            onDeactivate();
+          }
+        },
+        [onDeactivate],
+      ),
+    });
 
-  return (
-    <HoneyFlexBox
-      ref={overlay?.setContainerRef}
-      {...(!isActive && {
-        inert: 'true',
-      })}
-      {...props}
-    >
-      {typeof children === 'function'
-        ? children({
-            overlay,
-            deactivateOverlay: onDeactivate,
-          })
-        : children}
-    </HoneyFlexBox>
-  );
-};
+    const mergedRef = mergeRefs(overlay?.setContainerRef, ref);
+
+    return (
+      <HoneyFlexBox
+        ref={mergedRef}
+        {...(!active && {
+          inert: 'true',
+        })}
+        {...props}
+      >
+        {typeof children === 'function'
+          ? children({
+              overlay,
+              deactivateOverlay: onDeactivate,
+            })
+          : children}
+      </HoneyFlexBox>
+    );
+  },
+);
+
+HoneyOverlay.displayName = 'HoneyOverlay';

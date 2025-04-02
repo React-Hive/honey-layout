@@ -11,6 +11,8 @@ import HoneyBoxPage from './pages/honey-box.page.mdx';
 import HoneyGridPage from './pages/honey-grid.page.mdx';
 import HoneyListPage from './pages/honey-list.page.mdx';
 import HoneyLazyContentPage from './pages/honey-lazy-content.page.mdx';
+import HoneyPopupPage from './pages/honey-popup.page.mdx';
+import HoneyContextMenuPage from './pages/honey-context-menu.page.mdx';
 import UtilsPage from './pages/utils.page.mdx';
 
 // function getAnchor(text: string) {
@@ -74,6 +76,16 @@ export const PAGES: Page[] = [
     path: 'list',
     menuLabel: 'List',
     element: <HoneyListPage components={MDX_COMPONENTS} />,
+  },
+  {
+    path: 'popup',
+    menuLabel: 'Popup',
+    element: <HoneyPopupPage components={MDX_COMPONENTS} />,
+  },
+  {
+    path: 'context-menu',
+    menuLabel: 'Context Menu',
+    element: <HoneyContextMenuPage components={MDX_COMPONENTS} />,
   },
   // {
   //   path: 'looping-list',

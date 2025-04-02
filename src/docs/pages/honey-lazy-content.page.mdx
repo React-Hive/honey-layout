@@ -18,7 +18,7 @@ export const LazyContentExample = () => {
       </HoneyBox>
 
       <HoneyBox>
-        <HoneyLazyContent isMount={isShow} unmountDelay={1000}>
+        <HoneyLazyContent mount={isShow} unmountDelay={1000}>
           This content will be lazily loaded and unloaded based on the mount state
         </HoneyLazyContent>
       </HoneyBox>
@@ -40,11 +40,11 @@ The `HoneyLazyContent` component for lazy loading and unloading content based on
 
 ### Props:
 
-* **isMount**: Determines whether the content should be mounted or unmounted.
-* **unmountDelay**: The delay in milliseconds before unmounting the content when `isMount` is set to `false`.
-* **isAlwaysMounted**: Determines whether the content should always remain mounted, regardless of the value of `isMount`.
+* **mount**: Determines whether the content should be mounted or unmounted.
+* **unmountDelay**: The delay in milliseconds before unmounting the content when `mount` is set to `false`.
+* **alwaysMounted**: Determines whether the content should always remain mounted, regardless of the value of `mount`.
 If `true`, the content will never be unmounted. Defaults to `false`.
-* **isKeepAfterMount**: Determines whether the content should remain mounted after the mount.
+* **keepAfterMount**: Determines whether the content should remain mounted after the mount.
 If `true`, the content will not be unmounted after the time it's mounted. Defaults to `false`.
 
 ### Usage
@@ -92,7 +92,7 @@ export const LazyContentExample = () => {
       </HoneyBox>
 
       <HoneyBox>
-        <HoneyLazyContent isMount={isShow} unmountDelay={1000}>
+        <HoneyLazyContent mount={isShow} unmountDelay={1000}>
           This content will be lazily loaded and unloaded based on the mount state
         </HoneyLazyContent>
       </HoneyBox>

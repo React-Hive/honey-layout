@@ -1,1 +1,1 @@
-export * from './use-current-honey-grid';
+export * from './use-honey-grid-context';

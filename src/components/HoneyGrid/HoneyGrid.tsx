@@ -1,19 +1,11 @@
 import type { PropsWithChildren } from 'react';
-import React, { forwardRef, createContext, useMemo } from 'react';
+import React, { forwardRef, useMemo } from 'react';
 
-import type { HoneyBreakpointName } from '../../types';
+import type { HoneyGridContextProps } from './HoneyGridContext';
 import type { HoneyGridStyledProps } from './HoneyGridStyled';
 import type { HoneyGridColumnStyledProps } from '../HoneyGridColumn';
+import { HoneyGridContext } from './HoneyGridContext';
 import { HoneyGridStyled } from './HoneyGridStyled';
-
-type HoneyGridContextValue = {
-  columns: number;
-  spacing: number | undefined;
-  isColumnGrowing: boolean;
-  applyColumnMaxWidth: HoneyBreakpointName | false;
-};
-
-export const HoneyGridContext = createContext<HoneyGridContextValue | undefined>(undefined);
 
 export interface HoneyGridProps extends HoneyGridStyledProps {
   /**
@@ -40,7 +32,7 @@ export const HoneyGrid = forwardRef<HTMLDivElement, PropsWithChildren<HoneyGridP
     { children, columns, spacing, isColumnGrowing = true, applyColumnMaxWidth = false, ...props },
     ref,
   ) => {
-    const contextValue = useMemo<HoneyGridContextValue>(
+    const contextValue = useMemo<HoneyGridContextProps>(
       () => ({
         columns,
         spacing,

@@ -7,3 +7,5 @@ export * from './HoneyLoopingList';
 export * from './HoneyStatusContent';
 export * from './HoneyLazyContent';
 export * from './HoneyOverlay';
+export * from './HoneyPopup';
+export * from './HoneyContextMenu';

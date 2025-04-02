@@ -29,6 +29,8 @@ import type {
 import { camelToDashCase, convertHexToHexWithAlpha, media, pxToRem } from '../utils';
 import { CSS_COLOR_PROPERTIES, CSS_DIMENSION_PROPERTIES } from '../constants';
 
+export const noop = () => {};
+
 export function assert(condition: any, message: string): asserts condition {
   if (!condition) {
     throw new Error(message);

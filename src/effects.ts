@@ -41,7 +41,7 @@ export interface HoneyVisibilityTransitionEffectContextProps {
    *
    * @default false
    */
-  isActive?: boolean;
+  active?: boolean;
 }
 
 /**
@@ -56,9 +56,9 @@ export const honeyVisibilityTransitionEffect: HoneyEffect<
   HoneyVisibilityTransitionEffectContextProps
 > =
   ({ durationMs, timingFunction = 'ease-in-out', extraProperties = [], activeClassName }) =>
-  ({ isActive = false }) => css`
-    opacity: ${isActive ? 1 : 0};
-    visibility: ${isActive ? 'visible' : 'hidden'};
+  ({ active = false }) => css`
+    opacity: ${active ? 1 : 0};
+    visibility: ${active ? 'visible' : 'hidden'};
 
     transition-property: ${['opacity', 'visibility', ...extraProperties].join(', ')};
     transition-duration: ${durationMs}ms;
