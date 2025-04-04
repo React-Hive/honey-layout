@@ -1,4 +1,4 @@
-import type { MutableRefObject, Ref, RefCallback } from 'react';
+import type { RefObject, Ref, RefCallback } from 'react';
 import type { IStyleSheetManager } from 'styled-components';
 import isPropValid from '@emotion/is-prop-valid';
 
@@ -29,7 +29,7 @@ export const mergeRefs =
       if (typeof ref === 'function') {
         ref(value);
       } else if (ref && typeof ref === 'object') {
-        (ref as MutableRefObject<Nullable<T>>).current = value;
+        (ref as RefObject<Nullable<T>>).current = value;
       }
     });
   };

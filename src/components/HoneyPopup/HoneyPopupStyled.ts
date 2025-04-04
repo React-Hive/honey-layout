@@ -1,8 +1,8 @@
-import type { HTMLAttributes } from 'react';
 import styled from 'styled-components';
+import type { HTMLAttributes } from 'react';
 
-import type { HoneyFlexBoxProps } from '../HoneyFlexBox';
 import { HoneyFlexBox } from '../HoneyFlexBox';
+import type { HoneyFlexBoxProps } from '../HoneyFlexBox';
 
 export interface HoneyPopupStyledProps extends HTMLAttributes<HTMLDivElement>, HoneyFlexBoxProps {}
 

@@ -68,13 +68,7 @@ export const HoneyOverlay = forwardRef<HTMLDivElement, HoneyOverlayProps>(
     const mergedRef = mergeRefs(overlay?.setContainerRef, ref);
 
     return (
-      <HoneyFlexBox
-        ref={mergedRef}
-        {...(!active && {
-          inert: 'true',
-        })}
-        {...props}
-      >
+      <HoneyFlexBox ref={mergedRef} inert={!active} {...props}>
         {typeof children === 'function'
           ? children({
               overlay,

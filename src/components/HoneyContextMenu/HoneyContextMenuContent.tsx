@@ -57,11 +57,11 @@ export const HoneyContextMenuContent = <
             showArrow={true}
             $width="100%"
           >
-            {({ getReferenceProps }) => (
+            {({ referenceProps }) => (
               <HoneyContextMenuContentOption
                 option={option as HoneyContextMenuOption<any>}
                 {...optionProps}
-                {...getReferenceProps()}
+                {...referenceProps}
               >
                 {option.label}
               </HoneyContextMenuContentOption>

@@ -5,47 +5,31 @@ import {
   flip,
   offset,
   shift,
-  useClick,
-  useClientPoint,
-  useDismiss,
   useFloating,
   useFloatingNodeId,
-  useFocus,
-  useHover,
-  useInteractions,
-  useRole,
   useTransitionStyles,
 } from '@floating-ui/react';
-import type { MutableRefObject } from 'react';
+import type { RefObject } from 'react';
 import type {
   AutoUpdateOptions,
   ArrowOptions,
   FlipOptions,
   OffsetOptions,
   ShiftOptions,
-  UseClickProps,
-  UseDismissProps,
+  Middleware,
   UseFloatingOptions,
-  UseHoverProps,
-  UseRoleProps,
-  UseFocusProps,
   UseFloatingReturn,
   UseInteractionsReturn,
-  UseClientPointProps,
   UseTransitionStylesProps,
 } from '@floating-ui/react';
 
 import { useHoneyLayout } from '../../../hooks';
+import { useHoneyPopupInteractions } from './use-honey-popup-interactions';
 import type { Nullable } from '../../../types';
+import type { UseHoneyPopupInteractionsOptions } from './use-honey-popup-interactions';
 
-export interface UseHoneyPopupOptions {
+export interface UseHoneyPopupOptions extends UseHoneyPopupInteractionsOptions {
   open?: boolean;
-  /**
-   * Determines the trigger event for opening the popup.
-   *
-   * @default 'click'
-   */
-  event?: 'click' | 'hover' | 'focus' | 'point' | 'manual';
   /**
    * Configuration for the floating arrow.
    */
@@ -59,37 +43,28 @@ export interface UseHoneyPopupOptions {
   >;
   /**
    * Configuration for offset middleware.
+   *
+   * @see https://floating-ui.com/docs/offset
    */
   offsetOptions?: OffsetOptions;
   /**
    * Configuration for flip middleware.
+   *
+   * @prop crossAxis - Default is `false`.
+   *  See details by https://floating-ui.com/docs/flip#combining-with-shift
    */
   flipOptions?: FlipOptions;
   /**
    * Configuration for shift middleware.
+   *
+   * @see https://floating-ui.com/docs/shift
    */
   shiftOptions?: ShiftOptions;
   /**
-   * Configuration for dismiss behavior.
+   * @prop duration - Default is 250.
+   *
+   * @see https://floating-ui.com/docs/usetransition#usetransitionstyles
    */
-  dismissOptions?: Omit<UseDismissProps, 'enabled' | 'escapeKey'>;
-  /**
-   * Configuration for click interactions.
-   */
-  clickOptions?: Omit<UseClickProps, 'enabled'>;
-  /**
-   * Configuration for hover interactions.
-   */
-  hoverOptions?: Omit<UseHoverProps, 'enabled'>;
-  /**
-   * Configuration for focus interactions.
-   */
-  focusOptions?: Omit<UseFocusProps, 'enabled'>;
-  clientPointsOptions?: Omit<UseClientPointProps, 'enabled'>;
-  /**
-   * Configuration for role assignment.
-   */
-  roleOptions?: Omit<UseRoleProps, 'enabled'>;
   transitionOptions?: UseTransitionStylesProps;
   /**
    * Whether to use automatic position updates.
@@ -99,6 +74,8 @@ export interface UseHoneyPopupOptions {
   useAutoUpdate?: boolean;
   /**
    * Configuration for auto-update behavior.
+   *
+   * @see https://floating-ui.com/docs/autoupdate
    */
   autoUpdateOptions?: AutoUpdateOptions;
   /**
@@ -127,7 +104,7 @@ interface UseHoneyPopupApi {
   /**
    * Ref for the floating arrow element.
    */
-  arrowRef: MutableRefObject<Nullable<SVGSVGElement>>;
+  arrowRef: RefObject<Nullable<SVGSVGElement>>;
   /**
    * Event handlers for the popup (click, hover, etc.).
    */
@@ -147,19 +124,19 @@ interface UseHoneyPopupApi {
  * @returns An object containing state and utilities for managing the popup.
  */
 export const useHoneyPopup = ({
-  open,
-  event = 'click',
-  arrowOptions,
-  floatingOptions,
-  offsetOptions,
-  flipOptions,
-  shiftOptions,
+  event,
   dismissOptions,
   clickOptions,
   hoverOptions,
   focusOptions,
   clientPointsOptions,
   roleOptions,
+  open,
+  arrowOptions,
+  floatingOptions,
+  offsetOptions,
+  flipOptions,
+  shiftOptions,
   transitionOptions,
   useAutoUpdate = false,
   autoUpdateOptions,
@@ -188,29 +165,32 @@ export const useHoneyPopup = ({
     onClose?.();
   }, [onClose]);
 
+  const middlewares: Middleware[] = [
+    // https://floating-ui.com/docs/arrow
+    arrow({
+      element: arrowRef,
+      // https://floating-ui.com/docs/floatingarrow#arrow-does-not-avoid-rounded-corners
+      padding: theme.spacings.base,
+      ...arrowOptions,
+    }),
+    offset(offsetOptions ?? theme.spacings.base),
+    // https://floating-ui.com/docs/flip
+    flip({
+      // https://floating-ui.com/docs/flip#combining-with-shift
+      crossAxis: false,
+      ...flipOptions,
+    }),
+    // https://floating-ui.com/docs/shift
+    shift({
+      padding: theme.spacings.base,
+      ...shiftOptions,
+    }),
+  ];
+
   const floating = useFloating({
     nodeId,
     open: isOpen,
-    middleware: [
-      // https://floating-ui.com/docs/arrow
-      arrow({
-        element: arrowRef,
-        // https://floating-ui.com/docs/floatingarrow#arrow-does-not-avoid-rounded-corners
-        padding: theme.spacings.base,
-        ...arrowOptions,
-      }),
-      offset(offsetOptions ?? theme.spacings.base),
-      // https://floating-ui.com/docs/flip
-      flip({
-        crossAxis: false,
-        ...flipOptions,
-      }),
-      // https://floating-ui.com/docs/shift
-      shift({
-        padding: theme.spacings.base,
-        ...shiftOptions,
-      }),
-    ],
+    middleware: middlewares,
     onOpenChange: setIsOpen,
     // https://floating-ui.com/docs/usefloating#whileelementsmounted
     ...(useAutoUpdate && {
@@ -220,35 +200,15 @@ export const useHoneyPopup = ({
     ...floatingOptions,
   });
 
-  const dismiss = useDismiss(floating.context, {
-    escapeKey: false,
-    ...dismissOptions,
+  const interactions = useHoneyPopupInteractions(floating.context, {
+    event,
+    dismissOptions,
+    clickOptions,
+    hoverOptions,
+    focusOptions,
+    clientPointsOptions,
+    roleOptions,
   });
-
-  const click = useClick(floating.context, {
-    enabled: event === 'click',
-    ...clickOptions,
-  });
-
-  const hover = useHover(floating.context, {
-    restMs: 150,
-    enabled: event === 'hover',
-    ...hoverOptions,
-  });
-
-  const focus = useFocus(floating.context, {
-    enabled: event === 'focus',
-    ...focusOptions,
-  });
-
-  const clientPoint = useClientPoint(floating.context, {
-    enabled: event === 'point',
-    ...clientPointsOptions,
-  });
-
-  const role = useRole(floating.context, roleOptions);
-
-  const interactions = useInteractions([dismiss, click, hover, focus, clientPoint, role]);
 
   const transition = useTransitionStyles(floating.context, {
     duration: 250,

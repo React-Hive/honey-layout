@@ -21,7 +21,7 @@ import type { UseHoneyPopupOptions } from './hooks';
 import type { HoneyOverlayProps } from '../HoneyOverlay';
 
 export interface HoneyPopupChildrenContextProps {
-  getReferenceProps: UseInteractionsReturn['getReferenceProps'];
+  referenceProps: ReturnType<UseInteractionsReturn['getReferenceProps']>;
 }
 
 type InheritedHoneyOverlayProps = Omit<HoneyOverlayProps, 'children' | 'active' | 'onDeactivate'>;
@@ -57,7 +57,7 @@ export interface HoneyPopupProps<Context = undefined>
    */
   arrowProps?: Omit<FloatingArrowProps, 'ref' | 'context'>;
   /**
-   * Properties for portal component.
+   * Properties for `HoneyPopupPortal` component.
    */
   portalProps?: Omit<HoneyPopupPortalProps, 'children'>;
   /**
@@ -131,7 +131,7 @@ export const HoneyPopup = <Context = undefined,>({
     });
 
   const childrenContext: HoneyPopupChildrenContextProps = {
-    getReferenceProps: interactions.getReferenceProps,
+    referenceProps: interactions.getReferenceProps(),
   };
 
   const popupContext = useMemo<HoneyPopupContextProps<Context>>(

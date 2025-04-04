@@ -1,7 +1,7 @@
 /**
  * Store types that represent data structures, transformations, and models used across different components and modules.
  */
-import type { MutableRefObject } from 'react';
+import type { RefObject } from 'react';
 import type { StyleFunction } from 'styled-components';
 
 import type { KeysWithNonArrayValues, Nullable } from './utility.types';
@@ -71,7 +71,7 @@ export interface HoneyActiveOverlay {
   /**
    * Reference to the container element of the overlay.
    */
-  containerRef: MutableRefObject<Nullable<HTMLDivElement>>;
+  containerRef: RefObject<Nullable<HTMLDivElement>>;
   /**
    * Sets the container reference for the overlay.
    *

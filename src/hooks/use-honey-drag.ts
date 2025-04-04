@@ -1,4 +1,4 @@
-import type { MutableRefObject } from 'react';
+import type { RefObject } from 'react';
 import { useEffect } from 'react';
 
 import type { Nullable } from '../types';
@@ -154,7 +154,7 @@ export interface HoneyDragOptions {
  * @param options - Configuration options.
  */
 export const useHoneyDrag = <Element extends HTMLElement>(
-  draggableElementRef: MutableRefObject<Nullable<Element>>,
+  draggableElementRef: RefObject<Nullable<Element>>,
   { onMoveDrag, onStartDrag, onEndDrag }: HoneyDragHandlers<Element>,
   { isSkipOnEndDragWhenStopped = false, isEnabled = true }: HoneyDragOptions = {},
 ) => {

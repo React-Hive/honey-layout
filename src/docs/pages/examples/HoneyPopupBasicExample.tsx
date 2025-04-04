@@ -34,7 +34,7 @@ const PopupContent = () => {
           showArrow={true}
           $width="100%"
         >
-          {({ getReferenceProps }) => (
+          {({ referenceProps }) => (
             <HoneyBox
               key={i}
               $display="flex"
@@ -42,7 +42,7 @@ const PopupContent = () => {
               $width="100%"
               $padding={[0.5, 1]}
               tabIndex={0}
-              {...getReferenceProps()}
+              {...referenceProps}
             >
               Option {i + 1}
             </HoneyBox>
@@ -70,8 +70,8 @@ export const HoneyPopupBasicExample = () => {
         }}
         showArrow={true}
       >
-        {({ getReferenceProps }) => (
-          <Button $width="120px" {...getReferenceProps()}>
+        {({ referenceProps }) => (
+          <Button $width="120px" {...referenceProps}>
             Open Popup
           </Button>
         )}

@@ -59,7 +59,7 @@ export const HoneyContextMenuBasicExample = () => {
       }}
       context={context}
     >
-      {({ getReferenceProps }) => <div {...getReferenceProps()}>Open Context Menu</div>}
+      {({ referenceProps }) => <div {...referenceProps}>Open Context Menu</div>}
     </HoneyContextMenu>
   );
 };

@@ -1,4 +1,4 @@
-import type { MutableRefObject } from 'react';
+import type { RefObject } from 'react';
 import { useCallback, useEffect } from 'react';
 
 import type { Nullable } from '../types';
@@ -25,7 +25,7 @@ interface SyntheticScrollableContainerOptions<Element extends HTMLElement>
  * @param options - Options for configuring the synthetic scrollable container.
  */
 export const useHoneySyntheticScrollableContainer = <Element extends HTMLElement>(
-  scrollableContainerRef: MutableRefObject<Nullable<Element>>,
+  scrollableContainerRef: RefObject<Nullable<Element>>,
   {
     availableWindowPercentage = 0,
     onStartDrag,
