@@ -31,10 +31,6 @@ import type { UseHoneyPopupInteractionsOptions } from './use-honey-popup-interac
 export interface UseHoneyPopupOptions extends UseHoneyPopupInteractionsOptions {
   open?: boolean;
   /**
-   * Configuration for the floating arrow.
-   */
-  arrowOptions?: Omit<ArrowOptions, 'element'>;
-  /**
    * Options for configuring the floating UI behavior.
    */
   floatingOptions?: Omit<
@@ -60,6 +56,10 @@ export interface UseHoneyPopupOptions extends UseHoneyPopupInteractionsOptions {
    * @see https://floating-ui.com/docs/shift
    */
   shiftOptions?: ShiftOptions;
+  /**
+   * Configuration for the floating arrow.
+   */
+  arrowOptions?: Omit<ArrowOptions, 'element'>;
   /**
    * @prop duration Default is 250.
    *
@@ -133,11 +133,11 @@ export const useHoneyPopup = ({
   clientPointsOptions,
   roleOptions,
   open,
-  arrowOptions,
   floatingOptions,
   offsetOptions,
   flipOptions,
   shiftOptions,
+  arrowOptions,
   transitionOptions,
   useAutoUpdate = false,
   autoUpdateOptions,
@@ -167,13 +167,6 @@ export const useHoneyPopup = ({
   }, [onClose]);
 
   const middlewares: Middleware[] = [
-    // https://floating-ui.com/docs/arrow
-    arrow({
-      element: arrowRef,
-      // https://floating-ui.com/docs/floatingarrow#arrow-does-not-avoid-rounded-corners
-      padding: theme.spacings.base,
-      ...arrowOptions,
-    }),
     offset(offsetOptions ?? theme.spacings.base),
     // https://floating-ui.com/docs/flip
     flip({
@@ -185,6 +178,18 @@ export const useHoneyPopup = ({
     shift({
       padding: theme.spacings.base,
       ...shiftOptions,
+    }),
+    /**
+     * The `arrow()` should generally be placed toward the end of your middleware array,
+     * after `shift()` or `autoPlacement()` (if used).
+     *
+     * @see https://floating-ui.com/docs/arrow
+     */
+    arrow({
+      element: arrowRef,
+      // https://floating-ui.com/docs/floatingarrow#arrow-does-not-avoid-rounded-corners
+      padding: theme.spacings.base,
+      ...arrowOptions,
     }),
   ];
 
