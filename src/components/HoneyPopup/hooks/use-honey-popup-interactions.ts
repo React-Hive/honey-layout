@@ -22,6 +22,10 @@ import type {
  */
 export interface UseHoneyPopupInteractionsOptions {
   /**
+   * @default true
+   */
+  enabled?: boolean;
+  /**
    * Determines the trigger event for opening the popup.
    *
    * @default 'click'
@@ -70,6 +74,7 @@ export interface UseHoneyPopupInteractionsOptions {
 export const useHoneyPopupInteractions = (
   context: FloatingContext,
   {
+    enabled = true,
     event = 'click',
     dismissOptions,
     clickOptions,
@@ -85,23 +90,23 @@ export const useHoneyPopupInteractions = (
   });
 
   const click = useClick(context, {
-    enabled: event === 'click',
+    enabled: enabled && event === 'click',
     ...clickOptions,
   });
 
   const hover = useHover(context, {
     restMs: 150,
-    enabled: event === 'hover',
+    enabled: enabled && event === 'hover',
     ...hoverOptions,
   });
 
   const focus = useFocus(context, {
-    enabled: event === 'focus',
+    enabled: enabled && event === 'focus',
     ...focusOptions,
   });
 
   const clientPoint = useClientPoint(context, {
-    enabled: event === 'point',
+    enabled: enabled && event === 'point',
     ...clientPointsOptions,
   });
 

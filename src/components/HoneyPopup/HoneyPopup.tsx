@@ -83,6 +83,7 @@ export const HoneyPopup = <Context = undefined,>({
   content,
   contentProps,
   focusManagerProps,
+  enabled,
   open,
   event,
   arrowOptions,
@@ -110,6 +111,7 @@ export const HoneyPopup = <Context = undefined,>({
 }: HoneyPopupProps<Context>) => {
   const { nodeId, floating, isOpen, arrowRef, interactions, transition, closePopup } =
     useHoneyPopup({
+      enabled,
       open,
       event,
       arrowOptions,

@@ -61,7 +61,7 @@ export interface UseHoneyPopupOptions extends UseHoneyPopupInteractionsOptions {
    */
   shiftOptions?: ShiftOptions;
   /**
-   * @prop duration - Default is 250.
+   * @prop duration Default is 250.
    *
    * @see https://floating-ui.com/docs/usetransition#usetransitionstyles
    */
@@ -124,6 +124,7 @@ interface UseHoneyPopupApi {
  * @returns An object containing state and utilities for managing the popup.
  */
 export const useHoneyPopup = ({
+  enabled,
   event,
   dismissOptions,
   clickOptions,
@@ -201,6 +202,7 @@ export const useHoneyPopup = ({
   });
 
   const interactions = useHoneyPopupInteractions(floating.context, {
+    enabled,
     event,
     dismissOptions,
     clickOptions,
