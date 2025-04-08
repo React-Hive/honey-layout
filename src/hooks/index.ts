@@ -1,3 +1,4 @@
+export * from './use-on-change';
 export * from './use-honey-media-query';
 export * from './use-honey-drag';
 export * from './use-honey-infinite-scroll';

@@ -11,9 +11,10 @@ import type { HoneyContextMenuContentProps } from './HoneyContextMenuContent';
 export interface HoneyContextMenuProps<
   Option extends HoneyContextMenuOption<Context>,
   Context = undefined,
-> extends Pick<HoneyPopupProps<Context>, 'context'>,
-    HoneyContextMenuContentProps<Option, Context> {
+> extends Omit<HoneyPopupProps<Context>, 'content'>,
+    Pick<HoneyContextMenuContentProps<Option, Context>, 'options' | 'optionProps'> {
   children: (context: HoneyPopupChildrenContextProps) => ReactNode;
+  subProps?: Omit<HoneyContextMenuContentProps<Option, Context>, 'options' | 'optionProps'>;
 }
 
 export const HoneyContextMenu = <
@@ -21,25 +22,33 @@ export const HoneyContextMenu = <
   Context = undefined,
 >({
   children,
+  subProps,
   options,
   optionProps,
+  clickOptions,
   context,
+  ...popupProps
 }: HoneyContextMenuProps<Option, Context>) => {
+  const { contentProps } = popupProps;
+
   return (
     <>
       <HoneyPopup
         context={context}
-        content={<HoneyContextMenuContent options={options} optionProps={optionProps} />}
-        floatingOptions={{
-          placement: 'top',
+        content={
+          <HoneyContextMenuContent
+            options={options}
+            optionProps={optionProps}
+            contentProps={contentProps}
+            {...subProps}
+          />
+        }
+        clickOptions={{
+          toggle: false,
+          ...clickOptions,
         }}
-        contentProps={{
-          $width: '150px',
-          $maxHeight: '300px',
-          $borderRadius: '4px',
-          $backgroundColor: 'white',
-        }}
-        showArrow={true}
+        useArrow={true}
+        {...popupProps}
       >
         {children}
       </HoneyPopup>

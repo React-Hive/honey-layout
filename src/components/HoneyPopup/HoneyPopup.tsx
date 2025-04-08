@@ -26,10 +26,9 @@ export interface HoneyPopupChildrenContextProps {
 
 type InheritedHoneyOverlayProps = Omit<HoneyOverlayProps, 'children' | 'active' | 'onDeactivate'>;
 
-export interface HoneyPopupProps<Context = undefined>
-  extends Omit<HoneyPopupStyledProps, 'children' | 'content'>,
-    UseHoneyPopupOptions {
+export interface HoneyPopupProps<Context = undefined> extends UseHoneyPopupOptions {
   children: (context: HoneyPopupChildrenContextProps) => ReactNode;
+  referenceProps?: Omit<HoneyPopupStyledProps, 'children' | 'content'>;
   /**
    * Content inside the popup.
    */
@@ -44,12 +43,6 @@ export interface HoneyPopupProps<Context = undefined>
    * @see https://floating-ui.com/docs/floatingfocusmanager#props
    */
   focusManagerProps?: Omit<FloatingFocusManagerProps, 'children' | 'context'>;
-  /**
-   * Whether to show an arrow indicator.
-   *
-   * @default false
-   */
-  showArrow?: boolean;
   /**
    * Properties for an arrow component.
    *
@@ -80,57 +73,20 @@ export interface HoneyPopupProps<Context = undefined>
  */
 export const HoneyPopup = <Context = undefined,>({
   children,
+  referenceProps,
   content,
   contentProps,
   focusManagerProps,
-  enabled,
-  open,
-  event,
-  arrowOptions,
-  floatingOptions,
-  offsetOptions,
-  shiftOptions,
-  flipOptions,
-  dismissOptions,
-  clickOptions,
-  hoverOptions,
-  focusOptions,
-  clientPointsOptions,
-  roleOptions,
-  transitionOptions,
-  showArrow = false,
-  useAutoUpdate,
-  autoUpdateOptions,
   arrowProps,
   portalProps,
   adjustStyles,
   context,
-  onOpen,
-  onClose,
-  ...props
+  ...popupOptions
 }: HoneyPopupProps<Context>) => {
+  const { useArrow } = popupOptions;
+
   const { nodeId, floating, isOpen, arrowRef, interactions, transition, closePopup } =
-    useHoneyPopup({
-      enabled,
-      open,
-      event,
-      arrowOptions,
-      floatingOptions,
-      offsetOptions,
-      shiftOptions,
-      flipOptions,
-      dismissOptions,
-      clickOptions,
-      hoverOptions,
-      focusOptions,
-      clientPointsOptions,
-      roleOptions,
-      transitionOptions,
-      useAutoUpdate,
-      autoUpdateOptions,
-      onOpen,
-      onClose,
-    });
+    useHoneyPopup(popupOptions);
 
   const childrenContext: HoneyPopupChildrenContextProps = {
     referenceProps: interactions.getReferenceProps(),
@@ -148,8 +104,8 @@ export const HoneyPopup = <Context = undefined,>({
     <HoneyPopupTree>
       <HoneyPopupStyled
         ref={floating.refs.setReference}
-        {...interactions.getReferenceProps()}
-        {...props}
+        {...childrenContext.referenceProps}
+        {...referenceProps}
         // Data
         data-testid="honey-popup"
       >
@@ -187,7 +143,7 @@ export const HoneyPopup = <Context = undefined,>({
                     // Data
                     data-testid="honey-popup-floating-content"
                   >
-                    {showArrow && (
+                    {useArrow && (
                       <FloatingArrow
                         ref={arrowRef}
                         context={floating.context}

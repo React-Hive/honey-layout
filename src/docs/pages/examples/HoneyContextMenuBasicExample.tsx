@@ -53,11 +53,23 @@ export const HoneyContextMenuBasicExample = () => {
 
   return (
     <HoneyContextMenu
+      context={context}
       options={options}
       optionProps={{
         $padding: [0.5, 1],
       }}
-      context={context}
+      contentProps={{
+        $width: '150px',
+        $maxHeight: '300px',
+        $borderRadius: '4px',
+        $backgroundColor: 'white',
+      }}
+      floatingOptions={{
+        placement: 'top',
+      }}
+      subProps={{
+        event: 'click',
+      }}
     >
       {({ referenceProps }) => <div {...referenceProps}>Open Context Menu</div>}
     </HoneyContextMenu>

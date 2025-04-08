@@ -16,15 +16,21 @@ export interface HoneyContextMenuContentOptionProps<
 
 export const HoneyContextMenuContentOption = <
   Option extends HoneyContextMenuOption<Context>,
-  Context = undefined,
+  Context,
 >({
   option,
   ...props
 }: HoneyContextMenuContentOptionProps<Option, Context>) => {
-  const { context } = useHoneyPopupContext();
+  const { context, closePopup } = useHoneyPopupContext();
+
+  const handleClick = () => {
+    option.onClick?.({ context });
+
+    closePopup();
+  };
 
   return (
-    <HoneyBox onClick={() => option.onClick?.({ context })} {...props}>
+    <HoneyBox onClick={handleClick} {...props}>
       {option.label}
     </HoneyBox>
   );

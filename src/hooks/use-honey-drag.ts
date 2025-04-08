@@ -134,13 +134,13 @@ export interface HoneyDragOptions {
    *
    * @default false
    */
-  isSkipOnEndDragWhenStopped?: boolean;
+  skipOnEndDragWhenStopped?: boolean;
   /**
    * Determines whether the drag functionality is enabled or not.
    *
    * @default true
    */
-  isEnabled?: boolean;
+  enabled?: boolean;
 }
 
 /**
@@ -156,12 +156,12 @@ export interface HoneyDragOptions {
 export const useHoneyDrag = <Element extends HTMLElement>(
   draggableElementRef: RefObject<Nullable<Element>>,
   { onMoveDrag, onStartDrag, onEndDrag }: HoneyDragHandlers<Element>,
-  { isSkipOnEndDragWhenStopped = false, isEnabled = true }: HoneyDragOptions = {},
+  { skipOnEndDragWhenStopped = false, enabled = true }: HoneyDragOptions = {},
 ) => {
   useEffect(() => {
     const draggableElement = draggableElementRef.current;
 
-    if (!isEnabled || !draggableElement) {
+    if (!enabled || !draggableElement) {
       return;
     }
 
@@ -263,7 +263,7 @@ export const useHoneyDrag = <Element extends HTMLElement>(
         lastX = clientX;
         lastY = clientY;
 
-        await releaseDrag(!isSkipOnEndDragWhenStopped);
+        await releaseDrag(!skipOnEndDragWhenStopped);
         return;
       }
 
@@ -323,5 +323,5 @@ export const useHoneyDrag = <Element extends HTMLElement>(
       draggableElement.removeEventListener('touchcancel', touchCancelHandler);
       draggableElement.removeEventListener('mousedown', mouseDownHandler);
     };
-  }, [isEnabled, onStartDrag, onMoveDrag, onEndDrag]);
+  }, [enabled, onStartDrag, onMoveDrag, onEndDrag]);
 };

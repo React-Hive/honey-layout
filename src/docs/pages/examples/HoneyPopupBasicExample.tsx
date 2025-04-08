@@ -26,13 +26,15 @@ const PopupContent = () => {
             placement: 'right',
           }}
           offsetOptions={resolveSpacing(2, null)}
+          referenceProps={{
+            $width: '100%',
+          }}
           contentProps={{
             $width: '150px',
             $borderRadius: '4px',
             $backgroundColor: 'white',
           }}
-          showArrow={true}
-          $width="100%"
+          useArrow={true}
         >
           {({ referenceProps }) => (
             <HoneyBox
@@ -68,7 +70,8 @@ export const HoneyPopupBasicExample = () => {
           $borderRadius: '4px',
           $backgroundColor: 'white',
         }}
-        showArrow={true}
+        useArrow={true}
+        useAutoUpdate={true}
       >
         {({ referenceProps }) => (
           <Button $width="120px" {...referenceProps}>

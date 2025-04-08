@@ -1,4 +1,5 @@
 import {
+  safePolygon,
   useClick,
   useClientPoint,
   useDismiss,
@@ -36,7 +37,7 @@ export interface UseHoneyPopupInteractionsOptions {
    *
    * @see https://floating-ui.com/docs/usedismiss
    */
-  dismissOptions?: Omit<UseDismissProps, 'enabled' | 'escapeKey'>;
+  dismissOptions?: Omit<UseDismissProps, 'escapeKey'>;
   /**
    * Configuration for click interactions.
    *
@@ -47,6 +48,7 @@ export interface UseHoneyPopupInteractionsOptions {
    * Configuration for hover interactions.
    *
    * @prop restMs Default is 150.
+   * @prop handleClose Default is `safePolygon()`.
    *
    * @see https://floating-ui.com/docs/usehover
    */
@@ -97,6 +99,7 @@ export const useHoneyPopupInteractions = (
   const hover = useHover(context, {
     restMs: 150,
     enabled: enabled && event === 'hover',
+    handleClose: safePolygon(),
     ...hoverOptions,
   });
 
