@@ -25,7 +25,7 @@ export const HoneyListBasicExample = () => {
 
   return (
     <HoneyBox $marginTop="16px" $border="1px solid #cccccc" $borderRadius="4px">
-      <HoneyList items={items} itemKey="id" $gap="8px" as="ul">
+      <HoneyList items={items} itemKey="id" $gap="8px">
         {item => <HoneyBox as={ListItemStyled}>{item.name}</HoneyBox>}
       </HoneyList>
     </HoneyBox>

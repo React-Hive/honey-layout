@@ -1,34 +1,35 @@
-import type { HTMLAttributes } from 'react';
 import styled, { css } from 'styled-components';
+import type { ElementType } from 'react';
 
-import type { HoneyBreakpointName } from '../../types';
-import type { HoneyBoxProps } from '../HoneyBox';
 import { bpMedia, resolveSpacing } from '../../helpers';
 import { HoneyFlexBox } from '../HoneyFlexBox';
+import type { HoneyBreakpointName } from '../../types';
+import type { HoneyBoxProps } from '../HoneyBox';
 
-export interface HoneyGridColumnStyledProps extends HTMLAttributes<HTMLDivElement>, HoneyBoxProps {
-  /**
-   * Total number of columns in the grid.
-   */
-  columns: number;
-  /**
-   * Spacing between grid columns.
-   *
-   * @default 0
-   */
-  spacing: number | undefined;
-  /**
-   * The number of columns this column should take.
-   *
-   * @default 1
-   */
-  takeColumns?: number;
-  /**
-   * Specifies the breakpoint at which the max-width should be applied or disables it if set to `false`.
-   * Can be a breakpoint name.
-   */
-  applyMaxWidth?: HoneyBreakpointName | false;
-}
+export type HoneyGridColumnStyledProps<Element extends ElementType = 'div'> =
+  HoneyBoxProps<Element> & {
+    /**
+     * Total number of columns in the grid.
+     */
+    columns: number;
+    /**
+     * Spacing between grid columns.
+     *
+     * @default 0
+     */
+    spacing: number | undefined;
+    /**
+     * The number of columns this column should take.
+     *
+     * @default 1
+     */
+    takeColumns?: number;
+    /**
+     * Specifies the breakpoint at which the max-width should be applied or disables it if set to `false`.
+     * Can be a breakpoint name.
+     */
+    applyMaxWidth?: HoneyBreakpointName | false;
+  };
 
 /**
  * This styled component defines the layout and styling for individual columns in a grid layout.

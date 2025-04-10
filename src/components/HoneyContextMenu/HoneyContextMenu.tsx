@@ -11,7 +11,8 @@ import type { HoneyContextMenuContentProps } from './HoneyContextMenuContent';
 export interface HoneyContextMenuProps<
   Option extends HoneyContextMenuOption<Context>,
   Context = undefined,
-> extends Omit<HoneyPopupProps<Context>, 'content'>,
+  UseAutoSize extends boolean = boolean,
+> extends Omit<HoneyPopupProps<Context, UseAutoSize>, 'content'>,
     Pick<HoneyContextMenuContentProps<Option, Context>, 'options' | 'optionProps'> {
   children: (context: HoneyPopupChildrenContextProps) => ReactNode;
   subProps?: Omit<HoneyContextMenuContentProps<Option, Context>, 'options' | 'optionProps'>;
@@ -20,6 +21,7 @@ export interface HoneyContextMenuProps<
 export const HoneyContextMenu = <
   Option extends HoneyContextMenuOption<Context>,
   Context = undefined,
+  UseAutoSize extends boolean = boolean,
 >({
   children,
   subProps,
@@ -28,7 +30,7 @@ export const HoneyContextMenu = <
   clickOptions,
   context,
   ...popupProps
-}: HoneyContextMenuProps<Option, Context>) => {
+}: HoneyContextMenuProps<Option, Context, UseAutoSize>) => {
   const { contentProps } = popupProps;
 
   return (

@@ -26,7 +26,8 @@ export interface HoneyPopupChildrenContextProps {
 
 type InheritedHoneyOverlayProps = Omit<HoneyOverlayProps, 'children' | 'active' | 'onDeactivate'>;
 
-export interface HoneyPopupProps<Context = undefined> extends UseHoneyPopupOptions {
+export interface HoneyPopupProps<Context = undefined, UseAutoSize extends boolean = boolean>
+  extends UseHoneyPopupOptions<UseAutoSize> {
   children: (context: HoneyPopupChildrenContextProps) => ReactNode;
   referenceProps?: Omit<HoneyPopupStyledProps, 'children' | 'content'>;
   /**
@@ -36,7 +37,10 @@ export interface HoneyPopupProps<Context = undefined> extends UseHoneyPopupOptio
   /**
    * Additional props for the floating content.
    */
-  contentProps?: InheritedHoneyOverlayProps;
+  contentProps?: UseAutoSize extends true
+    ? // Omit `minWidth`, `minHeight`, `maxWidth` and `maxHeight` because they will be overwritten by size() middleware
+      Omit<InheritedHoneyOverlayProps, '$minWidth' | '$minHeight' | '$maxWidth' | '$maxHeight'>
+    : InheritedHoneyOverlayProps;
   /**
    * Props for managing focus inside the popup.
    *
@@ -71,7 +75,7 @@ export interface HoneyPopupProps<Context = undefined> extends UseHoneyPopupOptio
  *
  * @template Context - Optional context type.
  */
-export const HoneyPopup = <Context = undefined,>({
+export const HoneyPopup = <Context = undefined, UseAutoSize extends boolean = boolean>({
   children,
   referenceProps,
   content,
@@ -82,7 +86,7 @@ export const HoneyPopup = <Context = undefined,>({
   adjustStyles,
   context,
   ...popupOptions
-}: HoneyPopupProps<Context>) => {
+}: HoneyPopupProps<Context, UseAutoSize>) => {
   const { useArrow } = popupOptions;
 
   const { nodeId, floating, isOpen, arrowRef, interactions, transition, closePopup } =

@@ -1,5 +1,4 @@
 import React from 'react';
-import type { HTMLAttributes } from 'react';
 
 import { HoneyBox } from '../HoneyBox';
 import { useHoneyPopupContext } from '../HoneyPopup';
@@ -9,8 +8,7 @@ import type { HoneyContextMenuOption } from './HoneyContextMenu.types';
 export interface HoneyContextMenuContentOptionProps<
   Option extends HoneyContextMenuOption<Context>,
   Context,
-> extends HTMLAttributes<HTMLDivElement>,
-    HoneyBoxProps {
+> extends HoneyBoxProps {
   option: Option;
 }
 

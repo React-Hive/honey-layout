@@ -1,14 +1,14 @@
-import type { PropsWithChildren } from 'react';
 import React from 'react';
+import type { ElementType } from 'react';
 
-import type { HoneyGridColumnProps } from './HoneyGridColumn.types';
 import { HoneyGridColumnStyled } from './HoneyGridColumnStyled';
 import { useHoneyGridContext } from '../HoneyGrid/hooks';
+import type { HoneyGridColumnProps } from './HoneyGridColumn.types';
 
-export const HoneyGridColumn = ({
+export const HoneyGridColumn = <Element extends ElementType = 'div'>({
   children,
   ...props
-}: PropsWithChildren<HoneyGridColumnProps>) => {
+}: Omit<HoneyGridColumnProps<Element>, '$flexGrow'>) => {
   const { columns, spacing, isColumnGrowing, applyColumnMaxWidth } = useHoneyGridContext();
 
   return (

@@ -29,7 +29,8 @@ import { useHoneyPopupInteractions } from './use-honey-popup-interactions';
 import type { Nullable } from '../../../types';
 import type { UseHoneyPopupInteractionsOptions } from './use-honey-popup-interactions';
 
-export interface UseHoneyPopupOptions extends UseHoneyPopupInteractionsOptions {
+export interface UseHoneyPopupOptions<UseAutoSize extends boolean = boolean>
+  extends UseHoneyPopupInteractionsOptions {
   open?: boolean;
   /**
    * Options for configuring the floating UI behavior.
@@ -88,7 +89,7 @@ export interface UseHoneyPopupOptions extends UseHoneyPopupInteractionsOptions {
   /**
    * @default false
    */
-  useAutoSize?: boolean;
+  useAutoSize?: UseAutoSize;
   /**
    * @default 0
    *

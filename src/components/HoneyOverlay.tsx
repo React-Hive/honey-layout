@@ -1,11 +1,11 @@
-import React, { forwardRef, useCallback } from 'react';
-import type { ReactNode, HTMLAttributes } from 'react';
+import React, { useCallback } from 'react';
+import type { ReactNode } from 'react';
 
-import type { HoneyActiveOverlay, HoneyOverlayId, Nullable } from '../types';
-import type { HoneyFlexBoxProps } from './HoneyFlexBox';
 import { HoneyFlexBox } from './HoneyFlexBox';
 import { useRegisterHoneyOverlay } from '../hooks';
 import { mergeRefs } from '../helpers';
+import type { HoneyActiveOverlay, HoneyOverlayId, Nullable } from '../types';
+import type { HoneyFlexBoxProps } from './HoneyFlexBox';
 
 export interface HoneyOverlayContext {
   /**
@@ -18,9 +18,7 @@ export interface HoneyOverlayContext {
   deactivateOverlay: () => void;
 }
 
-export interface HoneyOverlayProps
-  extends Omit<HTMLAttributes<HTMLDivElement>, 'children'>,
-    HoneyFlexBoxProps {
+export interface HoneyOverlayProps extends Omit<HoneyFlexBoxProps, 'children'> {
   /**
    * The content of the overlay, either as static nodes or a function that receives the object
    * with the current overlay state and helper methods.
@@ -51,33 +49,36 @@ export interface HoneyOverlayProps
  *
  * @param props - The properties used to configure the overlay.
  */
-export const HoneyOverlay = forwardRef<HTMLDivElement, HoneyOverlayProps>(
-  ({ children, active, overlayId, onDeactivate, ...props }, ref) => {
-    const overlay = useRegisterHoneyOverlay(active, {
-      id: overlayId,
-      onKeyUp: useCallback(
-        keyCode => {
-          if (keyCode === 'Escape') {
-            onDeactivate();
-          }
-        },
-        [onDeactivate],
-      ),
-    });
+export const HoneyOverlay = ({
+  ref,
+  children,
+  active,
+  overlayId,
+  onDeactivate,
+  ...props
+}: HoneyOverlayProps) => {
+  const overlay = useRegisterHoneyOverlay(active, {
+    id: overlayId,
+    onKeyUp: useCallback(
+      keyCode => {
+        if (keyCode === 'Escape') {
+          onDeactivate();
+        }
+      },
+      [onDeactivate],
+    ),
+  });
 
-    const mergedRef = mergeRefs(overlay?.setContainerRef, ref);
+  const mergedRef = mergeRefs(overlay?.setContainerRef, ref);
 
-    return (
-      <HoneyFlexBox ref={mergedRef} inert={!active} {...props}>
-        {typeof children === 'function'
-          ? children({
-              overlay,
-              deactivateOverlay: onDeactivate,
-            })
-          : children}
-      </HoneyFlexBox>
-    );
-  },
-);
-
-HoneyOverlay.displayName = 'HoneyOverlay';
+  return (
+    <HoneyFlexBox ref={mergedRef} inert={!active} {...props}>
+      {typeof children === 'function'
+        ? children({
+            overlay,
+            deactivateOverlay: onDeactivate,
+          })
+        : children}
+    </HoneyFlexBox>
+  );
+};

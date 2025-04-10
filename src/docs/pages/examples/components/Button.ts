@@ -1,10 +1,9 @@
-import type { ButtonHTMLAttributes } from 'react';
 import styled, { css } from 'styled-components';
 
-import type { HoneyColorKey } from '../../../../types';
-import type { HoneyBoxProps } from '../../../../components';
 import { resolveColor, resolveSpacing } from '../../../../helpers';
 import { HoneyBox } from '../../../../components';
+import type { HoneyColorKey } from '../../../../types';
+import type { HoneyBoxProps } from '../../../../components';
 
 type ButtonColorType = 'success' | 'default';
 
@@ -27,15 +26,13 @@ const BUTTON_COLORS_MAP: Record<ButtonColorType, ButtonColorConfig> = {
   },
 };
 
-interface ButtonProps
-  extends Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'color'>,
-    HoneyBoxProps {
+type ButtonProps = Omit<HoneyBoxProps<'button'>, 'color'> & {
   color?: ButtonColorType;
-}
+};
 
-export const Button = styled(HoneyBox).attrs({
+export const Button = styled(HoneyBox).attrs<ButtonProps>({
   as: 'button',
-})<ButtonProps>`
+})`
   ${({ color = 'success' }) => {
     const colorConfig = BUTTON_COLORS_MAP[color];
 

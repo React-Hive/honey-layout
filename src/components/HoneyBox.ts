@@ -1,18 +1,16 @@
-import type { HTMLAttributes } from 'react';
-import type { StyledTarget } from 'styled-components/dist/types';
 import styled, { css } from 'styled-components';
+import type { ComponentPropsWithRef, ElementType } from 'react';
 
-import type { HoneyPrefixedCSSProperties, HoneyEffectResultFn } from '../types';
 import { applyBreakpointStyles, createStyles } from '../helpers';
+import type { HoneyPrefixedCSSProperties, HoneyEffectResultFn } from '../types';
 
-export interface HoneyBoxProps extends HoneyPrefixedCSSProperties {
-  as?: StyledTarget<'web'>;
-  effects?: HoneyEffectResultFn<object>[];
-}
+export type HoneyBoxProps<Element extends ElementType = 'div'> = ComponentPropsWithRef<Element> &
+  HoneyPrefixedCSSProperties & {
+    as?: Element;
+    effects?: HoneyEffectResultFn<object>[];
+  };
 
-type HoneyBoxInnerProps = HTMLAttributes<HTMLDivElement> & HoneyBoxProps;
-
-export const HoneyBox = styled.div<HoneyBoxInnerProps>`
+export const HoneyBox = styled.div<HoneyBoxProps>`
   ${({ effects }) => css`
     ${effects};
 

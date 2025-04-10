@@ -1,14 +1,14 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 
-import type { Nullable } from '../../types';
-import type { HoneyDragOnMoveHandler } from '../../hooks';
-import type { HoneyBoxProps } from '../HoneyBox';
-import type { HoneyListItem, HoneyListGenericProps } from '../HoneyList';
 import { getHoneyListItemId } from '../HoneyList';
 import { HoneyBox } from '../HoneyBox';
 import { useHoneyDrag } from '../../hooks';
 import { getTransformationValues } from '../../utils';
+import type { Nullable } from '../../types';
+import type { HoneyDragOnMoveHandler } from '../../hooks';
+import type { HoneyBoxProps } from '../HoneyBox';
+import type { HoneyListItem, HoneyListGenericProps } from '../HoneyList';
 
 type HoneyLoopingListDirection = 'vertical' | 'horizontal';
 
@@ -18,12 +18,11 @@ export const HoneyLoopingListStyled = styled(HoneyBox)`
 
 export const HoneyLoopingListItemStyled = styled.div``;
 
-interface HoneyLoopingListProps<Item extends HoneyListItem>
-  extends HoneyBoxProps,
-    HoneyListGenericProps<Item> {
-  activeItemIndex: number;
-  direction?: HoneyLoopingListDirection;
-}
+type HoneyLoopingListProps<Item extends HoneyListItem> = Omit<HoneyBoxProps, 'children'> &
+  HoneyListGenericProps<Item> & {
+    activeItemIndex: number;
+    direction?: HoneyLoopingListDirection;
+  };
 
 export const HoneyLoopingList = <Item extends HoneyListItem>({
   children,

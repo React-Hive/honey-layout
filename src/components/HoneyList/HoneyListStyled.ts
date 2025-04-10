@@ -1,7 +1,12 @@
 import styled from 'styled-components';
 
 import { HoneyFlexBox } from '../HoneyFlexBox';
+import type { HoneyFlexBoxProps } from '../HoneyFlexBox';
 
-export const HoneyListStyled = styled(HoneyFlexBox).attrs(({ $overflow = 'hidden auto' }) => ({
-  $overflow,
-}))``;
+export type HoneyListStyledProps = HoneyFlexBoxProps;
+
+export const HoneyListStyled = styled(HoneyFlexBox).attrs<HoneyListStyledProps>(
+  ({ $overflow = 'hidden auto' }) => ({
+    $overflow,
+  }),
+)``;
