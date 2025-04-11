@@ -18,7 +18,7 @@ export const HoneyEffectsBasicExample = () => {
       effects={[hoverableEffect({})]}
       $width="100px"
       $height="100px"
-      $margin="0 auto"
+      $margin={['0', 'auto']}
       $backgroundColor="neutral.forestGreen"
     />
   );

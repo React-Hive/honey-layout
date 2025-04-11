@@ -21,8 +21,6 @@ export type HoneyListProps<Item extends HoneyListItem> = Omit<HoneyListStyledPro
  *
  * @template Item - Represents the type of the items to be rendered in the list. This allows the component
  * to be used with any item type.
- *
- * @template Element - Represents the type of the HTML element.
  */
 export const HoneyList = <Item extends HoneyListItem>({
   ref,

@@ -1,22 +1,21 @@
 import { useContext } from 'react';
 
-import type { HoneyLayoutContextValue } from '../contexts';
 import { HoneyLayoutContext } from '../contexts';
+import { assert } from '../helpers';
 
 /**
  * Custom hook to access the Honey layout context.
  *
  * @throws Will throw an error if the hook is used outside of a `HoneyLayoutProvider` component.
  *
- * @returns {HoneyLayoutContextValue} - The context value providing theming utilities and screen state.
+ * @returns The context value providing theming utilities and screen state.
  */
-export const useHoneyLayout = (): HoneyLayoutContextValue => {
+export const useHoneyLayout = () => {
   const context = useContext(HoneyLayoutContext);
-  if (!context) {
-    throw new Error(
-      'The `useHoneyLayout()` hook must be used inside <HoneyLayoutProvider/> component!',
-    );
-  }
+  assert(
+    context,
+    'The `useHoneyLayout()` hook must be used inside <HoneyLayoutProvider/> component!',
+  );
 
   return context;
 };

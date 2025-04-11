@@ -13,11 +13,11 @@ import type {
   HoneyScreenState,
   HoneyCSSDimensionUnit,
   HoneyCSSDimensionValue,
-  HoneyCSSMultiValue,
   HoneyOverlayId,
   HoneyActiveOverlay,
+  HoneyCSSSpacingValue,
 } from '../types';
-import type { ResolveSpacingResult } from '../helpers';
+import type { HoneyResolveSpacingResult } from '../helpers';
 
 /**
  * Function to unregister a previously registered overlay.
@@ -55,7 +55,7 @@ export interface HoneyLayoutContextValue {
   /**
    * Function to resolve spacing values based on a given theme.
    *
-   * @template MultiValue - A type representing the spacing value(s), which could be a single value or an array of values.
+   * @template Value - A type representing the spacing value(s), which could be a single value or an array of values.
    * @template Unit - The CSS unit used for the resolved spacing value, e.g., 'px', 'em'.
    *
    * @param value - The spacing value(s) to be applied, which could be a single number or an array of numbers.
@@ -65,13 +65,13 @@ export interface HoneyLayoutContextValue {
    * @returns The resolved spacing value, formatted as a string with the appropriate unit.
    */
   resolveSpacing: <
-    MultiValue extends HoneyCSSMultiValue<number>,
+    Value extends HoneyCSSSpacingValue,
     Unit extends Nullable<HoneyCSSDimensionUnit> = 'px',
   >(
-    value: MultiValue,
+    value: Value,
     unit?: Unit,
     type?: keyof HoneySpacings,
-  ) => ResolveSpacingResult<MultiValue, Unit>;
+  ) => HoneyResolveSpacingResult<Value, Unit>;
   /**
    * Function to resolve color values based on the theme.
    *

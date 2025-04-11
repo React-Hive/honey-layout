@@ -1,44 +1,120 @@
 /**
  * The types for handling CSS properties and values, focusing on dimensions, colors, media queries, and other essential CSS concepts.
  */
-import type { ExecutionContext } from 'styled-components';
 import * as CSS from 'csstype';
+import type { ExecutionContext } from 'styled-components';
 
 import type { HoneyBreakpointName, HoneyColorKey } from './types';
 
-export type HoneyCSSResolutionUnit = 'dpi' | 'dpcm' | 'dppx' | 'x';
-
-export type HoneyCSSResolutionValue = `${number}${HoneyCSSResolutionUnit}`;
-
+/**
+ * Represents the possible values for media query orientation.
+ *
+ * Used in responsive styles to target specific device orientations.
+ *
+ * - `'landscape'` – Width is greater than height.
+ * - `'portrait'` – Height is greater than width.
+ */
 export type HoneyCSSMediaOrientation = 'landscape' | 'portrait';
 
-type HoneyCSSAbsoluteDimensionUnit = 'px' | 'cm' | 'mm' | 'in' | 'pt' | 'pc';
-type HoneyCSSRelativeDimensionUnit = 'em' | 'rem' | '%' | 'vh' | 'vw' | 'vmin' | 'vmax';
-
+/**
+ * Represents a hexadecimal color value.
+ *
+ * Examples:
+ * - `'#ffffff'`
+ * - `'#123abc'`
+ * - `'#000'`
+ */
 export type HoneyHEXColor = `#${string}`;
 
+/**
+ * Represents any valid CSS color, either a named color (like `'red'`, `'blue'`)
+ * or a hexadecimal color code (like `'#ff0000'`).
+ */
 export type HoneyCSSColor = CSS.DataType.NamedColor | HoneyHEXColor;
 
 /**
- * Represents a CSS dimension unit, which can be either an absolute or relative.
+ * Represents absolute CSS dimension units.
+ *
+ * These units are fixed in physical measurements.
+ *
+ * - `'px'` — pixels
+ * - `'cm'` — centimeters
+ * - `'mm'` — millimeters
+ * - `'in'` — inches
+ * - `'pt'` — points
+ * - `'pc'` — picas
+ */
+type HoneyCSSAbsoluteDimensionUnit = 'px' | 'cm' | 'mm' | 'in' | 'pt' | 'pc';
+
+/**
+ * Represents relative CSS dimension units.
+ *
+ * These units scale depending on the context.
+ *
+ * - `'em'` — relative to the font-size of the element
+ * - `'rem'` — relative to the font-size of the root element
+ * - `'%'` — percentage of the parent element
+ * - `'vh'` — 1% of the viewport height
+ * - `'vw'` — 1% of the viewport width
+ * - `'vmin'` — 1% of the smaller dimension of the viewport
+ * - `'vmax'` — 1% of the larger dimension of the viewport
+ */
+type HoneyCSSRelativeDimensionUnit = 'em' | 'rem' | '%' | 'vh' | 'vw' | 'vmin' | 'vmax';
+
+/**
+ * Represents any valid CSS dimension unit, including both absolute and relative types.
  */
 export type HoneyCSSDimensionUnit = HoneyCSSAbsoluteDimensionUnit | HoneyCSSRelativeDimensionUnit;
 
 /**
- * Represents an array of CSS values, either 2, 3, or 4 values.
+ * Represents CSS resolution units typically used in media queries.
  *
- * @template T - Type of the value.
+ * - `'dpi'` — dots per inch
+ * - `'dpcm'` — dots per centimeter
+ * - `'dppx'` — dots per pixel (e.g., 2dppx for Retina displays)
+ * - `'x'` — resolution multiplier (e.g., 1x, 2x)
  */
-export type HoneyCSSArrayValue<T> = [T, T] | [T, T, T] | [T, T, T, T];
+export type HoneyCSSResolutionUnit = 'dpi' | 'dpcm' | 'dppx' | 'x';
 
 /**
- * Represents a CSS value that can be either a single value or an array of values.
- *
- * @template T - Type of the value.
+ * Represents a CSS resolution value, such as `'300dpi'`, `'2x'`, or `'1.5dppx'`.
  */
-export type HoneyCSSMultiValue<T> = T | HoneyCSSArrayValue<T>;
+export type HoneyCSSResolutionValue = `${number}${HoneyCSSResolutionUnit}`;
 
-// https://developer.mozilla.org/en-US/docs/Web/CSS/easing-function/steps#step-position
+/**
+ * Represents a tuple of 2 to 4 values using standard CSS shorthand conventions.
+ *
+ * This type models how properties like `margin`, `padding`, `gap`, and `borderRadius`
+ * can accept multiple values to control different sides or axes.
+ *
+ * Value interpretation follows CSS shorthand behavior:
+ * - `[T, T]` → [top & bottom, left & right]
+ * - `[T, T, T]` → [top, left & right, bottom]
+ * - `[T, T, T, T]` → [top, right, bottom, left]
+ *
+ * @template T - The type of each spacing value (e.g., number, string, or token).
+ */
+export type HoneyCSSShorthandTuple<T> = [T, T] | [T, T, T] | [T, T, T, T];
+
+/**
+ * Represents a CSS layout value that can be a single value or a shorthand array of values.
+ *
+ * Useful for properties like `margin`, `padding`, or `borderRadius`, which allow:
+ * - A single value (applied to all sides)
+ * - A tuple of 2–4 values using standard CSS shorthand behavior
+ *
+ * Examples:
+ * - `'8px'`
+ * - `['8px', '12px']`
+ * - `['8px', '12px', '16px', '20px']`
+ *
+ * @template T - The type of each individual value.
+ */
+export type HoneyCSSMultiValue<T> = T | HoneyCSSShorthandTuple<T>;
+
+/**
+ * @see https://developer.mozilla.org/en-US/docs/Web/CSS/easing-function/steps#step-position
+ */
 type HoneyCSSStepFunctionPosition =
   | 'jump-start'
   | 'jump-end'
@@ -68,12 +144,10 @@ export type HoneyCSSTimingFunction =
   | `steps(${number}, ${HoneyCSSStepFunctionPosition})`;
 
 /**
- * Type representing CSS properties related to spacing and positioning.
+ * Represents CSS properties related to spacing and positioning.
  */
-export type HoneyCSSDimensionProperty = keyof Pick<
+export type HoneyCSSSpacingProperty = keyof Pick<
   CSS.Properties,
-  | 'width'
-  | 'height'
   | 'margin'
   | 'marginTop'
   | 'marginRight'
@@ -91,6 +165,17 @@ export type HoneyCSSDimensionProperty = keyof Pick<
   | 'gap'
   | 'rowGap'
   | 'columnGap'
+>;
+
+/**
+ * Represents shorthand spacing properties that support multi-value arrays.
+ *
+ * These properties accept 2–4 space-separated values
+ * to control spacing on multiple sides (e.g., top, right, bottom, left).
+ */
+export type HoneyCSSShorthandSpacingProperty = keyof Pick<
+  CSS.Properties,
+  'margin' | 'padding' | 'gap'
 >;
 
 /**
@@ -112,37 +197,56 @@ export type HoneyCSSColorProperty = keyof Pick<
 >;
 
 /**
- * Represents a specific CSS dimension value with a unit.
+ * Represents a numeric CSS dimension value with an optional specific unit.
+ *
+ * This type can represent:
+ * - A value with a specific CSS unit, such as `'8px'`, `'1.5rem'`, or `'100%'`.
+ * - A number without a unit, such as `'16'` (representing a unitless value).
+ * - The special value `'auto'` commonly used for flexible layout values.
+ *
+ * @template Unit - The CSS unit to use (e.g., `'px'`, `'em'`, `'rem'`).
  */
 export type HoneyCSSDimensionValue<Unit extends HoneyCSSDimensionUnit = HoneyCSSDimensionUnit> =
-  `${number}${Unit}`;
+  | `${number}${Unit}`
+  | `${number}`
+  | 'auto';
 
 /**
- * Type representing numeric values for CSS dimension properties.
+ * Represents a spacing value used in layout-related CSS properties.
  *
- * If `CSSProperty` extends `HoneyCSSDimensionProperty`, this type will be a single value or an array of numbers,
- * allowing for spacing properties that can have single or multiple numeric values (e.g., margin, padding).
- * Otherwise, it results in `never`, indicating that non-distance properties are not included.
+ * Can be:
+ * - A single numeric value (e.g., `8`)
+ * - A single dimension string (e.g., `'1rem'`)
+ * - A shorthand array of 2–4 values (e.g., `[8, 12]` or `['1rem', '2rem', '1.5rem']`)
  *
- * @template CSSProperty - The key of a CSS property to check.
+ * Commonly used for properties like `margin`, `padding`, `gap`, etc.
  */
-export type HoneyCSSDimensionNumericValue<CSSProperty extends keyof CSS.Properties> =
-  CSSProperty extends HoneyCSSDimensionProperty ? HoneyCSSMultiValue<number> : never;
+export type HoneyCSSSpacingValue = HoneyCSSMultiValue<number | HoneyCSSDimensionValue>;
 
 /**
- * Represents a shorthand CSS dimension value for 2, 3, or 4 values with the same unit.
+ * Converts a tuple of spacing values into a valid CSS shorthand string using a consistent unit.
  *
- * @template Value - Type of the value.
- * @template Unit - CSS length unit.
+ * Acts as a type-level converter that transforms 2–4 spacing values (e.g., `[8, 12]`) into a space-separated
+ * CSS string (e.g., `'8px 12px'`), suitable for shorthand-compatible properties like `margin`, `padding`, or `gap`.
+ *
+ * This type enforces unit consistency across all values and is useful for generating precise, typed spacing strings.
+ *
+ * Example outputs:
+ * - `'8px 12px'` for `[8, 12]`
+ * - `'1rem 2rem 1.5rem'` for `[1, 2, 1.5]`
+ * - `'4px 8px 12px 16px'` for `[4, 8, 12, 16]`
+ *
+ * @template Tuple - A tuple of 2 to 4 values to be converted into a CSS shorthand string.
+ * @template Unit - The CSS unit to apply to each value (e.g., `'px'`, `'rem'`, `'%'`).
  */
-export type HoneyCSSDimensionShortHandValue<
-  Value,
+export type HoneyCSSShorthandDimensionOutput<
+  Tuple extends HoneyCSSShorthandTuple<unknown>,
   Unit extends HoneyCSSDimensionUnit,
-> = Value extends [unknown, unknown]
+> = Tuple extends [unknown, unknown]
   ? `${HoneyCSSDimensionValue<Unit>} ${HoneyCSSDimensionValue<Unit>}`
-  : Value extends [unknown, unknown, unknown]
+  : Tuple extends [unknown, unknown, unknown]
     ? `${HoneyCSSDimensionValue<Unit>} ${HoneyCSSDimensionValue<Unit>} ${HoneyCSSDimensionValue<Unit>}`
-    : Value extends [unknown, unknown, unknown, unknown]
+    : Tuple extends [unknown, unknown, unknown, unknown]
       ? `${HoneyCSSDimensionValue<Unit>} ${HoneyCSSDimensionValue<Unit>} ${HoneyCSSDimensionValue<Unit>} ${HoneyCSSDimensionValue<Unit>}`
       : never;
 
@@ -156,16 +260,25 @@ type HoneyCSSPropertyValueFn<CSSProperty extends keyof CSS.Properties> = (
 ) => CSS.Properties[CSSProperty];
 
 /**
- * Type representing possible values for CSS color properties.
+ * Represents a non-responsive (raw) CSS property value for a specific CSS property.
  *
- * This type can be either a color from the theme or a valid CSS color value.
+ * This type adapts based on the nature of the property:
  *
- * @template CSSProperty - The key of a CSS property to check.
+ * - For color-related properties, it accepts theme tokens or raw color values.
+ * - For shorthand spacing properties (`margin`, `padding`), it supports multi-value arrays.
+ * - For other spacing-related properties, it allows numeric or token-based values.
+ * - For all other properties, it falls back to the standard CSS value type.
+ *
+ * @template CSSProperty - The name of the CSS property.
  */
-type HoneyCSSColorValue<CSSProperty extends keyof CSS.Properties> =
+type HoneyRawCSSPropertyValue<CSSProperty extends keyof CSS.Properties> =
   CSSProperty extends HoneyCSSColorProperty
     ? HoneyCSSColor | HoneyColorKey
-    : CSS.Properties[CSSProperty] | HoneyCSSDimensionNumericValue<CSSProperty>;
+    : CSSProperty extends HoneyCSSShorthandSpacingProperty
+      ? HoneyCSSSpacingValue
+      : CSSProperty extends HoneyCSSSpacingProperty
+        ? number | HoneyCSSDimensionValue
+        : CSS.Properties[CSSProperty];
 
 /**
  * Represents a responsive CSS property value for a specific CSS property.
@@ -181,7 +294,7 @@ type HoneyCSSColorValue<CSSProperty extends keyof CSS.Properties> =
 type HoneyResponsiveCSSPropertyValue<CSSProperty extends keyof CSS.Properties> = Partial<
   Record<
     HoneyBreakpointName,
-    HoneyCSSColorValue<CSSProperty> | HoneyCSSPropertyValueFn<CSSProperty>
+    HoneyRawCSSPropertyValue<CSSProperty> | HoneyCSSPropertyValueFn<CSSProperty>
   >
 >;
 
@@ -197,7 +310,7 @@ type HoneyResponsiveCSSPropertyValue<CSSProperty extends keyof CSS.Properties> =
  * @template CSSProperty - The key of a CSS property to check.
  */
 export type HoneyCSSPropertyValue<CSSProperty extends keyof CSS.Properties> =
-  | HoneyCSSColorValue<CSSProperty>
+  | HoneyRawCSSPropertyValue<CSSProperty>
   | HoneyCSSPropertyValueFn<CSSProperty>
   | HoneyResponsiveCSSPropertyValue<CSSProperty>;
 

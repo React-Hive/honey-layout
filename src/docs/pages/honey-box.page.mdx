@@ -1,25 +1,5 @@
-import { useTheme } from 'styled-components';
+import { HoneyBoxBasicExample, HoneyEffectsBasicExample } from './examples';
 
-import { HoneyBox } from '../../components';
-import { resolveColor } from '../../helpers';
-import { HoneyEffectsBasicExample } from './examples';
-
-export const SquareBox = () => {
-  const { colors } = useTheme();
-
-  return <HoneyBox
-    $width="100px"
-    $height="100px"
-    $margin="0 auto"
-    $backgroundColor={{
-      xs: 'white',
-      sm: colors.neutral.forestGreen,
-      md: 'neutral.forestGreen',
-      // You can use `resolveColor` function to get a color value
-      lg: resolveColor('neutral.crimsonRed')
-    }}
-  />
-}
 
 # HoneyBox
 
@@ -51,36 +31,34 @@ that fit your project's design system.
 
 ### Usage
 
-The `SquareBox` component renders a square box with customizable dimensions and background color based on screen size.
+The `HoneyBoxBasicExample` component renders a square box with customizable dimensions and background color based on screen size.
 
-<SquareBox/>
+<HoneyBoxBasicExample/>
 
 ~~~tsx
-import { useTheme } from 'styled-components';
-import { HoneyBox, resolveColor } from '@react-hive/honey-layout';
+import { HoneyBox, useHoneyLayout } from '@react-hive/honey-layout';
 
-/**
-* $backgroundColor (object): An object containing background colors for different screen sizes.
-*   xs: Background color for extra small screens (xs).
-*   sm: Background color for small screens (sm).
-*   md: Background color for medium screens (md).
-* */
-export const SquareBox = () => {
-  const { colors } = useTheme();
+export const HoneyBoxBasicExample = () => {
+  const {
+    theme: { colors },
+    resolveColor,
+  } = useHoneyLayout();
 
-  return <HoneyBox
-    $width="100px"
-    $height="100px"
-    $margin="0 auto"
-    $backgroundColor={{
-      xs: 'white',
-      sm: colors.neutral.forestGreen,
-      md: 'neutral.forestGreen',
-      // You can use `resolveColor` function to get a color value
-      lg: resolveColor('neutral.crimsonRed')
-    }}
-  />
-}
+  return (
+    <HoneyBox
+      $width="100px"
+      $height="100px"
+      $margin={['0', 'auto']}
+      $backgroundColor={{
+        xs: 'white',
+        sm: colors.neutral.forestGreen,
+        md: 'neutral.forestGreen',
+        // You can use `resolveColor` function to get a color value
+        lg: resolveColor('neutral.crimsonRed'),
+      }}
+    />
+  );
+};
 ~~~
 
 ### Effects

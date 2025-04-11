@@ -1,6 +1,6 @@
 {
   "name": "@react-hive/honey-layout",
-  "version": "5.4.0-beta",
+  "version": "5.5.0-beta",
   "description": "",
   "keywords": [
     "react",
@@ -33,12 +33,12 @@
   "peerDependencies": {
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
-    "react-router-dom": "^6.0.0",
+    "react-router-dom": "^7.0.0",
     "styled-components": "^6.0.0"
   },
   "dependencies": {
     "@emotion/is-prop-valid": "1.3.1",
-    "@floating-ui/react": "0.27.6",
+    "@floating-ui/react": "0.27.7",
     "@mdx-js/react": "3.1.0",
     "csstype": "3.1.3",
     "highlight.js": "11.11.1",
@@ -54,7 +54,7 @@
     "@types/lodash.throttle": "4.1.9",
     "@types/mdx": "2.0.13",
     "@types/react": "^19.1.0",
-    "@types/react-dom": "^19.1.1",
+    "@types/react-dom": "^19.1.2",
     "@vitejs/plugin-react": "4.3.4",
     "eslint": "9.24.0",
     "eslint-plugin-react": "7.37.5",
@@ -64,7 +64,7 @@
     "ts-jest": "29.3.1",
     "typescript": "5.8.3",
     "typescript-eslint": "8.29.1",
-    "vite": "6.2.5",
+    "vite": "6.2.6",
     "vite-plugin-checker": "0.9.1",
     "vite-plugin-dts": "4.5.3"
   },
