@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "lib": ["dom", "dom.iterable", "esnext"],
-    "target": "es2018",
+    "target": "es2020",
     "module": "esnext",
     "moduleResolution": "node",
     "esModuleInterop": true,
@@ -10,7 +10,8 @@
     "allowSyntheticDefaultImports": true,
     "isolatedModules": true,
     "skipLibCheck": true,
-    "strict": true
+    "strict": true,
+    "types": ["jest", "mdx", "@testing-library/jest-dom"],
   },
   "include": ["src"]
 }

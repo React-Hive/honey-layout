@@ -87,11 +87,6 @@ export const PAGES: Page[] = [
     menuLabel: 'Context Menu',
     element: <HoneyContextMenuPage components={MDX_COMPONENTS} />,
   },
-  // {
-  //   path: 'looping-list',
-  //   menuLabel: 'Looping List',
-  //   element: <HoneyLoopingListPage components={MDX_COMPONENTS} />,
-  // },
   {
     path: 'utils',
     menuLabel: 'Utils',

@@ -1,14 +1,14 @@
-import type { DefaultTheme } from 'styled-components';
-import type { PropsWithChildren } from 'react';
 import React, { useMemo } from 'react';
 import { ThemeProvider, useTheme } from 'styled-components';
+import type { DefaultTheme } from 'styled-components';
+import type { PropsWithChildren } from 'react';
 
-import type { HoneyLayoutContextValue } from '../contexts';
-import type { UseHoneyMediaQueryOptions } from '../hooks';
 import { useHoneyMediaQuery } from '../hooks';
 import { resolveDimension, resolveFont, resolveColor, resolveSpacing } from '../helpers';
 import { HoneyLayoutContext } from '../contexts';
 import { useHoneyOverlays } from './hooks';
+import type { HoneyLayoutContextValue } from '../contexts';
+import type { UseHoneyMediaQueryOptions } from '../hooks';
 
 interface HoneyLayoutProviderContentProps {
   mediaQueryOptions?: UseHoneyMediaQueryOptions;
@@ -42,9 +42,9 @@ const HoneyLayoutProviderContent = ({
   return <HoneyLayoutContext.Provider value={contextValue}>{children}</HoneyLayoutContext.Provider>;
 };
 
-type HoneyLayoutProviderProps = HoneyLayoutProviderContentProps & {
+interface HoneyLayoutProviderProps extends HoneyLayoutProviderContentProps {
   theme: DefaultTheme;
-};
+}
 
 export const HoneyLayoutProvider = ({
   theme,

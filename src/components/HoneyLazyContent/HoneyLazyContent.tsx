@@ -1,7 +1,7 @@
 import type { PropsWithChildren } from 'react';
 import { useEffect, useRef, useState } from 'react';
 
-import type { TimeoutId } from '../types';
+import type { TimeoutId } from '../../types';
 
 export interface HoneyLazyContentProps {
   /**
@@ -40,7 +40,7 @@ export const HoneyLazyContent = ({
 }: PropsWithChildren<HoneyLazyContentProps>) => {
   const [isMountContent, setIsMountContent] = useState(alwaysMounted || mount);
 
-  const mountContentTimeoutIdRef = useRef<TimeoutId | undefined>(undefined);
+  const mountContentTimeoutIdRef = useRef<TimeoutId>(undefined);
 
   useEffect(() => {
     if (!mount || alwaysMounted) {
@@ -56,7 +56,7 @@ export const HoneyLazyContent = ({
         mountContentTimeoutIdRef.current = setTimeout(() => setIsMountContent(false), unmountDelay);
       }
     };
-  }, [mount]);
+  }, [mount, alwaysMounted, unmountDelay]);
 
   return isMountContent ? children : null;
 };

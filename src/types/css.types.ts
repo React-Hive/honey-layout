@@ -277,7 +277,7 @@ type HoneyRawCSSPropertyValue<CSSProperty extends keyof CSS.Properties> =
     : CSSProperty extends HoneyCSSShorthandSpacingProperty
       ? HoneyCSSSpacingValue
       : CSSProperty extends HoneyCSSSpacingProperty
-        ? number | HoneyCSSDimensionValue
+        ? number | HoneyCSSDimensionValue | CSS.Globals
         : CSS.Properties[CSSProperty];
 
 /**

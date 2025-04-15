@@ -1,26 +1,31 @@
-import { useEffect, useMemo } from 'react';
+import { useEffect } from 'react';
 
-import type { HoneyOverlayId, HoneyOverlayEventListenerHandler } from '../types';
 import { useHoneyLayout } from './use-honey-layout';
+import type { HoneyOverlayId, HoneyOverlayEventListenerHandler } from '../types';
 
 interface UseHoneyOverlayOptions {
   onKeyUp?: HoneyOverlayEventListenerHandler;
 }
 
 /**
- * Hook to interact with a specific overlay managed by the `HoneyLayoutProvider`.
+ * Hook for interacting with an active overlay managed by `HoneyLayoutProvider`.
  *
- * @param targetOverlayId - The unique identifier of the overlay to interact with.
- * @param options - Configuration options for the overlay, such as keyboard event handling.
+ * @param targetOverlayId - The unique ID of the overlay you want to interact with.
+ * @param options - Optional configuration such as event handlers (e.g., `onKeyUp`).
  *
- * @returns The overlay object associated with the provided `targetOverlayId`, or `undefined` if not found.
+ * @returns The overlay instance matching the provided ID, or `undefined` if not found.
+ *
+ * @remarks
+ * - This hook only works with overlays that are currently active.
+ * - If the overlay is not active or not registered, `undefined` will be returned.
+ * - Event handlers like `onKeyUp` are automatically registered and cleaned up for the overlay.
  *
  * @example
  * ```tsx
  * const overlay = useHoneyOverlay('my-overlay-id', {
  *   onKeyUp: (keyCode, e) => {
  *     if (keyCode === 'Escape') {
- *       console.log('Escape key pressed');
+ *       console.log('Escape key pressed!');
  *     }
  *   },
  * });
@@ -32,11 +37,7 @@ export const useHoneyOverlay = (
 ) => {
   const { overlays } = useHoneyLayout();
 
-  // Find the overlay with the matching ID using `useMemo` for performance optimization
-  const overlay = useMemo(
-    () => overlays.find(overlay => overlay.id === targetOverlayId),
-    [overlays, targetOverlayId],
-  );
+  const overlay = overlays.find(overlay => overlay.id === targetOverlayId);
 
   useEffect(() => {
     // If no overlay is found or no `onKeyUp` handler is provided, skip setting up the listener

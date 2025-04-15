@@ -24,7 +24,7 @@ import type {
   UseTransitionStylesProps,
 } from '@floating-ui/react';
 
-import { useHoneyLayout, useOnChange } from '../../../hooks';
+import { useHoneyLayout, useHoneyOnChange } from '../../../hooks';
 import { useHoneyPopupInteractions } from './use-honey-popup-interactions';
 import type { Nullable } from '../../../types';
 import type { UseHoneyPopupInteractionsOptions } from './use-honey-popup-interactions';
@@ -202,7 +202,7 @@ export const useHoneyPopup = ({
     }
   }, [isOpen]);
 
-  useOnChange(enabled, enabled => {
+  useHoneyOnChange(enabled, enabled => {
     if (!enabled) {
       setIsOpenLocal(false);
     }

@@ -40,14 +40,26 @@ export interface HoneyOverlayProps extends Omit<HoneyFlexBoxProps, 'children'> {
 }
 
 /**
- * A reusable overlay component that manages active states and keyboard interactions.
+ * A reusable overlay component integrated with the `HoneyLayoutProvider` system.
  *
- * The `HoneyOverlay` component integrates with the `useRegisterHoneyOverlay` hook to:
- * - Automatically register/deregister the overlay.
- * - Handle keyboard events, such as closing the overlay with the "Escape" key.
- * - Provide a context to dynamically manage overlay content and state.
+ * Automatically registers/unregisters itself with the layout system and handles key events.
  *
- * @param props - The properties used to configure the overlay.
+ * @param props - Component configuration.
+ *
+ * @example
+ * ```tsx
+ * <HoneyOverlay
+ *   active={isOpen}
+ *   onDeactivate={() => setIsOpen(false)}
+ * >
+ *   {({ deactivateOverlay }) => (
+ *     <div>
+ *       <h2>Settings</h2>
+ *       <button onClick={deactivateOverlay}>Close</button>
+ *     </div>
+ *   )}
+ * </HoneyOverlay>
+ * ```
  */
 export const HoneyOverlay = ({
   ref,

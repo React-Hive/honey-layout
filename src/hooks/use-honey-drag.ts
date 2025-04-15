@@ -1,8 +1,8 @@
-import type { RefObject } from 'react';
 import { useEffect } from 'react';
+import type { RefObject } from 'react';
 
-import type { Nullable } from '../types';
 import { calculateEuclideanDistance, calculateMovingSpeed } from '../utils';
+import type { Nullable } from '../types';
 
 /**
  * Handler triggered when a drag operation starts.
@@ -22,7 +22,7 @@ export type HoneyDragOnStartHandler<Element extends HTMLElement> = (
 /**
  * Context provided to the move handler, containing information about the drag's movement.
  */
-interface HoneyDragMoveContext {
+export interface HoneyDragMoveContext {
   /**
    * The horizontal distance has moved since the last frame.
    */
@@ -104,39 +104,54 @@ export type HoneyDragOnEndHandler<Element extends HTMLElement> = (
 ) => Promise<void>;
 
 /**
- * Object containing the handlers for various stages of the drag operation.
- * These handlers can be customized to manage the behavior of the drag process.
+ * A set of handlers that define the behavior of the drag operation at different stages.
+ * These handlers are customizable for managing drag initialization, movement, and completion.
  */
 export interface HoneyDragHandlers<Element extends HTMLElement> {
   /**
    * Optional handler triggered when the drag operation starts.
-   * This can be used to capture the initial state or perform setup actions.
+   * This is useful for capturing the initial state or performing any setup actions before the drag starts.
+   *
+   * @param element - The element being dragged.
+   *
+   * @returns A boolean or Promise resolving to a boolean indicating if the drag should proceed.
    */
   onStartDrag?: HoneyDragOnStartHandler<Element>;
   /**
    * Required handler triggered continuously during the drag operation.
-   * This handles updating the drag state and typically tracks the element's movement.
+   * This handler is responsible for updating the drag state and typically tracks the element's movement.
+   *
+   * @param element - The element being dragged.
+   *
+   * @returns A boolean or Promise resolving to a boolean indicating whether the drag should continue.
    */
   onMoveDrag: HoneyDragOnMoveHandler<Element>;
   /**
    * Optional handler triggered when the drag operation ends.
-   * This can be used for cleanup or finalizing the state after the drag ends.
+   * This is commonly used for cleanup or finalizing the drag process.
+   *
+   * @param context - Contains information about the drag operation, such as distance and speed.
+   * @param element - The element being dragged.
+   *
+   * @returns A Promise.
    */
   onEndDrag?: HoneyDragOnEndHandler<Element>;
 }
 
-export interface HoneyDragOptions {
+/**
+ * Configuration options for the drag functionality.
+ * These options control the behavior of the drag hook and modify how the drag events are handled.
+ */
+export interface HoneyDragOptions<Element extends HTMLElement> extends HoneyDragHandlers<Element> {
   /**
-   * Controls whether the `onEndDrag` handler should be skipped when the drag operation is forcibly stopped.
-   *
-   * When `true`, `onEndDrag` will not be called if dragging is interrupted due to movement restrictions
-   * or an early termination.
+   * Controls whether the `onEndDrag` handler is skipped when the drag operation is forcibly stopped.
+   * This can be useful when dragging is interrupted or terminated early due to movement restrictions.
    *
    * @default false
    */
   skipOnEndDragWhenStopped?: boolean;
   /**
-   * Determines whether the drag functionality is enabled or not.
+   * Determines if the drag functionality is enabled or disabled.
    *
    * @default true
    */
@@ -145,18 +160,26 @@ export interface HoneyDragOptions {
 
 /**
  * A hook that provides touch and mouse-based dragging functionality for an element.
- * It tracks the movement of the element during the drag process and exposes handlers for each stage of the drag operation.
+ * It enables the ability to drag an element on both mouse and touch interfaces,
+ * with customizable handlers for different stages of the drag.
  *
  * @template Element - The type of the HTML element that is being dragged.
  *
  * @param draggableElementRef - A reference to the element that can be dragged.
- * @param handlers - The drag event handlers for different stages of the drag operation (start, move, end).
- * @param options - Configuration options.
+ * @param options - Handlers for different stages of the drag operation and configuration options
+ *                  for controlling drag behavior.
+ *
+ * @returns A cleanup function to remove event listeners when the component is unmounted.
  */
 export const useHoneyDrag = <Element extends HTMLElement>(
   draggableElementRef: RefObject<Nullable<Element>>,
-  { onMoveDrag, onStartDrag, onEndDrag }: HoneyDragHandlers<Element>,
-  { skipOnEndDragWhenStopped = false, enabled = true }: HoneyDragOptions = {},
+  {
+    skipOnEndDragWhenStopped = false,
+    enabled = true,
+    onMoveDrag,
+    onStartDrag,
+    onEndDrag,
+  }: HoneyDragOptions<Element>,
 ) => {
   useEffect(() => {
     const draggableElement = draggableElementRef.current;
@@ -178,11 +201,9 @@ export const useHoneyDrag = <Element extends HTMLElement>(
     let startTime = 0;
 
     const startDrag = async (clientX: number, clientY: number) => {
-      if (onStartDrag) {
-        if (!(await onStartDrag(draggableElement))) {
-          // Exit when `onStart` handler returns false, preventing the dragging.
-          return;
-        }
+      if (onStartDrag && !(await onStartDrag(draggableElement))) {
+        // Exit when `onStartDrag` returns false, preventing the dragging
+        return;
       }
 
       isDragging = true;
@@ -225,15 +246,19 @@ export const useHoneyDrag = <Element extends HTMLElement>(
       }
     };
 
-    const mouseUpHandler = async () => {
-      await releaseDrag(true);
-    };
-
     const releaseDrag = async (isTriggerOnEndDrag: boolean) => {
       await stopDrag(isTriggerOnEndDrag);
 
       window.removeEventListener('mousemove', mouseMoveHandler);
       window.removeEventListener('mouseup', mouseUpHandler);
+
+      window.removeEventListener('touchmove', touchMoveHandler);
+      window.removeEventListener('touchend', touchEndHandler);
+      window.removeEventListener('touchcancel', touchCancelHandler);
+    };
+
+    const mouseUpHandler = async () => {
+      await releaseDrag(true);
     };
 
     const moveHandler = async (clientX: number, clientY: number) => {
@@ -242,21 +267,11 @@ export const useHoneyDrag = <Element extends HTMLElement>(
       }
 
       const moveContext: HoneyDragMoveContext = {
-        get deltaX() {
-          return clientX - lastX;
-        },
-        get deltaY() {
-          return clientY - lastY;
-        },
-        get distanceX() {
-          return clientX - startX;
-        },
-        get distanceY() {
-          return clientY - startY;
-        },
-        get euclideanDistance() {
-          return calculateEuclideanDistance(startX, startY, clientX, clientY);
-        },
+        deltaX: clientX - lastX,
+        deltaY: clientY - lastY,
+        distanceX: clientX - startX,
+        distanceY: clientY - startY,
+        euclideanDistance: calculateEuclideanDistance(startX, startY, clientX, clientY),
       };
 
       if (!(await onMove(moveContext))) {
@@ -271,12 +286,8 @@ export const useHoneyDrag = <Element extends HTMLElement>(
       lastY = clientY;
     };
 
-    const touchStartHandler = async (e: TouchEvent) => {
-      e.stopPropagation();
-
-      const touch = e.touches[0];
-
-      await startDrag(touch.clientX, touch.clientY);
+    const mouseMoveHandler = async (e: MouseEvent) => {
+      await moveHandler(e.clientX, e.clientY);
     };
 
     const touchMoveHandler = async (e: TouchEvent) => {
@@ -285,12 +296,26 @@ export const useHoneyDrag = <Element extends HTMLElement>(
       await moveHandler(touch.clientX, touch.clientY);
     };
 
-    const touchCancelHandler = () => {
-      isDragging = false;
+    const touchEndHandler = async () => {
+      await releaseDrag(true);
     };
 
-    const mouseMoveHandler = async (e: MouseEvent) => {
-      await moveHandler(e.clientX, e.clientY);
+    const touchCancelHandler = async () => {
+      await releaseDrag(true);
+    };
+
+    const touchStartHandler = async (e: TouchEvent) => {
+      e.stopPropagation();
+
+      const touch = e.touches[0];
+
+      await startDrag(touch.clientX, touch.clientY);
+
+      window.addEventListener('touchmove', touchMoveHandler, {
+        passive: true,
+      });
+      window.addEventListener('touchend', touchEndHandler);
+      window.addEventListener('touchcancel', touchCancelHandler);
     };
 
     const mouseDownHandler = async (e: MouseEvent) => {
@@ -302,26 +327,14 @@ export const useHoneyDrag = <Element extends HTMLElement>(
       window.addEventListener('mouseup', mouseUpHandler);
     };
 
-    const touchEndHandler = async () => {
-      await stopDrag(true);
-    };
-
+    draggableElement.addEventListener('mousedown', mouseDownHandler);
     draggableElement.addEventListener('touchstart', touchStartHandler, {
       passive: true,
     });
-    draggableElement.addEventListener('touchmove', touchMoveHandler, {
-      passive: true,
-    });
-    draggableElement.addEventListener('touchend', touchEndHandler);
-    draggableElement.addEventListener('touchcancel', touchCancelHandler);
-    draggableElement.addEventListener('mousedown', mouseDownHandler);
 
     return () => {
-      draggableElement.removeEventListener('touchstart', touchStartHandler);
-      draggableElement.removeEventListener('touchmove', touchMoveHandler);
-      draggableElement.removeEventListener('touchend', touchEndHandler);
-      draggableElement.removeEventListener('touchcancel', touchCancelHandler);
       draggableElement.removeEventListener('mousedown', mouseDownHandler);
+      draggableElement.removeEventListener('touchstart', touchStartHandler);
     };
   }, [enabled, onStartDrag, onMoveDrag, onEndDrag]);
 };
