@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useCallback } from 'react';
 import { FloatingArrow, FloatingFocusManager, FloatingNode } from '@floating-ui/react';
 import type { CSSProperties, ReactNode } from 'react';
 import type {
@@ -24,7 +24,10 @@ export interface HoneyPopupChildrenContextProps {
   referenceProps: ReturnType<UseInteractionsReturn['getReferenceProps']>;
 }
 
-type InheritedHoneyOverlayProps = Omit<HoneyOverlayProps, 'children' | 'active' | 'onDeactivate'>;
+type InheritedHoneyOverlayProps = Omit<
+  HoneyOverlayProps,
+  'children' | 'active' | 'onDeactivate' | '$position'
+>;
 
 export interface HoneyPopupProps<Context = undefined, UseAutoSize extends boolean = boolean>
   extends UseHoneyPopupOptions<UseAutoSize> {
@@ -87,21 +90,24 @@ export const HoneyPopup = <Context = undefined, UseAutoSize extends boolean = bo
   context,
   ...popupOptions
 }: HoneyPopupProps<Context, UseAutoSize>) => {
-  const { useArrow } = popupOptions;
+  const { useArrow, onClose } = popupOptions;
 
-  const { nodeId, floating, isOpen, arrowRef, interactions, transition, closePopup } =
+  const { nodeId, floating, isOpen, arrowRef, interactions, transition } =
     useHoneyPopup(popupOptions);
 
   const childrenContext: HoneyPopupChildrenContextProps = {
     referenceProps: interactions.getReferenceProps(),
   };
 
+  const handleDeactivateOverlay = useCallback(() => {
+    onClose?.('escape-key');
+  }, [onClose]);
+
   const popupContext = useMemo<HoneyPopupContextProps<Context>>(
     () => ({
       context,
-      closePopup,
     }),
-    [context, closePopup],
+    [context],
   );
 
   return (
@@ -141,7 +147,7 @@ export const HoneyPopup = <Context = undefined, UseAutoSize extends boolean = bo
                         ...transition.styles,
                       }
                     }
-                    onDeactivate={closePopup}
+                    onDeactivate={handleDeactivateOverlay}
                     {...interactions.getFloatingProps()}
                     {...contentProps}
                     // Data

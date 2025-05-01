@@ -19,12 +19,10 @@ export const HoneyContextMenuContentOption = <
   option,
   ...props
 }: HoneyContextMenuContentOptionProps<Option, Context>) => {
-  const { context, closePopup } = useHoneyPopupContext();
+  const { context } = useHoneyPopupContext();
 
   const handleClick = () => {
     option.onClick?.({ context });
-
-    closePopup();
   };
 
   return (

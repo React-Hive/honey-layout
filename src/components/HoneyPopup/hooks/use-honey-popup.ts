@@ -18,6 +18,7 @@ import type {
   OffsetOptions,
   ShiftOptions,
   Middleware,
+  OpenChangeReason,
   UseFloatingOptions,
   UseFloatingReturn,
   UseInteractionsReturn,
@@ -121,7 +122,7 @@ export interface UseHoneyPopupOptions<UseAutoSize extends boolean = boolean>
   /**
    * Callback invoked when the popup closes.
    */
-  onClose?: () => void;
+  onClose?: (reason?: OpenChangeReason, event?: Event) => void;
 }
 
 interface UseHoneyPopupApi {
@@ -146,10 +147,6 @@ interface UseHoneyPopupApi {
    */
   interactions: UseInteractionsReturn;
   transition: ReturnType<typeof useTransitionStyles>;
-  /**
-   * Function to manually close the popup.
-   */
-  closePopup: () => void;
 }
 
 /**
@@ -207,12 +204,6 @@ export const useHoneyPopup = ({
       setIsOpenLocal(false);
     }
   });
-
-  const closePopup = useCallback(() => {
-    setIsOpenLocal(false);
-
-    onClose?.();
-  }, [onClose]);
 
   const middlewares: Middleware[] = [offset(offsetOptions ?? theme.spacings.base)];
 
@@ -287,7 +278,13 @@ export const useHoneyPopup = ({
     nodeId,
     open: isOpen,
     middleware: middlewares,
-    onOpenChange: setIsOpenLocal,
+    onOpenChange: (open, event, reason) => {
+      setIsOpenLocal(open);
+
+      if (!open) {
+        onClose?.(reason, event);
+      }
+    },
     // https://floating-ui.com/docs/usefloating#whileelementsmounted
     ...(useAutoUpdate && {
       whileElementsMounted: (reference, floating, update) =>
@@ -319,6 +316,5 @@ export const useHoneyPopup = ({
     arrowRef,
     interactions,
     transition,
-    closePopup,
   };
 };
