@@ -2,9 +2,13 @@
  * The types for handling CSS properties and values, focusing on dimensions, colors, media queries, and other essential CSS concepts.
  */
 import * as CSS from 'csstype';
-import type { ExecutionContext } from 'styled-components';
-
-import type { HoneyBreakpointName, HoneyColorKey } from './types';
+import type {
+  HoneyCSSDimensionUnit,
+  HoneyBreakpointName,
+  HoneyCSSDimensionValue,
+  HoneyStyledContext,
+  HoneyColor,
+} from '@react-hive/honey-style';
 
 /**
  * Represents the possible values for media query orientation.
@@ -15,56 +19,6 @@ import type { HoneyBreakpointName, HoneyColorKey } from './types';
  * - `'portrait'` – Height is greater than width.
  */
 export type HoneyCSSMediaOrientation = 'landscape' | 'portrait';
-
-/**
- * Represents a hexadecimal color value.
- *
- * Examples:
- * - `'#ffffff'`
- * - `'#123abc'`
- * - `'#000'`
- */
-export type HoneyHEXColor = `#${string}`;
-
-/**
- * Represents any valid CSS color, either a named color (like `'red'`, `'blue'`)
- * or a hexadecimal color code (like `'#ff0000'`).
- */
-export type HoneyCSSColor = CSS.DataType.NamedColor | HoneyHEXColor;
-
-/**
- * Represents absolute CSS dimension units.
- *
- * These units are fixed in physical measurements.
- *
- * - `'px'` — pixels
- * - `'cm'` — centimeters
- * - `'mm'` — millimeters
- * - `'in'` — inches
- * - `'pt'` — points
- * - `'pc'` — picas
- */
-type HoneyCSSAbsoluteDimensionUnit = 'px' | 'cm' | 'mm' | 'in' | 'pt' | 'pc';
-
-/**
- * Represents relative CSS dimension units.
- *
- * These units scale depending on the context.
- *
- * - `'em'` — relative to the font-size of the element
- * - `'rem'` — relative to the font-size of the root element
- * - `'%'` — percentage of the parent element
- * - `'vh'` — 1% of the viewport height
- * - `'vw'` — 1% of the viewport width
- * - `'vmin'` — 1% of the smaller dimension of the viewport
- * - `'vmax'` — 1% of the larger dimension of the viewport
- */
-type HoneyCSSRelativeDimensionUnit = 'em' | 'rem' | '%' | 'vh' | 'vw' | 'vmin' | 'vmax';
-
-/**
- * Represents any valid CSS dimension unit, including both absolute and relative types.
- */
-export type HoneyCSSDimensionUnit = HoneyCSSAbsoluteDimensionUnit | HoneyCSSRelativeDimensionUnit;
 
 /**
  * Represents CSS resolution units typically used in media queries.
@@ -197,21 +151,6 @@ export type HoneyCSSColorProperty = keyof Pick<
 >;
 
 /**
- * Represents a numeric CSS dimension value with an optional specific unit.
- *
- * This type can represent:
- * - A value with a specific CSS unit, such as `'8px'`, `'1.5rem'`, or `'100%'`.
- * - A number without a unit, such as `'16'` (representing a unitless value).
- * - The special value `'auto'` commonly used for flexible layout values.
- *
- * @template Unit - The CSS unit to use (e.g., `'px'`, `'em'`, `'rem'`).
- */
-export type HoneyCSSDimensionValue<Unit extends HoneyCSSDimensionUnit = HoneyCSSDimensionUnit> =
-  | `${number}${Unit}`
-  | `${number}`
-  | 'auto';
-
-/**
  * Represents a spacing value used in layout-related CSS properties.
  *
  * Can be:
@@ -256,8 +195,10 @@ export type HoneyCSSShorthandDimensionOutput<
  * @template CSSProperty - The CSS property this function will generate a value for.
  */
 type HoneyCSSPropertyValueFn<CSSProperty extends keyof CSS.Properties> = (
-  context: ExecutionContext,
+  context: HoneyStyledContext<object>,
 ) => CSS.Properties[CSSProperty];
+
+type HoneyRawCSSSpacingValue = number | HoneyCSSDimensionValue | CSS.Globals;
 
 /**
  * Represents a non-responsive (raw) CSS property value for a specific CSS property.
@@ -273,11 +214,11 @@ type HoneyCSSPropertyValueFn<CSSProperty extends keyof CSS.Properties> = (
  */
 type HoneyRawCSSPropertyValue<CSSProperty extends keyof CSS.Properties> =
   CSSProperty extends HoneyCSSColorProperty
-    ? HoneyCSSColor | HoneyColorKey
+    ? HoneyColor
     : CSSProperty extends HoneyCSSShorthandSpacingProperty
       ? HoneyCSSSpacingValue
       : CSSProperty extends HoneyCSSSpacingProperty
-        ? number | HoneyCSSDimensionValue | CSS.Globals
+        ? HoneyRawCSSSpacingValue
         : CSS.Properties[CSSProperty];
 
 /**
@@ -291,12 +232,11 @@ type HoneyRawCSSPropertyValue<CSSProperty extends keyof CSS.Properties> =
  *
  * @template CSSProperty - The key of a CSS property for which values are defined.
  */
-type HoneyResponsiveCSSPropertyValue<CSSProperty extends keyof CSS.Properties> = Partial<
-  Record<
-    HoneyBreakpointName,
-    HoneyRawCSSPropertyValue<CSSProperty> | HoneyCSSPropertyValueFn<CSSProperty>
-  >
->;
+type HoneyResponsiveCSSPropertyValue<CSSProperty extends keyof CSS.Properties> = {
+  [K in HoneyBreakpointName]?:
+    | HoneyRawCSSPropertyValue<CSSProperty>
+    | HoneyCSSPropertyValueFn<CSSProperty>;
+};
 
 /**
  * Represents a CSS property value that can be either a single value or a responsive value.
@@ -324,7 +264,7 @@ export type HoneyPrefixedCSSProperty<
 > = `$${CSSProperty}`;
 
 /**
- * Represents an object where each key is a prefixed CSS property (with a `$` prefix),
+ * Represents an object where each key is a prefixed CSS property (with a `$` prefix).
  *
  * Example:
  * ```
@@ -339,20 +279,34 @@ export type HoneyPrefixedCSSProperties = {
 };
 
 /**
- * Options for CSS @media at-rule.
+ * Properties for dimension-based media queries
  */
-export interface HoneyCSSMediaRule {
-  operator?: 'not' | 'only';
-  mediaType?: 'all' | 'print' | 'screen' | 'speech';
+interface HoneyCSSMediaDimensionProperties {
   width?: HoneyCSSDimensionValue;
   minWidth?: HoneyCSSDimensionValue;
   maxWidth?: HoneyCSSDimensionValue;
   height?: HoneyCSSDimensionValue;
   minHeight?: HoneyCSSDimensionValue;
   maxHeight?: HoneyCSSDimensionValue;
-  orientation?: HoneyCSSMediaOrientation;
+}
+
+/**
+ * Properties for resolution-based media queries
+ */
+interface HoneyCSSMediaResolutionProperties {
   resolution?: HoneyCSSResolutionValue;
   minResolution?: HoneyCSSResolutionValue;
   maxResolution?: HoneyCSSResolutionValue;
+}
+
+/**
+ * Options for CSS @media at-rule.
+ */
+export interface HoneyCSSMediaRule
+  extends HoneyCSSMediaDimensionProperties,
+    HoneyCSSMediaResolutionProperties {
+  operator?: 'not' | 'only';
+  mediaType?: 'all' | 'print' | 'screen' | 'speech';
+  orientation?: HoneyCSSMediaOrientation;
   update?: 'none' | 'slow' | 'fast';
 }

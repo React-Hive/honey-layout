@@ -1,28 +1,26 @@
-import styled, { css } from 'styled-components';
-import type { DataAttributes } from 'styled-components';
-import type { ComponentPropsWithRef, ElementType } from 'react';
+import { HONEY_BREAKPOINTS, styled, css } from '@react-hive/honey-style';
+import type { ElementType } from 'react';
+import type { HoneyBreakpointName, HoneyStyledProps } from '@react-hive/honey-style';
 
 import { applyBreakpointStyles, createStyles } from '../../helpers';
 import type { HoneyPrefixedCSSProperties, HoneyEffectResultFn } from '../../types';
 
-export type HoneyBoxProps<Element extends ElementType = 'div'> = DataAttributes &
-  ComponentPropsWithRef<Element> &
-  HoneyPrefixedCSSProperties & {
-    as?: Element;
-    effects?: HoneyEffectResultFn<object>[];
-  };
+const applyResponsiveStyles = (breakpoint: HoneyBreakpointName) =>
+  breakpoint === 'xs' ? createStyles(breakpoint) : applyBreakpointStyles(breakpoint);
 
-export const HoneyBox = styled.div.attrs<HoneyBoxProps>(props => ({
+export type HoneyBoxProps<Element extends ElementType = 'div'> = HoneyStyledProps<
+  Element,
+  HoneyPrefixedCSSProperties & {
+    effects?: HoneyEffectResultFn<object>[];
+  }
+>;
+
+export const HoneyBox = styled<HoneyBoxProps>('div', props => ({
   'data-testid': props['data-testid'] ?? 'honey-box',
 }))`
   ${({ effects }) => css`
     ${effects};
 
-    ${createStyles('xs')};
-
-    ${applyBreakpointStyles('sm')};
-    ${applyBreakpointStyles('md')};
-    ${applyBreakpointStyles('lg')};
-    ${applyBreakpointStyles('xl')};
+    ${HONEY_BREAKPOINTS.map(applyResponsiveStyles)};
   `}
 `;

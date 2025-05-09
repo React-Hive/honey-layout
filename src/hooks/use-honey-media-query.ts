@@ -1,9 +1,9 @@
-import { useTheme } from 'styled-components';
 import { useEffect, useState } from 'react';
 import throttle from 'lodash.throttle';
+import type { HoneyTheme } from '@react-hive/honey-style';
 
-import type { HoneyScreenState } from '../types';
 import { resolveScreenState } from '../helpers';
+import type { HoneyScreenState } from '../types';
 
 export interface UseHoneyMediaQueryOptions {
   /**
@@ -26,17 +26,16 @@ export interface UseHoneyMediaQueryOptions {
  * The hook that tracks the current screen state based on the theme's media breakpoints.
  * It updates the state on window resize and orientation change.
  *
+ * @param theme - Theme object.
  * @param options - Optional configuration object.
  *
  * @returns The current screen state, indicating the orientation (portrait or landscape)
  *          and the active breakpoint (xs, sm, md, lg, xl).
  */
-export const useHoneyMediaQuery = ({
-  resizeThrottle = 0,
-  overrideScreenState,
-}: UseHoneyMediaQueryOptions = {}) => {
-  const theme = useTheme();
-
+export const useHoneyMediaQuery = (
+  theme: HoneyTheme,
+  { resizeThrottle = 0, overrideScreenState }: UseHoneyMediaQueryOptions = {},
+) => {
   const [screenState, setScreenState] = useState<HoneyScreenState>(() => ({
     ...resolveScreenState(theme.breakpoints),
     ...overrideScreenState,

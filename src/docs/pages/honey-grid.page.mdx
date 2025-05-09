@@ -1,8 +1,9 @@
-import styled, { css, useTheme } from 'styled-components';
+import { css, styled } from '@react-hive/honey-style';
 
-import { HoneyGrid, HoneyGridColumn } from '../../components';
+import { useHoneyLayout } from '../../hooks';
+import { HoneyBox, HoneyGrid, HoneyGridColumn } from '../../components';
 
-export const GridColumnStyled = styled.div`
+export const GridColumnStyled = styled(HoneyBox)`
   ${({ theme }) => css`
     cursor: pointer;
 
@@ -13,7 +14,7 @@ export const GridColumnStyled = styled.div`
 `;
 
 export const GridColumn =  ({ children, ...props }) => {
-  const theme = useTheme();
+  const { theme } = useHoneyLayout();
 
   return (
     <HoneyGridColumn
@@ -149,10 +150,10 @@ const GridWith2Columns = () => {
 <GridWith3Columns/>
 
 ~~~tsx
-import styled, { useTheme, css } from 'styled-components';
-import { HoneyGrid, HoneyGridColumn } from '@react-hive/honey-layout';
+import { styled, css } from '@react-hive/honey-style';
+import { HoneyGrid, HoneyGridColumn, useHoneyLayout } from '@react-hive/honey-layout';
 
-export const GridColumnStyled = styled.div`
+export const GridColumnStyled = styled('div')`
   ${({ theme }) => css`
     cursor: pointer;
 
@@ -163,7 +164,7 @@ export const GridColumnStyled = styled.div`
 `;
 
 export const GridColumn =  ({ children, ...props }) => {
-  const theme = useTheme();
+  const { theme } = useHoneyLayout();
 
   return (
     <HoneyGridColumn

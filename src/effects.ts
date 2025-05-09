@@ -1,4 +1,4 @@
-import { css } from 'styled-components';
+import { css } from '@react-hive/honey-style';
 
 import type { HoneyCSSTimingFunction, HoneyEffect } from './types';
 
@@ -45,7 +45,7 @@ export interface HoneyVisibilityTransitionEffectContextProps {
 }
 
 /**
- * A styled-components effect that applies smooth transitions to the `visibility`, `opacity`, and optional extra properties of an element.
+ * An effect that applies smooth transitions to the `visibility`, `opacity`, and optional extra properties of an element.
  *
  * This effect allows you to animate the appearance or disappearance of an element, making it fade in or out.
  * The behavior is customizable via the configuration, including the duration of the transition, timing functions, and any additional

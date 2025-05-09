@@ -1,8 +1,8 @@
-import styled, { css } from 'styled-components';
+import { css, styled } from '@react-hive/honey-style';
 
 import { resolveSpacing } from '../../helpers';
 
-export const MDXWrapper = styled.div`
+export const MDXWrapper = styled('div')`
   ${({ theme }) => css`
     font-size: 18px;
     letter-spacing: 0.025rem;

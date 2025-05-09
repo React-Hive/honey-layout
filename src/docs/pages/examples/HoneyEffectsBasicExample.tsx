@@ -1,8 +1,8 @@
 import React from 'react';
-import { css } from 'styled-components';
+import { css } from '@react-hive/honey-style';
 
-import type { HoneyEffect } from '../../../types';
 import { HoneyBox } from '../../../components';
+import type { HoneyEffect } from '../../../types';
 
 const hoverableEffect: HoneyEffect =
   () =>

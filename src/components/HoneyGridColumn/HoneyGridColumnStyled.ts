@@ -1,13 +1,13 @@
-import styled, { css } from 'styled-components';
+import { css, styled } from '@react-hive/honey-style';
 import type { ElementType } from 'react';
+import type { HoneyBreakpointName } from '@react-hive/honey-style';
 
 import { bpMedia, resolveSpacing } from '../../helpers';
 import { HoneyFlexBox } from '../HoneyFlexBox';
-import type { HoneyBreakpointName } from '../../types';
-import type { HoneyBoxProps } from '../HoneyBox';
+import type { HoneyFlexBoxProps } from '../HoneyFlexBox';
 
 export type HoneyGridColumnStyledProps<Element extends ElementType = 'div'> =
-  HoneyBoxProps<Element> & {
+  HoneyFlexBoxProps<Element> & {
     /**
      * Total number of columns in the grid.
      */
@@ -32,11 +32,11 @@ export type HoneyGridColumnStyledProps<Element extends ElementType = 'div'> =
   };
 
 /**
- * This styled component defines the layout and styling for individual columns in a grid layout.
+ * This component defines the layout and styling for individual columns in a grid layout.
  * It provides flexibility in specifying the number of columns to take, the total number of columns in the grid,
  * and the spacing between columns.
  */
-export const HoneyGridColumnStyled = styled(HoneyFlexBox)<HoneyGridColumnStyledProps>`
+export const HoneyGridColumnStyled = styled<HoneyGridColumnStyledProps>(HoneyFlexBox)`
   ${({ columns, takeColumns = 1, spacing = 0, applyMaxWidth, theme }) => {
     const fractionalWidth = 100 / columns;
 

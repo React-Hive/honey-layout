@@ -1,4 +1,5 @@
 import React, { useMemo } from 'react';
+import type { FastOmit } from '@react-hive/honey-style';
 
 import { HoneyList } from '../HoneyList';
 import { HoneyPopup, useHoneyPopupContext } from '../HoneyPopup';
@@ -10,9 +11,9 @@ import type { HoneyContextMenuContentOptionProps } from './HoneyContextMenuConte
 export interface HoneyContextMenuContentProps<
   Option extends HoneyContextMenuOption<Context>,
   Context,
-> extends Omit<HoneyPopupProps<Context>, 'children' | 'context' | 'content'> {
+> extends FastOmit<HoneyPopupProps<Context>, 'children' | 'context' | 'content'> {
   options: Option[] | undefined;
-  optionProps?: Omit<HoneyContextMenuContentOptionProps<Option, Context>, 'option'>;
+  optionProps?: FastOmit<HoneyContextMenuContentOptionProps<Option, Context>, 'option'>;
 }
 
 export const HoneyContextMenuContent = <

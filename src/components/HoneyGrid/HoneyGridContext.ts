@@ -1,6 +1,5 @@
 import { createContext } from 'react';
-
-import type { HoneyBreakpointName } from '../../types';
+import type { HoneyBreakpointName } from '@react-hive/honey-style';
 
 export interface HoneyGridContextProps {
   columns: number;

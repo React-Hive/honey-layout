@@ -1,5 +1,6 @@
 import React from 'react';
 import type { ReactNode } from 'react';
+import type { FastOmit } from '@react-hive/honey-style';
 
 import { HoneyPopup } from '../HoneyPopup';
 import { HoneyContextMenuContent } from './HoneyContextMenuContent';
@@ -12,10 +13,10 @@ export interface HoneyContextMenuProps<
   Option extends HoneyContextMenuOption<Context>,
   Context = undefined,
   UseAutoSize extends boolean = boolean,
-> extends Omit<HoneyPopupProps<Context, UseAutoSize>, 'content'>,
+> extends FastOmit<HoneyPopupProps<Context, UseAutoSize>, 'content'>,
     Pick<HoneyContextMenuContentProps<Option, Context>, 'options' | 'optionProps'> {
   children: (context: HoneyPopupChildrenContextProps) => ReactNode;
-  subProps?: Omit<HoneyContextMenuContentProps<Option, Context>, 'options' | 'optionProps'>;
+  subProps?: FastOmit<HoneyContextMenuContentProps<Option, Context>, 'options' | 'optionProps'>;
 }
 
 export const HoneyContextMenu = <

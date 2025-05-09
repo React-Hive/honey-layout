@@ -32,30 +32,18 @@ export const NestedThemeProvider = () => {
 };
 ~~~
 
-### Augmentation for `DefaultTheme` from styled components library
-
-To augment the `DefaultTheme` interface from `styled-components` with the `HoneyTheme`, add the following declaration to your project:
-
-~~~ts
-import type { HoneyTheme } from '@react-hive/honey-layout';
-
-declare module 'styled-components' {
-  interface DefaultTheme extends HoneyTheme {}
-}
-~~~
-
-This declaration extends the `DefaultTheme` interface with the properties defined in `HoneyTheme`, allowing you to use them within your styled components.
-
-### Augmentation for `HoneyFonts` and `HoneyColors`
+### Augmentation for `HoneyTheme`, `HoneyFonts` and `HoneyColors`
 
 To augment any interface, use the following module declaration.
 
 ~~~ts
-import type { HoneyCSSColor, HoneyFont } from '@react-hive/honey-layout';
+import type { HoneyCSSColor, HoneyFont } from '@react-hive/honey-style';
 
 type NeutralColors = 'charcoalDark' | 'charcoalGray' | 'crimsonRed';
 
-declare module '@react-hive/honey-layout' {
+declare module '@react-hive/honey-style' {
+  interface HoneyTheme {}
+
   interface HoneyFonts {
     body1: HoneyFont;
     // Other fonts can be defined in the same way

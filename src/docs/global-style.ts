@@ -1,4 +1,4 @@
-import { createGlobalStyle, css } from 'styled-components';
+import { createGlobalStyle, css } from '@react-hive/honey-style';
 
 export const GlobalStyle = createGlobalStyle`
   ${({ theme }) => css`

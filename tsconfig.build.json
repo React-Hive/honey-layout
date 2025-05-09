@@ -4,5 +4,5 @@
     "sourceMap": true,
     "declaration": true,
   },
-  "exclude": ["src/docs", "src/**/__tests__"]
+  "exclude": ["src/docs", "src/__mocks__", "src/**/__tests__"]
 }

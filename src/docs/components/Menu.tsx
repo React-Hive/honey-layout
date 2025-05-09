@@ -1,18 +1,18 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-import styled, { css } from 'styled-components';
+import { styled, css } from '@react-hive/honey-style';
 
 import { PAGES } from '../constants';
 import { useHoneyLayout } from '../../hooks';
 import { useCurrentApp } from '../providers';
 import { bpMedia, resolveSpacing } from '../../helpers';
 
-type MenuStyledProps = {
-  isOpenMenu: boolean;
-};
+interface MenuStyledProps {
+  open: boolean;
+}
 
-const MenuStyled = styled.div<MenuStyledProps>`
-  ${({ isOpenMenu, theme }) => css`
+const MenuStyled = styled<MenuStyledProps>('div')`
+  ${({ open, theme }) => css`
     position: relative;
 
     display: flex;
@@ -24,7 +24,7 @@ const MenuStyled = styled.div<MenuStyledProps>`
     background-color: ${theme.colors.neutral.charcoalGray};
     overflow: hidden auto;
 
-    ${isOpenMenu
+    ${open
       ? css`
           width: 300px;
           padding: 16px;
@@ -35,7 +35,7 @@ const MenuStyled = styled.div<MenuStyledProps>`
         `}
 
     ${bpMedia('xs').down} {
-      width: ${isOpenMenu && '100%'};
+      width: ${open && '100%'};
     }
 
     ${bpMedia('xs').up} {
@@ -49,7 +49,7 @@ const MenuStyled = styled.div<MenuStyledProps>`
   `}
 `;
 
-const List = styled.ul`
+const List = styled('ul')`
   width: 100%;
 
   margin: 0;
@@ -59,7 +59,7 @@ const List = styled.ul`
   overflow: hidden;
 `;
 
-const ListItem = styled.li`
+const ListItem = styled('li')`
   ${({ theme: { colors } }) => css`
     margin: ${resolveSpacing([0.5, 0])};
 
@@ -100,7 +100,7 @@ export const Menu = () => {
   };
 
   return (
-    <MenuStyled isOpenMenu={isOpenMenu}>
+    <MenuStyled open={isOpenMenu}>
       <List>
         {PAGES.map(page => (
           <ListItem key={page.path}>

@@ -1,27 +1,24 @@
 import React from 'react';
+import { styled } from '@react-hive/honey-style';
 import type { PropsWithChildren } from 'react';
-import styled, { css, useTheme } from 'styled-components';
+import type { HoneyBreakpointName } from '@react-hive/honey-style';
 
-import type { HoneyBreakpointName } from '../../types';
 import { useHoneyLayout } from '../../hooks';
 import { HoneyBox } from '../../components';
 
 const StyledDemoContainer = styled(HoneyBox)`
-  ${({ theme }) => css`
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
 
-    padding: 8px;
+  padding: 8px;
 
-    border: 1px solid #cccccc;
-    border-radius: 4px;
-  `}
+  border: 1px solid #cccccc;
+  border-radius: 4px;
 `;
 
 export const DemoContainer = ({ children }: PropsWithChildren) => {
-  const theme = useTheme();
-  const { screenState } = useHoneyLayout();
+  const { theme, screenState } = useHoneyLayout();
 
   const getBreakpointInfo = (breakpoint: HoneyBreakpointName) => {
     const size = theme.breakpoints[breakpoint];

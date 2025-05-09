@@ -5,7 +5,7 @@ import { HoneyBoxBasicExample, HoneyEffectsBasicExample } from './examples';
 
 ---
 
-The `HoneyBox` component is a versatile-styled component that provides flexible styling options for creating various UI
+The `HoneyBox` component that provides flexible styling options for creating various UI
 elements. It offers a wide range of props to customize its appearance, making it
 suitable for building different types of components such as containers, boxes, cards etc.
 
@@ -19,10 +19,6 @@ properties like width, height, padding, margin, background color, and more.
 specify different styles for various screen sizes using the $display, $width, $height,
 and other props with responsive values, ensuring your components look great across
 different devices and viewport sizes.
-
-* **Styled Components Integration:** Being built with styled-components,
-the `HoneyBox` component seamlessly integrates with your styled-components-based project.
-You can leverage the power of styled-components to define complex styling logic while maintaining a clean and readable codebase.
 
 * **Customization:** You can extend the `HoneyBox` component to create custom styled components
 tailored to your specific design requirements. By extending the `HoneyBox` component and
@@ -73,9 +69,8 @@ Below is an example of how to create and use an effect with the component.
 <HoneyEffectsBasicExample/>
 
 ~~~tsx
-import { css } from 'styled-components';
 import type { HoneyEffect } from '@react-hive/honey-layout';
-import { HoneyBox } from '@react-hive/honey-layout';
+import { HoneyBox, css } from '@react-hive/honey-layout';
 
 const hoverableEffect: HoneyEffect =
   () =>

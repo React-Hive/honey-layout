@@ -7,7 +7,6 @@ import { HoneyListBasicExample } from './examples';
 
 The `HoneyList` component used for rendering lists.
 It provides a rich set of features to handle various states of the list, including loading, error, and no content scenarios.
-The component offers flexibility in rendering list items and integrates seamlessly with styled-components for styling purposes.
 
 ### Benefits:
 
@@ -34,10 +33,9 @@ The component offers flexibility in rendering list items and integrates seamless
 <HoneyListBasicExample/>
 
 ```tsx
-import styled, { css } from 'styled-components';
-import { HoneyBox, HoneyList, resolveSpacing } from '@react-hive/honey-layout';
+import { HoneyBox, HoneyList, resolveSpacing, css, styled } from '@react-hive/honey-layout';
 
-export const ListItemStyled = styled.li`
+export const ListItemStyled = styled('li')`
   ${({ theme: { colors } }) => css`
     padding: ${resolveSpacing([0, 1])};
 

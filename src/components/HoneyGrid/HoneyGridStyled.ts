@@ -1,5 +1,6 @@
 import * as CSS from 'csstype';
-import styled, { css } from 'styled-components';
+import { css, styled } from '@react-hive/honey-style';
+import type { FastOmit } from '@react-hive/honey-style';
 
 import { resolveSpacing } from '../../helpers';
 import { HoneyBox } from '../HoneyBox';
@@ -8,7 +9,7 @@ import type { HoneyBoxProps } from '../HoneyBox';
 
 export interface HoneyGridStyledProps
   // Omit the `$gap` because `spacing` prop overrides that value
-  extends Omit<HoneyBoxProps, '$gap'> {
+  extends FastOmit<HoneyBoxProps, '$gap'> {
   /**
    * The height of each grid column.
    */
@@ -25,11 +26,9 @@ export interface HoneyGridStyledProps
   spacing?: number;
 }
 
-export const HoneyGridStyled = styled(HoneyBox).attrs<HoneyGridStyledProps>(
-  ({ $flexWrap = 'wrap' }) => ({
-    $flexWrap,
-  }),
-)`
+export const HoneyGridStyled = styled<HoneyGridStyledProps>(HoneyBox, ({ $flexWrap = 'wrap' }) => ({
+  $flexWrap,
+}))`
   ${({ columnHeight, minColumnHeight, spacing = 0 }) => css`
     display: flex;
     gap: ${resolveSpacing(spacing)};

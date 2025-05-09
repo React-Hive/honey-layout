@@ -1,18 +1,20 @@
 import { createContext } from 'react';
-
-import type { DefaultTheme, Interpolation } from 'styled-components';
-
 import type {
+  HoneyTheme,
+  HoneyCSSDimensionUnit,
+  HoneyFontName,
   HoneyColorKey,
   HoneyCSSColor,
   HoneyDimensionName,
-  HoneyFontName,
-  HoneyOverlayConfig,
   HoneySpacings,
-  Nullable,
-  HoneyScreenState,
-  HoneyCSSDimensionUnit,
   HoneyCSSDimensionValue,
+  HoneyStyledInterpolation,
+} from '@react-hive/honey-style';
+
+import type {
+  Nullable,
+  HoneyOverlayConfig,
+  HoneyScreenState,
   HoneyOverlayId,
   HoneyActiveOverlay,
   HoneyCSSSpacingValue,
@@ -35,7 +37,7 @@ export interface HoneyLayoutContextValue {
   /**
    * Represents the theme object.
    */
-  theme: DefaultTheme;
+  theme: HoneyTheme;
   /**
    * Represents the current state of the screen.
    */
@@ -88,7 +90,7 @@ export interface HoneyLayoutContextValue {
    *
    * @returns The CSS style rules for the specified font.
    */
-  resolveFont: (fontName: HoneyFontName) => Interpolation<object>;
+  resolveFont: (fontName: HoneyFontName) => HoneyStyledInterpolation<object>;
   /**
    * Function to resolve dimension values based on the theme.
    *

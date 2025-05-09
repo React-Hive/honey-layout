@@ -17,6 +17,7 @@ import type {
   UseClientPointProps,
   UseRoleProps,
 } from '@floating-ui/react';
+import type { FastOmit } from '@react-hive/honey-style';
 
 /**
  * Options for configuring popup interactions.
@@ -37,13 +38,13 @@ export interface UseHoneyPopupInteractionsOptions {
    *
    * @see https://floating-ui.com/docs/usedismiss
    */
-  dismissOptions?: Omit<UseDismissProps, 'escapeKey'>;
+  dismissOptions?: FastOmit<UseDismissProps, 'escapeKey'>;
   /**
    * Configuration for click interactions.
    *
    * @see https://floating-ui.com/docs/useclick
    */
-  clickOptions?: Omit<UseClickProps, 'enabled'>;
+  clickOptions?: FastOmit<UseClickProps, 'enabled'>;
   /**
    * Configuration for hover interactions.
    *
@@ -52,25 +53,25 @@ export interface UseHoneyPopupInteractionsOptions {
    *
    * @see https://floating-ui.com/docs/usehover
    */
-  hoverOptions?: Omit<UseHoverProps, 'enabled'>;
+  hoverOptions?: FastOmit<UseHoverProps, 'enabled'>;
   /**
    * Configuration for focus interactions.
    *
    * @see https://floating-ui.com/docs/usefocus
    */
-  focusOptions?: Omit<UseFocusProps, 'enabled'>;
+  focusOptions?: FastOmit<UseFocusProps, 'enabled'>;
   /**
    * Configuration for pointer interactions.
    *
    * @see https://floating-ui.com/docs/useclientpoint
    */
-  clientPointsOptions?: Omit<UseClientPointProps, 'enabled'>;
+  clientPointsOptions?: FastOmit<UseClientPointProps, 'enabled'>;
   /**
    * Configuration for role assignment.
    *
    * @see https://floating-ui.com/docs/userole
    */
-  roleOptions?: Omit<UseRoleProps, 'enabled'>;
+  roleOptions?: FastOmit<UseRoleProps, 'enabled'>;
 }
 
 export const useHoneyPopupInteractions = (

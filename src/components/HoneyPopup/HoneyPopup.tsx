@@ -7,6 +7,7 @@ import type {
   FloatingFocusManagerProps,
   MiddlewareData,
 } from '@floating-ui/react';
+import type { FastOmit } from '@react-hive/honey-style';
 
 import { HoneyOverlay } from '../HoneyOverlay';
 import { HoneyPopupContext } from './HoneyPopupContext';
@@ -24,7 +25,7 @@ export interface HoneyPopupChildrenContextProps {
   referenceProps: ReturnType<UseInteractionsReturn['getReferenceProps']>;
 }
 
-type InheritedHoneyOverlayProps = Omit<
+type InheritedHoneyOverlayProps = FastOmit<
   HoneyOverlayProps,
   'children' | 'active' | 'onDeactivate' | '$position'
 >;
@@ -32,7 +33,7 @@ type InheritedHoneyOverlayProps = Omit<
 export interface HoneyPopupProps<Context = undefined, UseAutoSize extends boolean = boolean>
   extends UseHoneyPopupOptions<UseAutoSize> {
   children: (context: HoneyPopupChildrenContextProps) => ReactNode;
-  referenceProps?: Omit<HoneyPopupStyledProps, 'children' | 'content'>;
+  referenceProps?: FastOmit<HoneyPopupStyledProps, 'children' | 'content'>;
   /**
    * Content inside the popup.
    */
@@ -49,17 +50,17 @@ export interface HoneyPopupProps<Context = undefined, UseAutoSize extends boolea
    *
    * @see https://floating-ui.com/docs/floatingfocusmanager#props
    */
-  focusManagerProps?: Omit<FloatingFocusManagerProps, 'children' | 'context'>;
+  focusManagerProps?: FastOmit<FloatingFocusManagerProps, 'children' | 'context'>;
   /**
    * Properties for an arrow component.
    *
    * @see https://floating-ui.com/docs/FloatingArrow#props
    */
-  arrowProps?: Omit<FloatingArrowProps, 'ref' | 'context'>;
+  arrowProps?: FastOmit<FloatingArrowProps, 'ref' | 'context'>;
   /**
    * Properties for `HoneyPopupPortal` component.
    */
-  portalProps?: Omit<HoneyPopupPortalProps, 'children'>;
+  portalProps?: FastOmit<HoneyPopupPortalProps, 'children'>;
   /**
    * Function to adjust the floating content's styles before rendering.
    */
@@ -119,7 +120,7 @@ export const HoneyPopup = <Context = undefined, UseAutoSize extends boolean = bo
         // Data
         data-testid="honey-popup"
       >
-        <HoneyPopupContext.Provider value={popupContext}>
+        <HoneyPopupContext value={popupContext}>
           {children(childrenContext)}
 
           <FloatingNode id={nodeId}>
@@ -168,7 +169,7 @@ export const HoneyPopup = <Context = undefined, UseAutoSize extends boolean = bo
               </HoneyPopupPortal>
             )}
           </FloatingNode>
-        </HoneyPopupContext.Provider>
+        </HoneyPopupContext>
       </HoneyPopupStyled>
     </HoneyPopupTree>
   );

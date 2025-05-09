@@ -1,14 +1,13 @@
 import React from 'react';
-import { useTheme } from 'styled-components';
 
 import { IconButton } from './IconButton';
 import { MenuIcon } from '../icons';
 import { HoneyBox } from '../../components';
 import { useCurrentApp } from '../providers';
+import { useHoneyLayout } from '../../hooks';
 
 export const TopBar = () => {
-  const theme = useTheme();
-
+  const { theme } = useHoneyLayout();
   const { toggleMenu } = useCurrentApp();
 
   return (

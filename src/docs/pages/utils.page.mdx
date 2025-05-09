@@ -1,8 +1,10 @@
-import styled, { css, useTheme } from 'styled-components';
+import { styled, css } from '@react-hive/honey-style';
+
 import { resolveColor, bpMedia } from '../../helpers';
 import { flattenNestedList } from '../../utils';
+import { useHoneyLayout } from '../../hooks';
 
-export const ColoredBox = styled.div`
+export const ColoredBox = styled('div')`
   ${() => css`
     width: 100px;
     height: 100px;
@@ -16,7 +18,7 @@ export const ColoredBox = styled.div`
   `}
 `;
 
-export const ResponsiveBox = styled.div`
+export const ResponsiveBox = styled('div')`
   ${({ theme: { colors } }) => css`
     width: 100px;
     height: 100px;
@@ -38,7 +40,7 @@ export const ResponsiveBox = styled.div`
 `;
 
 export const FlattenedList = () => {
-  const theme = useTheme()
+  const { theme } = useHoneyLayout()
 
   const nestedList = [
     {
@@ -126,12 +128,12 @@ A function that takes the theme and returns the CSS for the specified font. The 
 The `resolveFont` function generates CSS font styles based on the `fontName` parameter.
 
 ```tsx
-import styled from 'styled-components';
+import { styled } from '@react-hive/honey-style';
 import { resolveFont } from '@react-hive/honey-layout';
 
 // Assume the theme object includes 'heading' font configuration
 
-const Heading = styled.h1`
+const Heading = styled('h1')`
   ${resolveFont('heading')};
 `;
 ```
@@ -162,10 +164,10 @@ Dynamically resolve color values from the theme based on color keys, enabling co
 <ColoredBox/>
 
 ```tsx
-import styled from 'styled-components';
+import { styled } from '@react-hive/honey-style';
 import { resolveColor } from '@react-hive/honey-layout';
 
-export const ColoredBox = styled.div`
+export const ColoredBox = styled('div')`
   width: 100px;
   height: 100px;
   margin: 0 auto;
@@ -206,10 +208,10 @@ Here's how it works:
 * **type**: Indicates the type of spacing ('base', 'small', 'large', etc.) to fetch from the theme. Defaults to 'base'.
 
 ```tsx
-import styled from 'styled-components';
+import { styled } from '@react-hive/honey-style';
 import { resolveSpacing } from '@react-hive/honey-layout';
 
-const Button = styled.button`
+const Button = styled('button')`
   margin: ${resolveSpacing(1)}; /* Using default unit 'px' */
   padding: ${resolveSpacing([1, 2], 'rem', 'small')}; /* Using 'rem' unit and 'small' type spacing from theme */
   width: ${resolveSpacing(5, '%')}; /* Using '%' unit */
@@ -244,11 +246,10 @@ An object of type `HoneyScreenState` that includes:
 The `resolveScreenState` function is particularly useful in responsive design scenarios where you need to adjust your layout or behavior based on the screen size and orientation. It helps in conditionally rendering components or applying styles based on the current screen state.
 
 ```tsx
-import { useTheme } from 'styled-components';
-import { resolveScreenState } from '@react-hive/honey-layout';
+import { resolveScreenState, useHoneyLayout } from '@react-hive/honey-layout';
 
 export const ResponsiveComponent = () => {
-  const theme = useTheme();
+  const { theme } = useHoneyLayout();
 
   const screenState = resolveScreenState(theme.breakpoints);
 
@@ -285,10 +286,10 @@ A function that takes the theme and returns the resolved dimension value for the
 The `resolveDimension` function accesses a specific dimension value from the theme configuration using the dimension name.
 
 ```tsx
-import styled from 'styled-components';
+import { styled } from '@react-hive/honey-style';
 import { resolveDimension } from '@react-hive/honey-layout';
 
-const Box = styled.div`
+const Box = styled('div')`
   width: ${resolveDimension('width')}; /* Retrieves the 'width' dimension value from the theme */
   height: ${resolveDimension('height')};
 `;
@@ -334,10 +335,10 @@ Changes the background color of the box element responsively according to the sc
 <ResponsiveBox/>
 
 ```tsx
-import styled, { css }from 'styled-components';
+import { styled, css } from '@react-hive/honey-style';
 import { bpMedia } from '@react-hive/honey-layout';
 
-const ResponsiveBox = styled.div`
+const ResponsiveBox = styled('div')`
   ${({ theme: { colors } }) => css`
     width: 100px;
     height: 100px;
@@ -382,11 +383,10 @@ Flattens a nested list structure to create a flat list with depth levels, parent
 <FlattenedList/>
 
 ```tsx
-import { useTheme } from 'styled-components';
-import { flattenNestedList } from '@react-hive/honey-layout';
+import { flattenNestedList, useHoneyLayout } from '@react-hive/honey-layout';
 
 export const FlattenedList = () => {
-  const theme = useTheme()
+  const { theme } = useHoneyLayout()
 
   const nestedList = [
     {

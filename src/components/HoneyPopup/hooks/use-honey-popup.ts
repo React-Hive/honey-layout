@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import {
   arrow,
   autoUpdate,
@@ -6,13 +6,16 @@ import {
   offset,
   shift,
   size,
+  autoPlacement,
   useFloating,
   useFloatingNodeId,
   useTransitionStyles,
 } from '@floating-ui/react';
 import type { RefObject } from 'react';
+import type { Derivable } from '@floating-ui/dom';
 import type {
   AutoUpdateOptions,
+  AutoPlacementOptions,
   ArrowOptions,
   FlipOptions,
   OffsetOptions,
@@ -24,6 +27,7 @@ import type {
   UseInteractionsReturn,
   UseTransitionStylesProps,
 } from '@floating-ui/react';
+import type { FastOmit } from '@react-hive/honey-style';
 
 import { useHoneyLayout, useHoneyOnChange } from '../../../hooks';
 import { useHoneyPopupInteractions } from './use-honey-popup-interactions';
@@ -36,7 +40,7 @@ export interface UseHoneyPopupOptions<UseAutoSize extends boolean = boolean>
   /**
    * Options for configuring the floating UI behavior.
    */
-  floatingOptions?: Omit<
+  floatingOptions?: FastOmit<
     UseFloatingOptions,
     'nodeId' | 'open' | 'whileElementsMounted' | 'onOpenChange'
   >;
@@ -47,12 +51,25 @@ export interface UseHoneyPopupOptions<UseAutoSize extends boolean = boolean>
    */
   offsetOptions?: OffsetOptions;
   /**
+   * Whether to use the flip middleware.
+   *
+   * @default true
+   */
+  useFlip?: boolean;
+  /**
    * Configuration for flip middleware.
    *
    * @prop crossAxis - Default is `false`.
    *  See details by https://floating-ui.com/docs/flip#combining-with-shift
+   * @prop fallbackStrategy - Default is `bestFit`.
    */
   flipOptions?: FlipOptions;
+  /**
+   * Whether to use the shift middleware.
+   *
+   * @default true
+   */
+  useShift?: boolean;
   /**
    * Configuration for shift middleware.
    *
@@ -68,13 +85,21 @@ export interface UseHoneyPopupOptions<UseAutoSize extends boolean = boolean>
   /**
    * Configuration for the floating arrow.
    */
-  arrowOptions?: Omit<ArrowOptions, 'element'>;
+  arrowOptions?: FastOmit<ArrowOptions, 'element'>;
   /**
    * @prop duration Default is 250.
    *
    * @see https://floating-ui.com/docs/usetransition#usetransitionstyles
    */
   transitionOptions?: UseTransitionStylesProps;
+  /**
+   * @default false
+   */
+  useAutoPlacement?: boolean;
+  /**
+   * @see https://floating-ui.com/docs/autoplacement
+   */
+  autoPlacementOptions?: AutoPlacementOptions | Derivable<AutoPlacementOptions>;
   /**
    * Whether to use automatic position updates.
    *
@@ -168,11 +193,15 @@ export const useHoneyPopup = ({
   open,
   floatingOptions,
   offsetOptions,
+  useFlip = true,
   flipOptions,
+  useShift = true,
   shiftOptions,
   useArrow = false,
   arrowOptions,
   transitionOptions,
+  useAutoPlacement = false,
+  autoPlacementOptions,
   useAutoUpdate = false,
   autoUpdateOptions,
   useAutoSize = false,
@@ -207,13 +236,19 @@ export const useHoneyPopup = ({
 
   const middlewares: Middleware[] = [offset(offsetOptions ?? theme.spacings.base)];
 
-  // https://floating-ui.com/docs/flip
-  const flipMiddleware = flip({
-    // https://floating-ui.com/docs/flip#combining-with-shift
-    crossAxis: false,
-    fallbackStrategy: 'bestFit',
-    ...flipOptions,
-  });
+  let flipMiddleware: Nullable<Middleware> = null;
+
+  if (useAutoPlacement) {
+    middlewares.push(autoPlacement(autoPlacementOptions));
+  } else if (useFlip) {
+    // https://floating-ui.com/docs/flip
+    flipMiddleware = flip({
+      // https://floating-ui.com/docs/flip#combining-with-shift
+      crossAxis: false,
+      fallbackStrategy: 'bestFit',
+      ...flipOptions,
+    });
+  }
 
   if (useAutoSize) {
     // https://floating-ui.com/docs/size
@@ -228,34 +263,40 @@ export const useHoneyPopup = ({
       },
     });
 
-    if (flipOptions?.fallbackStrategy === 'initialPlacement') {
-      /**
-       * If the initial placement to take precedence, place `size()` before `flip()`.
-       *
-       * @see https://floating-ui.com/docs/size#initialplacement
-       */
-      middlewares.push(sizeMiddleware, flipMiddleware);
+    if (flipMiddleware) {
+      if (flipOptions?.fallbackStrategy === 'initialPlacement') {
+        /**
+         * If the initial placement to take precedence, place `size()` before `flip()`.
+         *
+         * @see https://floating-ui.com/docs/size#initialplacement
+         */
+        middlewares.push(sizeMiddleware, flipMiddleware);
+      } else {
+        /**
+         * The `bestFit` fallback strategy in the `flip()` middleware is the default, which ensures
+         * the best fitting placement is used.
+         * In this scenario, place `size()` after `flip()`.
+         *
+         * @see https://floating-ui.com/docs/size#bestfit
+         */
+        middlewares.push(flipMiddleware, sizeMiddleware);
+      }
     } else {
-      /**
-       * The `bestFit` fallback strategy in the `flip()` middleware is the default, which ensures
-       * the best fitting placement is used.
-       * In this scenario, place `size()` after `flip()`.
-       *
-       * @see https://floating-ui.com/docs/size#bestfit
-       */
-      middlewares.push(flipMiddleware, sizeMiddleware);
+      middlewares.push(sizeMiddleware);
     }
-  } else {
+  } else if (flipMiddleware) {
     middlewares.push(flipMiddleware);
   }
 
-  middlewares.push(
-    // https://floating-ui.com/docs/shift
-    shift({
-      padding: theme.spacings.base,
-      ...shiftOptions,
-    }),
-  );
+  if (useShift) {
+    middlewares.push(
+      // https://floating-ui.com/docs/shift
+      shift({
+        padding: theme.spacings.base,
+        ...shiftOptions,
+      }),
+    );
+  }
 
   if (useArrow) {
     /**

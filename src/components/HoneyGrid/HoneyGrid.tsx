@@ -46,10 +46,10 @@ export const HoneyGrid = ({
   );
 
   return (
-    <HoneyGridContext.Provider value={contextValue}>
+    <HoneyGridContext value={contextValue}>
       <HoneyGridStyled ref={ref} spacing={spacing} data-testid="honey-grid" {...props}>
         {children}
       </HoneyGridStyled>
-    </HoneyGridContext.Provider>
+    </HoneyGridContext>
   );
 };

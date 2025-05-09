@@ -1,4 +1,4 @@
-import type { HoneyTheme } from '../types';
+import type { HoneyTheme } from '@react-hive/honey-style';
 
 export const themeMock: HoneyTheme = {
   breakpoints: {

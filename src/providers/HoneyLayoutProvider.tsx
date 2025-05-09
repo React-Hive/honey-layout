@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react';
-import { ThemeProvider, useTheme } from 'styled-components';
-import type { DefaultTheme } from 'styled-components';
+import { HoneyStyleProvider } from '@react-hive/honey-style';
 import type { PropsWithChildren } from 'react';
+import type { HoneyStyleContextValue } from '@react-hive/honey-style';
 
 import { useHoneyMediaQuery } from '../hooks';
 import { resolveDimension, resolveFont, resolveColor, resolveSpacing } from '../helpers';
@@ -10,17 +10,16 @@ import { useHoneyOverlays } from './hooks';
 import type { HoneyLayoutContextValue } from '../contexts';
 import type { UseHoneyMediaQueryOptions } from '../hooks';
 
-interface HoneyLayoutProviderContentProps {
+interface HoneyLayoutProviderProps extends HoneyStyleContextValue {
   mediaQueryOptions?: UseHoneyMediaQueryOptions;
 }
 
-const HoneyLayoutProviderContent = ({
+export const HoneyLayoutProvider = ({
   children,
+  theme,
   mediaQueryOptions,
-}: PropsWithChildren<HoneyLayoutProviderContentProps>) => {
-  const theme = useTheme();
-
-  const screenState = useHoneyMediaQuery(mediaQueryOptions);
+}: PropsWithChildren<HoneyLayoutProviderProps>) => {
+  const screenState = useHoneyMediaQuery(theme, mediaQueryOptions);
 
   const { overlays, registerOverlay, unregisterOverlay } = useHoneyOverlays();
 
@@ -36,23 +35,12 @@ const HoneyLayoutProviderContent = ({
       resolveFont: (...args) => resolveFont(...args)({ theme }),
       resolveDimension: (...args) => resolveDimension(...args)({ theme }),
     }),
-    [theme, screenState, overlays, registerOverlay, unregisterOverlay],
+    [theme, screenState, overlays],
   );
 
-  return <HoneyLayoutContext.Provider value={contextValue}>{children}</HoneyLayoutContext.Provider>;
-};
-
-interface HoneyLayoutProviderProps extends HoneyLayoutProviderContentProps {
-  theme: DefaultTheme;
-}
-
-export const HoneyLayoutProvider = ({
-  theme,
-  ...props
-}: PropsWithChildren<HoneyLayoutProviderProps>) => {
   return (
-    <ThemeProvider theme={theme}>
-      <HoneyLayoutProviderContent {...props} />
-    </ThemeProvider>
+    <HoneyStyleProvider theme={theme}>
+      <HoneyLayoutContext value={contextValue}>{children}</HoneyLayoutContext>
+    </HoneyStyleProvider>
   );
 };

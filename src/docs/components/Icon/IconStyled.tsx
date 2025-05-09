@@ -1,6 +1,5 @@
 import * as CSS from 'csstype';
-import styled, { css } from 'styled-components';
-
+import { css, styled } from '@react-hive/honey-style';
 import type { SVGAttributes } from 'react';
 
 export type IconSize = 'small' | 'medium' | 'large';
@@ -17,7 +16,7 @@ const iconSizes: Record<IconSize, string> = {
   large: '24px',
 };
 
-export const IconStyled = styled.svg<IconStyledProps>`
+export const IconStyled = styled<IconStyledProps>('svg')`
   ${({ width, height, $color, $size = 'medium', $rotate, stroke, scale }) => css`
     display: flex;
     align-items: center;

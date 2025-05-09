@@ -2,12 +2,12 @@
  * Store types that represent data structures, transformations, and models used across different components and modules.
  */
 import type { RefObject } from 'react';
-import type { StyleFunction } from 'styled-components';
+import type { HoneyStyledFunction } from '@react-hive/honey-style';
 
 import type { KeysWithNonArrayValues, Nullable } from './utility.types';
 import type { HoneyKeyboardEventCode } from './dom.types';
 
-export type HoneyEffectResultFn<Props extends object> = StyleFunction<Props>;
+export type HoneyEffectResultFn<Props extends object> = HoneyStyledFunction<Props>;
 
 export type HoneyEffect<Config = unknown, Props extends object = object> = (
   config: Config,

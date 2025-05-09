@@ -1,32 +1,38 @@
 import * as CSS from 'csstype';
-import { css } from 'styled-components';
+import { css } from '@react-hive/honey-style';
 import type { HTMLAttributes } from 'react';
-import type { DefaultTheme, ExecutionContext, StyleFunction } from 'styled-components';
+import type {
+  FastOmit,
+  HoneyTheme,
+  HoneyCSSDimensionUnit,
+  HoneyFontName,
+  HoneyColors,
+  HoneyColor,
+  HoneyColorKey,
+  HoneyCSSColor,
+  HoneyStyledContext,
+  HoneyStyledFunction,
+  HoneyDimensionName,
+  HoneyBreakpointName,
+  HoneyBreakpoints,
+  HoneySpacings,
+  HoneyCSSDimensionValue,
+} from '@react-hive/honey-style';
 
 import { camelToDashCase, convertHexToHexWithAlpha, media, pxToRem } from '../utils';
 import { CSS_COLOR_PROPERTIES, CSS_SPACING_PROPERTIES } from '../constants';
 import type {
   Nullable,
-  HoneyBreakpointName,
+  HoneyScreenState,
   HoneyCSSShorthandTuple,
   HoneyCSSShorthandDimensionOutput,
-  HoneyCSSDimensionUnit,
   HoneyCSSSpacingValue,
   HoneyCSSPropertyValue,
   HoneyCSSMediaRule,
-  HoneySpacings,
-  HoneyColorKey,
-  HoneyFontName,
-  HoneyCSSColor,
-  HoneyDimensionName,
-  HoneyPrefixedCSSProperties,
   HoneyCSSSpacingProperty,
   HoneyCSSColorProperty,
-  HoneyBreakpoints,
-  HoneyScreenState,
-  HoneyCSSDimensionValue,
   HoneyPrefixedCSSProperty,
-  HoneyColors,
+  HoneyPrefixedCSSProperties,
 } from '../types';
 
 export const noop = () => {};
@@ -100,8 +106,8 @@ export const resolveSpacing =
     value: Value,
     unit: Unit = 'px' as Unit,
     type: keyof HoneySpacings = 'base',
-  ): ((context: ExecutionContext) => HoneyResolveSpacingResult<Value, Unit>) =>
-  ({ theme }: ExecutionContext): HoneyResolveSpacingResult<Value, Unit> => {
+  ): ((context: HoneyStyledContext<object>) => HoneyResolveSpacingResult<Value, Unit>) =>
+  ({ theme }) => {
     if (typeof value === 'string') {
       return value as never;
     }
@@ -133,7 +139,7 @@ export const resolveSpacing =
 /**
  * Resolves a color value from the theme or returns the input color directly if it's a standalone color name or HEX value.
  *
- * @param colorKey - A string representing the color to resolve.
+ * @param colorInput - A string representing the color to resolve.
  *                 This can be:
  *                  - A theme key in the format 'colorType.colorName'.
  *                  - A standalone color name (e.g., "red", "blue").
@@ -150,9 +156,9 @@ export const resolveSpacing =
  * @throws Will throw an error if the color format is invalid.
  */
 export const resolveColor =
-  (colorKey: HoneyColorKey | HoneyCSSColor, alpha?: number) =>
-  ({ theme }: ExecutionContext): HoneyCSSColor => {
-    const [colorType, colorName] = colorKey.split('.');
+  (colorInput: HoneyColor, alpha?: number) =>
+  ({ theme }: HoneyStyledContext<object>): HoneyCSSColor => {
+    const [colorType, colorName] = colorInput.split('.');
 
     const color = colorName
       ? theme.colors[colorType as keyof HoneyColors][colorName]
@@ -170,7 +176,7 @@ export const resolveColor =
  */
 export const resolveFont =
   (fontName: HoneyFontName) =>
-  ({ theme }: ExecutionContext) => {
+  ({ theme }: HoneyStyledContext<object>) => {
     const font = theme.fonts[fontName];
 
     return css`
@@ -191,7 +197,7 @@ export const resolveFont =
  */
 export const resolveDimension =
   (dimensionName: HoneyDimensionName) =>
-  ({ theme }: ExecutionContext): HoneyCSSDimensionValue =>
+  ({ theme }: HoneyStyledContext<object>): HoneyCSSDimensionValue =>
     theme.dimensions[dimensionName];
 
 /**
@@ -293,6 +299,8 @@ const getCSSPropertyValue = <CSSProperty extends keyof CSS.Properties>(
   return resolvedValue;
 };
 
+export type HoneyStyledBoxProps = HTMLAttributes<HTMLElement> & HoneyPrefixedCSSProperties;
+
 /**
  * Filters and matches CSS properties from the provided props object based on the specified breakpoint.
  *
@@ -303,10 +311,10 @@ const getCSSPropertyValue = <CSSProperty extends keyof CSS.Properties>(
  *
  * @returns An array of tuples where each tuple contains a Honey-prefixed CSS property and its value.
  */
-const matchCSSProperties = <Props extends HTMLAttributes<HTMLElement> & HoneyPrefixedCSSProperties>(
+const matchCSSProperties = <Props extends HoneyStyledBoxProps>(
   props: Props,
   breakpoint: HoneyBreakpointName,
-): [HoneyPrefixedCSSProperty, CSS.Properties[keyof CSS.Properties]][] =>
+) =>
   Object.entries(props).filter(
     ([propertyName, propertyValue]) =>
       (isCSSPrefixedProperty(propertyName) && breakpoint === 'xs') ||
@@ -326,10 +334,8 @@ const matchCSSProperties = <Props extends HTMLAttributes<HTMLElement> & HoneyPre
  *          with styles generated for the specified breakpoint.
  */
 export const createStyles =
-  <Props extends HTMLAttributes<HTMLElement> & HoneyPrefixedCSSProperties>(
-    breakpoint: HoneyBreakpointName,
-  ): ((context: ExecutionContext & Props) => ReturnType<typeof css>) =>
-  ({ theme, ...props }: ExecutionContext & Props) => css`
+  (breakpoint: HoneyBreakpointName): HoneyStyledFunction<HoneyStyledBoxProps> =>
+  ({ theme, ...props }) => css`
     ${matchCSSProperties(props, breakpoint).map(([prefixedPropertyName, propertyValue]) => {
       const propertyName = prefixedPropertyName.slice(1) as keyof CSS.Properties;
 
@@ -355,7 +361,7 @@ export const createStyles =
  */
 const hasBreakpointStyles = (
   breakpoint: HoneyBreakpointName,
-  props: HTMLAttributes<HTMLElement> & HoneyPrefixedCSSProperties,
+  props: HoneyStyledBoxProps,
 ): boolean =>
   Object.entries(props).some(
     ([propertyName, propertyValue]) =>
@@ -376,9 +382,9 @@ const hasBreakpointStyles = (
  */
 export const bpMedia = (
   breakpoint: HoneyBreakpointName,
-  ruleOptions: Omit<HoneyCSSMediaRule, 'width' | 'minWidth' | 'maxWidth'> = {},
+  ruleOptions: FastOmit<HoneyCSSMediaRule, 'width' | 'minWidth' | 'maxWidth'> = {},
 ) => {
-  const resolveBpValue = (theme: DefaultTheme) => {
+  const resolveBpValue = (theme: HoneyTheme) => {
     const value = theme.breakpoints[breakpoint];
     if (!value) {
       throw new Error(`[honey-layout]: Setup for breakpoint "${breakpoint}" was not found.`);
@@ -387,7 +393,7 @@ export const bpMedia = (
     return value;
   };
 
-  const down: StyleFunction<object> = ({ theme }) =>
+  const down: HoneyStyledFunction<object> = ({ theme }) =>
     media([
       {
         maxWidth: `${resolveBpValue(theme)}px`,
@@ -395,7 +401,7 @@ export const bpMedia = (
       },
     ]);
 
-  const up: StyleFunction<object> = ({ theme }) =>
+  const up: HoneyStyledFunction<object> = ({ theme }) =>
     media([
       {
         minWidth: `${resolveBpValue(theme)}px`,
@@ -422,10 +428,8 @@ export const bpMedia = (
  *          if styles exist for the specified breakpoint; otherwise, returns `null`.
  */
 export const applyBreakpointStyles =
-  <Props extends HTMLAttributes<HTMLElement> & HoneyPrefixedCSSProperties>(
-    breakpoint: HoneyBreakpointName,
-  ): ((context: ExecutionContext & Props) => Nullable<ReturnType<typeof css>>) =>
-  ({ theme, ...props }: ExecutionContext & Props) => {
+  (breakpoint: HoneyBreakpointName): HoneyStyledFunction<HoneyStyledBoxProps> =>
+  ({ theme, ...props }) => {
     const breakpointConfig = theme.breakpoints[breakpoint];
 
     if (!breakpointConfig || !hasBreakpointStyles(breakpoint, props)) {

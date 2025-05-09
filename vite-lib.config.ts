@@ -17,6 +17,9 @@ export default {
       insertTypesEntry: true,
     }),
   ],
+  optimizeDeps: {
+    include: ['react'],
+  },
   build: {
     lib: {
       formats: ['es'],
@@ -24,7 +27,7 @@ export default {
       fileName: 'index',
     },
     rollupOptions: {
-      external: ['react', 'styled-components'],
+      external: ['react'],
     },
   },
 } satisfies UserConfig;

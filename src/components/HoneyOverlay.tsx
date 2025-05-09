@@ -1,4 +1,5 @@
 import React, { useCallback } from 'react';
+import type { FastOmit } from '@react-hive/honey-style';
 import type { ReactNode } from 'react';
 
 import { HoneyFlexBox } from './HoneyFlexBox';
@@ -18,7 +19,7 @@ export interface HoneyOverlayContext {
   deactivateOverlay: () => void;
 }
 
-export interface HoneyOverlayProps extends Omit<HoneyFlexBoxProps, 'children'> {
+export interface HoneyOverlayProps extends FastOmit<HoneyFlexBoxProps, 'children'> {
   /**
    * The content of the overlay, either as static nodes or a function that receives the object
    * with the current overlay state and helper methods.

@@ -1,4 +1,5 @@
 import React, { Fragment } from 'react';
+import type { FastOmit } from '@react-hive/honey-style';
 
 import { HoneyStatusContent } from '../HoneyStatusContent';
 import { getHoneyListItemId } from './HoneyList.helpers';
@@ -7,9 +8,12 @@ import type { HoneyListGenericProps, HoneyListItem } from './HoneyList.types';
 import type { HoneyStatusContentProps } from '../HoneyStatusContent';
 import type { HoneyListStyledProps } from './HoneyListStyled';
 
-export type HoneyListProps<Item extends HoneyListItem> = Omit<HoneyListStyledProps, 'children'> &
+export type HoneyListProps<Item extends HoneyListItem> = FastOmit<
+  HoneyListStyledProps,
+  'children'
+> &
   HoneyListGenericProps<Item> &
-  Omit<HoneyStatusContentProps, 'isNoContent'>;
+  FastOmit<HoneyStatusContentProps, 'isNoContent'>;
 
 /**
  * A generic and reusable list component that handles different states such as loading, error, or no content,

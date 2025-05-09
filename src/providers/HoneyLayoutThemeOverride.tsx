@@ -1,11 +1,13 @@
-import type { PropsWithChildren } from 'react';
-import type { DefaultTheme } from 'styled-components';
 import React, { useContext, useMemo } from 'react';
-import { ThemeContext, ThemeProvider } from 'styled-components';
 import merge from 'lodash.merge';
+import { HoneyStyleProvider } from '@react-hive/honey-style';
+import type { PropsWithChildren } from 'react';
+import type { HoneyTheme } from '@react-hive/honey-style';
+
+import { HoneyLayoutContext } from '../contexts';
 
 interface HoneyLayoutThemeOverrideProps {
-  theme: DefaultTheme;
+  theme: HoneyTheme;
 }
 
 /**
@@ -20,9 +22,12 @@ export const HoneyLayoutThemeOverride = ({
   theme,
   ...props
 }: PropsWithChildren<HoneyLayoutThemeOverrideProps>) => {
-  const currentTheme = useContext(ThemeContext);
+  const honeyLayout = useContext(HoneyLayoutContext);
 
-  const overriddenTheme = useMemo(() => merge(currentTheme, theme), [currentTheme, theme]);
+  const overriddenTheme = useMemo(
+    () => merge(honeyLayout?.theme, theme),
+    [honeyLayout?.theme, theme],
+  );
 
-  return <ThemeProvider theme={overriddenTheme} {...props} />;
+  return <HoneyStyleProvider theme={overriddenTheme} {...props} />;
 };

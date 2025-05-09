@@ -1,10 +1,10 @@
 import React from 'react';
-import styled, { css } from 'styled-components';
+import { css, styled } from '@react-hive/honey-style';
 
 import { resolveSpacing } from '../../../helpers';
 import { HoneyBox, HoneyList } from '../../../components';
 
-export const ListItemStyled = styled.li`
+export const ListItem = styled('li')`
   ${({ theme: { colors } }) => css`
     padding: ${resolveSpacing([0, 1])};
 
@@ -26,7 +26,7 @@ export const HoneyListBasicExample = () => {
   return (
     <HoneyBox $marginTop="16px" $border="1px solid #cccccc" $borderRadius="4px">
       <HoneyList items={items} itemKey="id" $gap="8px">
-        {item => <HoneyBox as={ListItemStyled}>{item.name}</HoneyBox>}
+        {item => <ListItem>{item.name}</ListItem>}
       </HoneyList>
     </HoneyBox>
   );

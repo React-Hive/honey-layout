@@ -1,18 +1,6 @@
 import type { RefObject, Ref, RefCallback } from 'react';
-import type { IStyleSheetManager } from 'styled-components';
-import isPropValid from '@emotion/is-prop-valid';
 
 import type { Nullable } from '../types';
-
-// https://styled-components.com/docs/faqs#shouldforwardprop-is-no-longer-provided-by-default
-export const shouldForwardProp: IStyleSheetManager['shouldForwardProp'] = (propName, target) => {
-  if (typeof target === 'string') {
-    // For HTML elements, forward the prop if it is a valid HTML attribute
-    return isPropValid(propName);
-  }
-  // For other elements, forward all props
-  return true;
-};
 
 /**
  * Merges multiple refs into a single ref callback.

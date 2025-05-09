@@ -1,10 +1,10 @@
 import React, { createContext, useContext, useMemo, useState } from 'react';
 import type { PropsWithChildren } from 'react';
 
-type AppContextValue = {
+interface AppContextValue {
   isOpenMenu: boolean;
   toggleMenu: () => void;
-};
+}
 
 const AppContext = createContext<AppContextValue | undefined>(undefined);
 
@@ -19,7 +19,7 @@ export const AppProvider = ({ children }: PropsWithChildren) => {
     [isOpenMenu],
   );
 
-  return <AppContext.Provider value={contextValue}>{children}</AppContext.Provider>;
+  return <AppContext value={contextValue}>{children}</AppContext>;
 };
 
 export const useCurrentApp = () => {

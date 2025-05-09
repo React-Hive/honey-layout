@@ -1,4 +1,6 @@
-import type { HoneyCSSMediaRule, HoneyHEXColor } from '../types';
+import type { HoneyHEXColor } from '@react-hive/honey-style';
+
+import type { HoneyCSSMediaRule } from '../types';
 
 export const camelToDashCase = (inputString: string): string =>
   inputString.replace(/[A-Z]/g, letter => `-${letter.toLowerCase()}`);

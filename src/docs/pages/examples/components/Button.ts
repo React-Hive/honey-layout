@@ -1,8 +1,8 @@
-import styled, { css } from 'styled-components';
+import { css, styled } from '@react-hive/honey-style';
+import type { HoneyColorKey } from '@react-hive/honey-style';
 
 import { resolveColor, resolveSpacing } from '../../../../helpers';
 import { HoneyBox } from '../../../../components';
-import type { HoneyColorKey } from '../../../../types';
 import type { HoneyBoxProps } from '../../../../components';
 
 type ButtonColorType = 'success' | 'default';
@@ -26,13 +26,13 @@ const BUTTON_COLORS_MAP: Record<ButtonColorType, ButtonColorConfig> = {
   },
 };
 
-type ButtonProps = Omit<HoneyBoxProps<'button'>, 'color'> & {
+interface ButtonProps {
   color?: ButtonColorType;
-};
+}
 
-export const Button = styled(HoneyBox).attrs<ButtonProps>({
+export const Button = styled<HoneyBoxProps<'button'>>(HoneyBox, {
   as: 'button',
-})`
+})<ButtonProps>`
   ${({ color = 'success' }) => {
     const colorConfig = BUTTON_COLORS_MAP[color];
 

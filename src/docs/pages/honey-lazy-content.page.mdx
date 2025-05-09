@@ -55,11 +55,10 @@ This example showcases the usage of the `HoneyLazyContent` component alongside a
 
 ```tsx
 import { useState } from 'react';
-import styled, { css } from 'styled-components';
 
-import { HoneyBox, HoneyLazyContent, resolveSpacing } from '@react-hive/honey-layout';
+import { HoneyBox, HoneyLazyContent, resolveSpacing, css, styled } from '@react-hive/honey-layout';
 
-export const Button = styled.button`
+export const Button = styled('button')`
   ${({ theme: { colors } }) => css`
     padding: ${resolveSpacing(1)};
 
