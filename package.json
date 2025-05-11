@@ -1,6 +1,6 @@
 {
   "name": "@react-hive/honey-layout",
-  "version": "6.0.0",
+  "version": "6.1.0",
   "description": "",
   "keywords": [
     "react",
@@ -23,8 +23,8 @@
     "clean": "rm -rf dist",
     "start": "vite serve --config vite-docs.config.ts",
     "test": "jest --collect-coverage",
-    "build:lib": "vite build --config vite-lib.config.ts",
-    "build:docs": "vite build --config vite-docs.config.ts",
+    "build:lib": "pnpm run clean && vite build --config vite-lib.config.ts",
+    "build:docs": "pnpm run clean && vite build --config vite-docs.config.ts",
     "diagnostics": "tsx scripts/collect-diagnostics.ts"
   },
   "main": "dist/index.js",
@@ -40,7 +40,7 @@
     "@floating-ui/dom": "1.7.0",
     "@floating-ui/react": "0.27.8",
     "@mdx-js/react": "3.1.0",
-    "@react-hive/honey-style": "1.0.1",
+    "@react-hive/honey-style": "1.1.0",
     "csstype": "3.1.3",
     "highlight.js": "11.11.1",
     "lodash.merge": "4.6.2",
