@@ -1,6 +1,6 @@
 {
   "name": "@react-hive/honey-layout",
-  "version": "6.1.0",
+  "version": "6.2.0",
   "description": "",
   "keywords": [
     "react",
@@ -23,11 +23,11 @@
     "clean": "rm -rf dist",
     "start": "vite serve --config vite-docs.config.ts",
     "test": "jest --collect-coverage",
-    "build:lib": "pnpm run clean && vite build --config vite-lib.config.ts",
-    "build:docs": "pnpm run clean && vite build --config vite-docs.config.ts",
+    "build:lib": "vite build --config vite-lib.config.ts",
+    "build:docs": "vite build --config vite-docs.config.ts",
     "diagnostics": "tsx scripts/collect-diagnostics.ts"
   },
-  "main": "dist/index.js",
+  "main": "dist/index.mjs",
   "types": "dist/index.d.ts",
   "files": [
     "dist"
@@ -40,7 +40,7 @@
     "@floating-ui/dom": "1.7.0",
     "@floating-ui/react": "0.27.8",
     "@mdx-js/react": "3.1.0",
-    "@react-hive/honey-style": "1.1.0",
+    "@react-hive/honey-style": "1.3.0",
     "csstype": "3.1.3",
     "highlight.js": "11.11.1",
     "lodash.merge": "4.6.2",
@@ -57,8 +57,8 @@
     "@types/lodash.throttle": "4.1.9",
     "@types/mdx": "2.0.13",
     "@types/node": "22.15.17",
-    "@types/react": "^19.1.3",
-    "@types/react-dom": "^19.1.3",
+    "@types/react": "^19.1.4",
+    "@types/react-dom": "^19.1.4",
     "@vitejs/plugin-react": "4.4.1",
     "eslint": "9.26.0",
     "eslint-plugin-react": "7.37.5",
@@ -69,7 +69,7 @@
     "ts-jest": "29.3.2",
     "tsx": "4.19.4",
     "typescript": "5.8.3",
-    "typescript-eslint": "8.32.0",
+    "typescript-eslint": "8.32.1",
     "vite": "6.3.5",
     "vite-plugin-checker": "0.9.3",
     "vite-plugin-dts": "4.5.3"
