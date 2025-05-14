@@ -12,19 +12,13 @@ const customRender = (element: ReactElement) =>
 describe('[HoneyPopup]: basic behavior', () => {
   it('should render popup and toggle floating content on click', () => {
     const { getByTestId, queryByTestId } = customRender(
-      <HoneyPopup content="Popup content">
-        {({ referenceProps }) => (
-          <div {...referenceProps} data-testid="open-popup">
-            open
-          </div>
-        )}
-      </HoneyPopup>,
+      <HoneyPopup content="Popup content">open</HoneyPopup>,
     );
 
     expect(getByTestId('honey-popup')).toBeInTheDocument();
     expect(queryByTestId('honey-popup-floating-content')).not.toBeInTheDocument();
 
-    fireEvent.click(getByTestId('open-popup'));
+    fireEvent.click(getByTestId('honey-popup'));
 
     expect(getByTestId('honey-popup-floating-content')).toBeInTheDocument();
   });

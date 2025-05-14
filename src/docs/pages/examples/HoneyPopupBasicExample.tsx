@@ -36,19 +36,9 @@ const PopupContent = () => {
           }}
           useArrow={true}
         >
-          {({ referenceProps }) => (
-            <HoneyBox
-              key={i}
-              $display="flex"
-              $gap={1}
-              $width="100%"
-              $padding={[0.5, 1]}
-              tabIndex={0}
-              {...referenceProps}
-            >
-              Option {i + 1}
-            </HoneyBox>
-          )}
+          <HoneyBox key={i} $width="100%" $padding={[0.5, 1]} tabIndex={0}>
+            Option {i + 1}
+          </HoneyBox>
         </HoneyPopup>
       ))}
     </HoneyFlexBox>
@@ -71,13 +61,9 @@ export const HoneyPopupBasicExample = () => {
           $backgroundColor: 'white',
         }}
         useArrow={true}
-        useAutoUpdate={true}
+        useTree={true}
       >
-        {({ referenceProps }) => (
-          <Button $width="120px" {...referenceProps}>
-            Open Popup
-          </Button>
-        )}
+        <Button $width="120px">Open Popup</Button>
       </HoneyPopup>
     </HoneyBox>
   );

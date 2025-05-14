@@ -1,14 +1,22 @@
 import { useContext } from 'react';
+import type { ReferenceType } from '@floating-ui/react';
 
+import { assert } from '../../../helpers';
 import { HoneyPopupContext } from '../HoneyPopupContext';
+import type { HoneyPopupContextProps } from '../HoneyPopupContext';
 
-export const useHoneyPopupContext = () => {
-  const context = useContext(HoneyPopupContext);
-  if (!context) {
-    throw new Error(
-      'The `useHoneyPopupContext()` hook can only be used inside <HoneyPopup/> component!',
-    );
-  }
+export const useHoneyPopupContext = <
+  Context,
+  Reference extends ReferenceType = ReferenceType,
+>() => {
+  const context = useContext<HoneyPopupContextProps<Context, Reference> | undefined>(
+    HoneyPopupContext,
+  );
+
+  assert(
+    context,
+    'The `useHoneyPopupContext()` hook can only be used inside <HoneyPopup/> component!',
+  );
 
   return context;
 };

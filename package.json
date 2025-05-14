@@ -1,6 +1,6 @@
 {
   "name": "@react-hive/honey-layout",
-  "version": "6.2.0",
+  "version": "6.3.0",
   "description": "",
   "keywords": [
     "react",
@@ -34,13 +34,13 @@
   ],
   "peerDependencies": {
     "react": "^19.0.0",
-    "react-dom": "^19.0.0"
+    "react-dom": "^19.0.0",
+    "@react-hive/honey-style": "1.3.0"
   },
   "dependencies": {
     "@floating-ui/dom": "1.7.0",
     "@floating-ui/react": "0.27.8",
     "@mdx-js/react": "3.1.0",
-    "@react-hive/honey-style": "1.3.0",
     "csstype": "3.1.3",
     "highlight.js": "11.11.1",
     "lodash.merge": "4.6.2",

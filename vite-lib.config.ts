@@ -17,9 +17,6 @@ export default {
       insertTypesEntry: true,
     }),
   ],
-  optimizeDeps: {
-    include: ['react'],
-  },
   build: {
     lib: {
       formats: ['es'],
@@ -27,7 +24,7 @@ export default {
       fileName: 'index',
     },
     rollupOptions: {
-      external: ['react'],
+      external: ['react', '@react-hive/honey-style'],
     },
   },
 } satisfies UserConfig;

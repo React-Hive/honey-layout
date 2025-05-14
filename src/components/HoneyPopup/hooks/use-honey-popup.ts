@@ -14,6 +14,7 @@ import {
 import type { RefObject } from 'react';
 import type { Derivable } from '@floating-ui/dom';
 import type {
+  ReferenceType,
   AutoUpdateOptions,
   AutoPlacementOptions,
   ArrowOptions,
@@ -34,14 +35,16 @@ import { useHoneyPopupInteractions } from './use-honey-popup-interactions';
 import type { Nullable } from '../../../types';
 import type { UseHoneyPopupInteractionsOptions } from './use-honey-popup-interactions';
 
-export interface UseHoneyPopupOptions<UseAutoSize extends boolean = boolean>
-  extends UseHoneyPopupInteractionsOptions {
+export interface UseHoneyPopupOptions<
+  Reference extends ReferenceType,
+  UseAutoSize extends boolean = boolean,
+> extends FastOmit<UseHoneyPopupInteractionsOptions, 'extraInteractions'> {
   open?: boolean;
   /**
    * Options for configuring the floating UI behavior.
    */
   floatingOptions?: FastOmit<
-    UseFloatingOptions,
+    UseFloatingOptions<Reference>,
     'nodeId' | 'open' | 'whileElementsMounted' | 'onOpenChange'
   >;
   /**
@@ -150,7 +153,7 @@ export interface UseHoneyPopupOptions<UseAutoSize extends boolean = boolean>
   onClose?: (reason?: OpenChangeReason, event?: Event) => void;
 }
 
-interface UseHoneyPopupApi {
+interface UseHoneyPopupApi<Reference extends ReferenceType> {
   /**
    * Unique identifier for the floating element.
    */
@@ -162,7 +165,7 @@ interface UseHoneyPopupApi {
   /**
    * Floating UI instance with positioning and middleware.
    */
-  floating: UseFloatingReturn;
+  floating: UseFloatingReturn<Reference>;
   /**
    * Ref for the floating arrow element.
    */
@@ -181,7 +184,7 @@ interface UseHoneyPopupApi {
  *
  * @returns An object containing state and utilities for managing the popup.
  */
-export const useHoneyPopup = ({
+export const useHoneyPopup = <Reference extends ReferenceType>({
   enabled = true,
   event,
   dismissOptions,
@@ -211,7 +214,7 @@ export const useHoneyPopup = ({
   maxAcceptableHeight,
   onOpen,
   onClose,
-}: UseHoneyPopupOptions): UseHoneyPopupApi => {
+}: UseHoneyPopupOptions<Reference>): UseHoneyPopupApi<Reference> => {
   const { theme } = useHoneyLayout();
 
   const nodeId = useFloatingNodeId();
@@ -315,7 +318,7 @@ export const useHoneyPopup = ({
     );
   }
 
-  const floating = useFloating({
+  const floating = useFloating<Reference>({
     nodeId,
     open: isOpen,
     middleware: middlewares,

@@ -71,7 +71,7 @@ export const HoneyContextMenuBasicExample = () => {
         event: 'click',
       }}
     >
-      {({ referenceProps }) => <div {...referenceProps}>Open Context Menu</div>}
+      Open Context Menu
     </HoneyContextMenu>
   );
 };

@@ -1,4 +1,5 @@
 import React, { useMemo } from 'react';
+import type { ReferenceType } from '@floating-ui/react';
 import type { FastOmit } from '@react-hive/honey-style';
 
 import { HoneyList } from '../HoneyList';
@@ -9,31 +10,38 @@ import type { HoneyContextMenuOption } from './HoneyContextMenu.types';
 import type { HoneyContextMenuContentOptionProps } from './HoneyContextMenuContentOption';
 
 export interface HoneyContextMenuContentProps<
-  Option extends HoneyContextMenuOption<Context>,
+  Option extends HoneyContextMenuOption<Context, Reference>,
   Context,
-> extends FastOmit<HoneyPopupProps<Context>, 'children' | 'context' | 'content'> {
+  Reference extends ReferenceType,
+  UseAutoSize extends boolean,
+> extends FastOmit<
+    HoneyPopupProps<Context, Reference, UseAutoSize>,
+    'children' | 'context' | 'content'
+  > {
   options: Option[] | undefined;
-  optionProps?: FastOmit<HoneyContextMenuContentOptionProps<Option, Context>, 'option'>;
+  optionProps?: FastOmit<HoneyContextMenuContentOptionProps<Option, Context, Reference>, 'option'>;
 }
 
 export const HoneyContextMenuContent = <
-  Option extends HoneyContextMenuOption<Context>,
-  Context = undefined,
+  Option extends HoneyContextMenuOption<Context, Reference>,
+  Context,
+  Reference extends ReferenceType,
+  UseAutoSize extends boolean,
 >({
   options,
   optionProps,
   floatingOptions,
   ...popupProps
-}: HoneyContextMenuContentProps<Option, Context>) => {
+}: HoneyContextMenuContentProps<Option, Context, Reference, UseAutoSize>) => {
   const { contentProps } = popupProps;
 
-  const { context } = useHoneyPopupContext();
+  const { context, floatingContext } = useHoneyPopupContext<Context, Reference>();
 
   const visibleOptions = useMemo<Option[] | undefined>(
     () =>
       options?.filter(option =>
         typeof option.visible === 'function'
-          ? option.visible({ context })
+          ? option.visible({ context, floatingContext })
           : option.visible !== false,
       ),
     [options],
@@ -63,19 +71,16 @@ export const HoneyContextMenuContent = <
             useArrow={true}
             {...popupProps}
           >
-            {({ referenceProps }) => (
-              <HoneyContextMenuContentOption
-                option={option as HoneyContextMenuOption<unknown>}
-                {...optionProps}
-                {...referenceProps}
-              >
-                {option.label}
-              </HoneyContextMenuContentOption>
-            )}
+            <HoneyContextMenuContentOption
+              option={option as HoneyContextMenuOption<unknown, any>}
+              {...optionProps}
+            >
+              {option.label}
+            </HoneyContextMenuContentOption>
           </HoneyPopup>
         ) : (
           <HoneyContextMenuContentOption
-            option={option as HoneyContextMenuOption<unknown>}
+            option={option as HoneyContextMenuOption<unknown, any>}
             {...optionProps}
           />
         )

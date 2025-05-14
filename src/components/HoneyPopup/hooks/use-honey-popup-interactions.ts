@@ -9,6 +9,7 @@ import {
   useRole,
 } from '@floating-ui/react';
 import type {
+  ElementProps,
   FloatingContext,
   UseDismissProps,
   UseClickProps,
@@ -18,6 +19,11 @@ import type {
   UseRoleProps,
 } from '@floating-ui/react';
 import type { FastOmit } from '@react-hive/honey-style';
+
+export type HoneyPopupExtraInteraction = <Props extends object>(
+  context: FloatingContext,
+  props?: Props,
+) => ElementProps;
 
 /**
  * Options for configuring popup interactions.
@@ -72,6 +78,17 @@ export interface UseHoneyPopupInteractionsOptions {
    * @see https://floating-ui.com/docs/userole
    */
   roleOptions?: FastOmit<UseRoleProps, 'enabled'>;
+  /**
+   * Additional custom interactions to be merged with default ones.
+   * Useful for extending or overriding the default behavior.
+   *
+   * To define custom interaction, please use the ` HoneyPopupExtraInteraction ` type.
+   *
+   * @default []
+   *
+   * @see https://floating-ui.com/docs/custom-hooks
+   */
+  extraInteractions?: ElementProps[];
 }
 
 export const useHoneyPopupInteractions = (
@@ -85,6 +102,7 @@ export const useHoneyPopupInteractions = (
     focusOptions,
     clientPointsOptions,
     roleOptions,
+    extraInteractions = [],
   }: UseHoneyPopupInteractionsOptions,
 ) => {
   const dismiss = useDismiss(context, {
@@ -116,5 +134,5 @@ export const useHoneyPopupInteractions = (
 
   const role = useRole(context, roleOptions);
 
-  return useInteractions([dismiss, click, hover, focus, clientPoint, role]);
+  return useInteractions([dismiss, click, hover, focus, clientPoint, role, ...extraInteractions]);
 };

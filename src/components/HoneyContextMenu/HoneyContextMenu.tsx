@@ -1,5 +1,6 @@
 import React from 'react';
 import type { ReactNode } from 'react';
+import type { ReferenceType } from '@floating-ui/react';
 import type { FastOmit } from '@react-hive/honey-style';
 
 import { HoneyPopup } from '../HoneyPopup';
@@ -10,19 +11,27 @@ import type { HoneyPopupChildrenContextProps } from '../HoneyPopup';
 import type { HoneyContextMenuContentProps } from './HoneyContextMenuContent';
 
 export interface HoneyContextMenuProps<
-  Option extends HoneyContextMenuOption<Context>,
-  Context = undefined,
-  UseAutoSize extends boolean = boolean,
-> extends FastOmit<HoneyPopupProps<Context, UseAutoSize>, 'content'>,
-    Pick<HoneyContextMenuContentProps<Option, Context>, 'options' | 'optionProps'> {
-  children: (context: HoneyPopupChildrenContextProps) => ReactNode;
-  subProps?: FastOmit<HoneyContextMenuContentProps<Option, Context>, 'options' | 'optionProps'>;
+  Option extends HoneyContextMenuOption<Context, Reference>,
+  Context,
+  Reference extends ReferenceType,
+  UseAutoSize extends boolean,
+> extends FastOmit<HoneyPopupProps<Context, Reference, UseAutoSize>, 'content'>,
+    Pick<
+      HoneyContextMenuContentProps<Option, Context, Reference, UseAutoSize>,
+      'options' | 'optionProps'
+    > {
+  children: ReactNode | ((context: HoneyPopupChildrenContextProps<Reference>) => ReactNode);
+  subProps?: FastOmit<
+    HoneyContextMenuContentProps<Option, Context, Reference, UseAutoSize>,
+    'options' | 'optionProps'
+  >;
 }
 
 export const HoneyContextMenu = <
-  Option extends HoneyContextMenuOption<Context>,
-  Context = undefined,
-  UseAutoSize extends boolean = boolean,
+  Option extends HoneyContextMenuOption<Context, Reference>,
+  Context,
+  Reference extends ReferenceType,
+  UseAutoSize extends boolean,
 >({
   children,
   subProps,
@@ -31,7 +40,7 @@ export const HoneyContextMenu = <
   clickOptions,
   context,
   ...popupProps
-}: HoneyContextMenuProps<Option, Context, UseAutoSize>) => {
+}: HoneyContextMenuProps<Option, Context, Reference, UseAutoSize>) => {
   const { contentProps } = popupProps;
 
   return (
