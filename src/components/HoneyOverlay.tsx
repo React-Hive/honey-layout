@@ -4,7 +4,7 @@ import type { ReactNode } from 'react';
 
 import { HoneyFlexBox } from './HoneyFlexBox';
 import { useRegisterHoneyOverlay } from '../hooks';
-import { mergeRefs } from '../helpers';
+import { mergeRefs, invokeIfFunction } from '../helpers';
 import type { HoneyActiveOverlay, HoneyOverlayId, Nullable } from '../types';
 import type { HoneyFlexBoxProps } from './HoneyFlexBox';
 
@@ -86,12 +86,10 @@ export const HoneyOverlay = ({
 
   return (
     <HoneyFlexBox ref={mergedRef} inert={!active} {...props}>
-      {typeof children === 'function'
-        ? children({
-            overlay,
-            deactivateOverlay: onDeactivate,
-          })
-        : children}
+      {invokeIfFunction(children, {
+        overlay,
+        deactivateOverlay: onDeactivate,
+      })}
     </HoneyFlexBox>
   );
 };

@@ -1,6 +1,6 @@
 {
   "name": "@react-hive/honey-layout",
-  "version": "6.3.0",
+  "version": "6.4.0",
   "description": "",
   "keywords": [
     "react",
@@ -27,15 +27,16 @@
     "build:docs": "vite build --config vite-docs.config.ts",
     "diagnostics": "tsx scripts/collect-diagnostics.ts"
   },
-  "main": "dist/index.mjs",
+  "type": "module",
+  "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "files": [
     "dist"
   ],
   "peerDependencies": {
+    "@react-hive/honey-style": "^1.4.0",
     "react": "^19.0.0",
-    "react-dom": "^19.0.0",
-    "@react-hive/honey-style": "1.3.0"
+    "react-dom": "^19.0.0"
   },
   "dependencies": {
     "@floating-ui/dom": "1.7.0",
@@ -56,9 +57,9 @@
     "@types/lodash.merge": "4.6.9",
     "@types/lodash.throttle": "4.1.9",
     "@types/mdx": "2.0.13",
-    "@types/node": "22.15.17",
+    "@types/node": "22.15.18",
     "@types/react": "^19.1.4",
-    "@types/react-dom": "^19.1.4",
+    "@types/react-dom": "^19.1.5",
     "@vitejs/plugin-react": "4.4.1",
     "eslint": "9.26.0",
     "eslint-plugin-react": "7.37.5",

@@ -38,7 +38,7 @@ import type { UseHoneyPopupInteractionsOptions } from './use-honey-popup-interac
 export interface UseHoneyPopupOptions<
   Reference extends ReferenceType,
   UseAutoSize extends boolean = boolean,
-> extends FastOmit<UseHoneyPopupInteractionsOptions, 'extraInteractions'> {
+> extends UseHoneyPopupInteractionsOptions {
   open?: boolean;
   /**
    * Options for configuring the floating UI behavior.
@@ -47,6 +47,12 @@ export interface UseHoneyPopupOptions<
     UseFloatingOptions<Reference>,
     'nodeId' | 'open' | 'whileElementsMounted' | 'onOpenChange'
   >;
+  /**
+   * Whether to use the offset middleware.
+   *
+   * @default true
+   */
+  useOffset?: boolean;
   /**
    * Configuration for offset middleware.
    *
@@ -193,8 +199,10 @@ export const useHoneyPopup = <Reference extends ReferenceType>({
   focusOptions,
   clientPointsOptions,
   roleOptions,
+  extraInteractions,
   open,
   floatingOptions,
+  useOffset = true,
   offsetOptions,
   useFlip = true,
   flipOptions,
@@ -237,7 +245,11 @@ export const useHoneyPopup = <Reference extends ReferenceType>({
     }
   });
 
-  const middlewares: Middleware[] = [offset(offsetOptions ?? theme.spacings.base)];
+  const middlewares: Middleware[] = [];
+
+  if (useOffset) {
+    middlewares.push(offset(offsetOptions ?? theme.spacings.base));
+  }
 
   let flipMiddleware: Nullable<Middleware> = null;
 
@@ -346,6 +358,7 @@ export const useHoneyPopup = <Reference extends ReferenceType>({
     focusOptions,
     clientPointsOptions,
     roleOptions,
+    extraInteractions,
   });
 
   const transition = useTransitionStyles(floating.context, {

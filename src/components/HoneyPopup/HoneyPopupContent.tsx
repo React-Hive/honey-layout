@@ -9,15 +9,15 @@ import type {
 } from '@floating-ui/react';
 import type { FastOmit } from '@react-hive/honey-style';
 
+import { invokeIfFunction } from '../../helpers';
 import { HoneyOverlay } from '../HoneyOverlay';
 import { HoneyPopupContext } from './HoneyPopupContext';
 import { HoneyPopupStyled } from './HoneyPopupStyled';
 import { HoneyPopupPortal } from './HoneyPopupPortal';
 import { useHoneyPopup } from './hooks';
-import type { HoneyPopupChildrenContextProps } from './HoneyPopup.types';
 import type { HoneyPopupPortalProps } from './HoneyPopupPortal';
 import type { HoneyPopupStyledProps } from './HoneyPopupStyled';
-import type { HoneyPopupContextProps } from './HoneyPopupContext';
+import type { HoneyPopupContextValue } from './HoneyPopupContext';
 import type { UseHoneyPopupOptions } from './hooks';
 import type { HoneyOverlayProps } from '../HoneyOverlay';
 
@@ -31,12 +31,12 @@ export interface HoneyPopupContentProps<
   Reference extends ReferenceType,
   UseAutoSize extends boolean,
 > extends UseHoneyPopupOptions<Reference, UseAutoSize> {
-  children: ReactNode | ((context: HoneyPopupChildrenContextProps<Reference>) => ReactNode);
+  children: ReactNode | ((context: HoneyPopupContextValue<Context, Reference>) => ReactNode);
   referenceProps?: FastOmit<HoneyPopupStyledProps, 'children' | 'content'>;
   /**
    * Content inside the popup.
    */
-  content: ReactNode | ((context: HoneyPopupContextProps<Context, Reference>) => ReactNode);
+  content: ReactNode | ((context: HoneyPopupContextValue<Context, Reference>) => ReactNode);
   /**
    * Additional props for the floating content.
    */
@@ -100,14 +100,7 @@ export const HoneyPopupContent = <
     onClose?.('escape-key');
   }, [onClose]);
 
-  const childrenContext = useMemo<HoneyPopupChildrenContextProps<Reference>>(
-    () => ({
-      floatingContext: floating.context,
-    }),
-    [floating.context],
-  );
-
-  const popupContext = useMemo<HoneyPopupContextProps<Context, Reference>>(
+  const popupContext = useMemo<HoneyPopupContextValue<Context, Reference>>(
     () => ({
       context,
       floatingContext: floating.context,
@@ -124,7 +117,7 @@ export const HoneyPopupContent = <
       data-testid="honey-popup"
     >
       <HoneyPopupContext value={popupContext}>
-        {typeof children === 'function' ? children(childrenContext) : children}
+        {invokeIfFunction(children, popupContext)}
 
         <FloatingNode id={nodeId}>
           {transition.isMounted && (
@@ -166,7 +159,7 @@ export const HoneyPopupContent = <
                     />
                   )}
 
-                  {typeof content === 'function' ? content(popupContext) : content}
+                  {invokeIfFunction(content, popupContext)}
                 </HoneyOverlay>
               </FloatingFocusManager>
             </HoneyPopupPortal>

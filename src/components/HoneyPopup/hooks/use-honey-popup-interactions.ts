@@ -10,6 +10,7 @@ import {
 } from '@floating-ui/react';
 import type {
   ElementProps,
+  ReferenceType,
   FloatingContext,
   UseDismissProps,
   UseClickProps,
@@ -91,8 +92,8 @@ export interface UseHoneyPopupInteractionsOptions {
   extraInteractions?: ElementProps[];
 }
 
-export const useHoneyPopupInteractions = (
-  context: FloatingContext,
+export const useHoneyPopupInteractions = <Reference extends ReferenceType>(
+  context: FloatingContext<Reference>,
   {
     enabled = true,
     event = 'click',

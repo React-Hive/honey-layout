@@ -5,9 +5,8 @@ import type { FastOmit } from '@react-hive/honey-style';
 
 import { HoneyPopup } from '../HoneyPopup';
 import { HoneyContextMenuContent } from './HoneyContextMenuContent';
-import type { HoneyPopupProps } from '../HoneyPopup';
+import type { HoneyPopupContextValue, HoneyPopupProps } from '../HoneyPopup';
 import type { HoneyContextMenuOption } from './HoneyContextMenu.types';
-import type { HoneyPopupChildrenContextProps } from '../HoneyPopup';
 import type { HoneyContextMenuContentProps } from './HoneyContextMenuContent';
 
 export interface HoneyContextMenuProps<
@@ -20,7 +19,7 @@ export interface HoneyContextMenuProps<
       HoneyContextMenuContentProps<Option, Context, Reference, UseAutoSize>,
       'options' | 'optionProps'
     > {
-  children: ReactNode | ((context: HoneyPopupChildrenContextProps<Reference>) => ReactNode);
+  children: ReactNode | ((context: HoneyPopupContextValue<Context, Reference>) => ReactNode);
   subProps?: FastOmit<
     HoneyContextMenuContentProps<Option, Context, Reference, UseAutoSize>,
     'options' | 'optionProps'

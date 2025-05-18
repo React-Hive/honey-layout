@@ -3,13 +3,13 @@ import type { ReferenceType } from '@floating-ui/react';
 
 import { assert } from '../../../helpers';
 import { HoneyPopupContext } from '../HoneyPopupContext';
-import type { HoneyPopupContextProps } from '../HoneyPopupContext';
+import type { HoneyPopupContextValue } from '../HoneyPopupContext';
 
 export const useHoneyPopupContext = <
   Context,
   Reference extends ReferenceType = ReferenceType,
 >() => {
-  const context = useContext<HoneyPopupContextProps<Context, Reference> | undefined>(
+  const context = useContext<HoneyPopupContextValue<Context, Reference> | undefined>(
     HoneyPopupContext,
   );
 
