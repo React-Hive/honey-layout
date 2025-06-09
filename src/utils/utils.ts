@@ -1,7 +1,5 @@
 import type { HoneyHEXColor } from '@react-hive/honey-style';
 
-import type { HoneyCSSMediaRule } from '../types';
-
 export const camelToDashCase = (inputString: string): string =>
   inputString.replace(/[A-Z]/g, letter => `-${letter.toLowerCase()}`);
 
@@ -107,41 +105,6 @@ export const convertHexToHexWithAlpha = (hex: string, alpha: number): HoneyHEXCo
     .padStart(2, '0');
 
   return `#${fullHex + alphaHex}`;
-};
-
-/**
- * Builds a media query string based on the provided options.
- *
- * @param rules - Conditions for the media query.
- *
- * @returns The generated media query string.
- */
-export const media = (rules: HoneyCSSMediaRule[]): string => {
-  const mediaRules = rules.map(rule => {
-    const conditions = [
-      rule.width && ['width', rule.width],
-      rule.minWidth && ['min-width', rule.minWidth],
-      rule.maxWidth && ['max-width', rule.maxWidth],
-      rule.height && ['height', rule.height],
-      rule.minHeight && ['min-height', rule.minHeight],
-      rule.maxHeight && ['max-height', rule.maxHeight],
-      rule.orientation && ['orientation', rule.orientation],
-      rule.minResolution && ['min-resolution', rule.minResolution],
-      rule.maxResolution && ['max-resolution', rule.maxResolution],
-      rule.resolution && ['resolution', rule.resolution],
-      rule.update && ['update', rule.update],
-    ]
-      .filter(Boolean)
-      .map(r => r && `(${r[0]}: ${r[1]})`)
-      .join(' and ');
-
-    const operatorPart = rule.operator ? `${rule.operator} ` : '';
-    const conditionsPart = conditions ? ` and ${conditions}` : '';
-
-    return `${operatorPart}${rule.mediaType ?? 'screen'}${conditionsPart}`;
-  });
-
-  return `@media ${mediaRules.join(', ')}`;
 };
 
 interface HTMLElementTransformationValues {

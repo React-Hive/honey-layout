@@ -1,10 +1,9 @@
 import * as CSS from 'csstype';
-import { css } from '@react-hive/honey-style';
+import { css, mediaQuery } from '@react-hive/honey-style';
 import type { HTMLAttributes } from 'react';
 import type {
   FastOmit,
   HoneyTheme,
-  HoneyCSSDimensionUnit,
   HoneyFontName,
   HoneyColors,
   HoneyColor,
@@ -16,10 +15,12 @@ import type {
   HoneyBreakpointName,
   HoneyBreakpoints,
   HoneySpacings,
+  HoneyCSSDimensionUnit,
   HoneyCSSDimensionValue,
+  HoneyCSSMediaRule,
 } from '@react-hive/honey-style';
 
-import { camelToDashCase, convertHexToHexWithAlpha, media, pxToRem } from '../utils';
+import { camelToDashCase, convertHexToHexWithAlpha, pxToRem } from '../utils';
 import { CSS_COLOR_PROPERTIES, CSS_SPACING_PROPERTIES } from '../constants';
 import type {
   Nullable,
@@ -28,7 +29,6 @@ import type {
   HoneyCSSShorthandDimensionOutput,
   HoneyCSSSpacingValue,
   HoneyCSSPropertyValue,
-  HoneyCSSMediaRule,
   HoneyCSSSpacingProperty,
   HoneyCSSColorProperty,
   HoneyPrefixedCSSProperty,
@@ -411,7 +411,7 @@ export const bpMedia = (
   };
 
   const down: HoneyStyledFunction<object> = ({ theme }) =>
-    media([
+    mediaQuery([
       {
         maxWidth: `${resolveBpValue(theme)}px`,
         ...ruleOptions,
@@ -419,7 +419,7 @@ export const bpMedia = (
     ]);
 
   const up: HoneyStyledFunction<object> = ({ theme }) =>
-    media([
+    mediaQuery([
       {
         minWidth: `${resolveBpValue(theme)}px`,
         ...ruleOptions,

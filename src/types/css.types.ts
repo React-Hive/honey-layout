@@ -11,31 +11,6 @@ import type {
 } from '@react-hive/honey-style';
 
 /**
- * Represents the possible values for media query orientation.
- *
- * Used in responsive styles to target specific device orientations.
- *
- * - `'landscape'` – Width is greater than height.
- * - `'portrait'` – Height is greater than width.
- */
-export type HoneyCSSMediaOrientation = 'landscape' | 'portrait';
-
-/**
- * Represents CSS resolution units typically used in media queries.
- *
- * - `'dpi'` — dots per inch
- * - `'dpcm'` — dots per centimeter
- * - `'dppx'` — dots per pixel (e.g., 2dppx for Retina displays)
- * - `'x'` — resolution multiplier (e.g., 1x, 2x)
- */
-export type HoneyCSSResolutionUnit = 'dpi' | 'dpcm' | 'dppx' | 'x';
-
-/**
- * Represents a CSS resolution value, such as `'300dpi'`, `'2x'`, or `'1.5dppx'`.
- */
-export type HoneyCSSResolutionValue = `${number}${HoneyCSSResolutionUnit}`;
-
-/**
  * Represents a tuple of 2 to 4 values using standard CSS shorthand conventions.
  *
  * This type models how properties like `margin`, `padding`, `gap`, and `borderRadius`
@@ -277,36 +252,3 @@ export type HoneyPrefixedCSSProperty<
 export type HoneyPrefixedCSSProperties = {
   [CSSProperty in keyof CSS.Properties as HoneyPrefixedCSSProperty<CSSProperty>]?: HoneyCSSPropertyValue<CSSProperty>;
 };
-
-/**
- * Properties for dimension-based media queries
- */
-interface HoneyCSSMediaDimensionProperties {
-  width?: HoneyCSSDimensionValue;
-  minWidth?: HoneyCSSDimensionValue;
-  maxWidth?: HoneyCSSDimensionValue;
-  height?: HoneyCSSDimensionValue;
-  minHeight?: HoneyCSSDimensionValue;
-  maxHeight?: HoneyCSSDimensionValue;
-}
-
-/**
- * Properties for resolution-based media queries
- */
-interface HoneyCSSMediaResolutionProperties {
-  resolution?: HoneyCSSResolutionValue;
-  minResolution?: HoneyCSSResolutionValue;
-  maxResolution?: HoneyCSSResolutionValue;
-}
-
-/**
- * Options for CSS @media at-rule.
- */
-export interface HoneyCSSMediaRule
-  extends HoneyCSSMediaDimensionProperties,
-    HoneyCSSMediaResolutionProperties {
-  operator?: 'not' | 'only';
-  mediaType?: 'all' | 'print' | 'screen' | 'speech';
-  orientation?: HoneyCSSMediaOrientation;
-  update?: 'none' | 'slow' | 'fast';
-}
