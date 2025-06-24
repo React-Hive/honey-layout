@@ -1,6 +1,6 @@
 {
   "name": "@react-hive/honey-layout",
-  "version": "6.5.0",
+  "version": "6.5.1",
   "description": "",
   "keywords": [
     "react",
@@ -33,7 +33,7 @@
     "dist"
   ],
   "peerDependencies": {
-    "@react-hive/honey-style": "^1.5.1",
+    "@react-hive/honey-style": "^1.6.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0"
   },
@@ -48,7 +48,7 @@
     "react-router-dom": "6.30.0"
   },
   "devDependencies": {
-    "@eslint/js": "9.28.0",
+    "@eslint/js": "9.29.0",
     "@mdx-js/rollup": "3.1.0",
     "@testing-library/jest-dom": "6.6.3",
     "@testing-library/react": "16.3.0",
@@ -56,20 +56,20 @@
     "@types/lodash.merge": "4.6.9",
     "@types/lodash.throttle": "4.1.9",
     "@types/mdx": "2.0.13",
-    "@types/node": "22.15.30",
-    "@types/react": "^19.1.6",
+    "@types/node": "22.15.32",
+    "@types/react": "^19.1.8",
     "@types/react-dom": "^19.1.6",
     "@vitejs/plugin-react": "4.5.1",
-    "eslint": "9.28.0",
+    "eslint": "9.29.0",
     "eslint-plugin-react": "7.37.5",
     "husky": "9.1.7",
     "jest": "29.7.0",
     "jest-environment-jsdom": "29.7.0",
     "prettier": "3.5.3",
     "ts-jest": "29.3.4",
-    "tsx": "4.19.4",
+    "tsx": "4.20.3",
     "typescript": "5.8.3",
-    "typescript-eslint": "8.33.1",
+    "typescript-eslint": "8.35.0",
     "vite": "6.3.5",
     "vite-plugin-checker": "0.9.3",
     "vite-plugin-dts": "4.5.4"

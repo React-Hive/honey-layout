@@ -11,7 +11,7 @@ export const camelToDashCase = (inputString: string): string =>
  * @returns An array of words from the input string.
  */
 export const splitStringIntoWords = (inputString: string): string[] =>
-  inputString.split(' ').filter(v => v);
+  inputString.split(' ').filter(Boolean);
 
 /**
  * Converts a pixel value to rem.

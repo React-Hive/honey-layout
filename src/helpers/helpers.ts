@@ -15,9 +15,9 @@ import type {
   HoneyBreakpointName,
   HoneyBreakpoints,
   HoneySpacings,
+  HoneyMediaQueryRule,
   HoneyCSSDimensionUnit,
   HoneyCSSDimensionValue,
-  HoneyCSSMediaRule,
 } from '@react-hive/honey-style';
 
 import { camelToDashCase, convertHexToHexWithAlpha, pxToRem } from '../utils';
@@ -399,7 +399,7 @@ const hasBreakpointStyles = (
  */
 export const bpMedia = (
   breakpoint: HoneyBreakpointName,
-  ruleOptions: FastOmit<HoneyCSSMediaRule, 'width' | 'minWidth' | 'maxWidth'> = {},
+  ruleOptions: FastOmit<HoneyMediaQueryRule, 'width' | 'minWidth' | 'maxWidth'> = {},
 ) => {
   const resolveBpValue = (theme: HoneyTheme) => {
     const value = theme.breakpoints[breakpoint];
