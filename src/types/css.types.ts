@@ -135,7 +135,7 @@ export type HoneyCSSColorProperty = keyof Pick<
  *
  * Commonly used for properties like `margin`, `padding`, `gap`, etc.
  */
-export type HoneyCSSSpacingValue = HoneyCSSMultiValue<HoneyCSSDimensionValue>;
+export type HoneyCSSSpacingValue = HoneyCSSMultiValue<number | HoneyCSSDimensionValue>;
 
 /**
  * Converts a tuple of spacing values into a valid CSS shorthand string using a consistent unit.
@@ -173,7 +173,7 @@ type HoneyCSSPropertyValueFn<CSSProperty extends keyof CSS.Properties> = (
   context: HoneyStyledContext<object>,
 ) => CSS.Properties[CSSProperty];
 
-type HoneyRawCSSSpacingValue = HoneyCSSDimensionValue | CSS.Globals;
+type HoneyRawCSSSpacingValue = number | HoneyCSSDimensionValue | CSS.Globals;
 
 /**
  * Represents a non-responsive (raw) CSS property value for a specific CSS property.

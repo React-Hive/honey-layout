@@ -86,7 +86,7 @@ export type HoneyResolveSpacingResult<
   ? Value
   : Unit extends null
     ? Value
-    : Value extends HoneyCSSShorthandTuple<HoneyCSSDimensionValue>
+    : Value extends HoneyCSSShorthandTuple<number | HoneyCSSDimensionValue>
       ? HoneyCSSShorthandDimensionOutput<Value, NonNullable<Unit>>
       : HoneyCSSDimensionValue<NonNullable<Unit>>;
 
