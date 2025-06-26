@@ -1,5 +1,5 @@
 import type { PropsWithChildren } from 'react';
-import { useEffect, useRef, useState } from 'react';
+import { useLayoutEffect, useRef, useState } from 'react';
 
 import type { TimeoutId } from '../../types';
 
@@ -42,7 +42,7 @@ export const HoneyLazyContent = ({
 
   const mountContentTimeoutIdRef = useRef<TimeoutId>(undefined);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (!mount || alwaysMounted) {
       return;
     }
