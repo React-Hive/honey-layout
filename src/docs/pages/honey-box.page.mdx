@@ -32,19 +32,20 @@ The `HoneyBoxBasicExample` component renders a square box with customizable dime
 <HoneyBoxBasicExample/>
 
 ~~~tsx
-import { HoneyBox, useHoneyLayout } from '@react-hive/honey-layout';
+import { useHoneyStyle } from '@react-hive/honey-style';
+import { HoneyBox } from '@react-hive/honey-layout';
 
 export const HoneyBoxBasicExample = () => {
   const {
     theme: { colors },
     resolveColor,
-  } = useHoneyLayout();
+  } = useHoneyStyle();
 
   return (
     <HoneyBox
       $width="100px"
       $height="100px"
-      $margin={['0', 'auto']}
+      $margin={[0, 'auto']}
       $backgroundColor={{
         xs: 'white',
         sm: colors.neutral.forestGreen,

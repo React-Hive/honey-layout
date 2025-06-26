@@ -1,21 +1,15 @@
 import React, { useMemo } from 'react';
-import {
-  resolveFont,
-  resolveColor,
-  resolveDimension,
-  HoneyStyleProvider,
-} from '@react-hive/honey-style';
+import { HoneyStyleProvider } from '@react-hive/honey-style';
 import type { PropsWithChildren } from 'react';
-import type { HoneyStyleContextValue } from '@react-hive/honey-style';
+import type { HoneyStyleProviderProps } from '@react-hive/honey-style';
 
 import { useHoneyMediaQuery } from '../hooks';
-import { resolveSpacing } from '../helpers';
 import { HoneyLayoutContext } from '../contexts';
 import { useHoneyOverlays } from './hooks';
 import type { HoneyLayoutContextValue } from '../contexts';
 import type { UseHoneyMediaQueryOptions } from '../hooks';
 
-interface HoneyLayoutProviderProps extends HoneyStyleContextValue {
+interface HoneyLayoutProviderProps extends HoneyStyleProviderProps {
   mediaQueryOptions?: UseHoneyMediaQueryOptions;
 }
 
@@ -23,6 +17,7 @@ export const HoneyLayoutProvider = ({
   children,
   theme,
   mediaQueryOptions,
+  ...props
 }: PropsWithChildren<HoneyLayoutProviderProps>) => {
   const screenState = useHoneyMediaQuery(theme, mediaQueryOptions);
 
@@ -35,16 +30,12 @@ export const HoneyLayoutProvider = ({
       overlays,
       registerOverlay,
       unregisterOverlay,
-      resolveSpacing: (...args) => resolveSpacing(...args)({ theme }),
-      resolveColor: (...args) => resolveColor(...args)({ theme }),
-      resolveFont: (...args) => resolveFont(...args)({ theme }),
-      resolveDimension: (...args) => resolveDimension(...args)({ theme }),
     }),
     [theme, screenState, overlays],
   );
 
   return (
-    <HoneyStyleProvider theme={theme}>
+    <HoneyStyleProvider theme={theme} {...props}>
       <HoneyLayoutContext value={contextValue}>{children}</HoneyLayoutContext>
     </HoneyStyleProvider>
   );

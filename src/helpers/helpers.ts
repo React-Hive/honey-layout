@@ -1,27 +1,25 @@
 import * as CSS from 'csstype';
-import { css, checkIsThemeColorValue, resolveColor, mediaQuery } from '@react-hive/honey-style';
+import {
+  css,
+  checkIsThemeColorValue,
+  resolveColor,
+  mediaQuery,
+  resolveSpacing,
+} from '@react-hive/honey-style';
 import type { HTMLAttributes } from 'react';
 import type {
   FastOmit,
   HoneyTheme,
-  HoneyStyledContext,
   HoneyStyledFunction,
   HoneyBreakpointName,
   HoneyBreakpoints,
-  HoneySpacings,
   HoneyMediaQueryRule,
-  HoneyCSSDimensionUnit,
-  HoneyCSSDimensionValue,
 } from '@react-hive/honey-style';
 
 import { camelToDashCase } from '../utils';
 import { CSS_COLOR_PROPERTIES, CSS_SPACING_PROPERTIES } from '../constants';
 import type {
-  Nullable,
   HoneyScreenState,
-  HoneyCSSShorthandTuple,
-  HoneyCSSShorthandDimensionOutput,
-  HoneyCSSSpacingValue,
   HoneyCSSPropertyValue,
   HoneyCSSSpacingProperty,
   HoneyCSSColorProperty,
@@ -62,90 +60,6 @@ export const invokeIfFunction = <Args extends any[], Result>(
   input: ((...args: Args) => Result) | Result,
   ...args: Args
 ): Result => (typeof input === 'function' ? (input as (...args: Args) => Result)(...args) : input);
-
-/**
- * Determines the resolved type for spacing values when processed by `resolveSpacing`.
- *
- * The return type adapts based on the shape of the `Value` and presence of a CSS `Unit`:
- *
- * - If `Value` is a `string` (e.g., raw `'10px'` or `'auto'`), it is returned as-is.
- * - If `Unit` is `null`, the original value is returned (either number or shorthand array).
- * - If `Unit` is provided and `Value` is a shorthand array (e.g., `[1, 2, 3, 4]`),
- *   it is resolved to a space-separated dimension string (e.g., `'8px 16px 24px 32px'`).
- * - If `Unit` is provided and `Value` is a number, it is resolved to a single dimension string (e.g., `'16px'`).
- *
- * This type helps enforce correct resolution behavior depending on user input and configuration.
- *
- * @template Value - The input spacing value (number, shorthand array, or raw string).
- * @template Unit - A CSS length unit (e.g., 'px', 'em'), or `null` to skip unit formatting.
- */
-export type HoneyResolveSpacingResult<
-  Value extends HoneyCSSSpacingValue,
-  Unit extends Nullable<HoneyCSSDimensionUnit>,
-> = Value extends HoneyCSSDimensionValue
-  ? Value
-  : Unit extends null
-    ? Value
-    : Value extends HoneyCSSShorthandTuple<number | HoneyCSSDimensionValue>
-      ? HoneyCSSShorthandDimensionOutput<Value, NonNullable<Unit>>
-      : HoneyCSSDimensionValue<NonNullable<Unit>>;
-
-/**
- * Resolves a spacing value or shorthand spacing array using the theme and optional unit.
- *
- * This function takes spacing multipliers and converts them into pixel or unit-based values
- * using a theme spacing scale (e.g., `theme.spacings.base`). Useful for applying consistent
- * layout spacing with theming and token support.
- *
- * @template Value - The spacing value(s) to resolve. Can be:
- *                   - A number (e.g., `1`) representing a multiplier.
- *                   - An array of numbers (e.g., `[1, 2, 3, 4]`) for shorthand spacing.
- *                   - A dimension string (e.g., `'10px'`) will be returned as `never`.
- * @template Unit - Optional CSS unit (`'px'`, `'em'`, etc.), or `null` to skip units.
- *
- * @param value - Spacing multiplier(s) to apply.
- * @param [unit='px'] - The CSS unit to append. If `null`, values remain numeric.
- * @param [type='base'] - The spacing type to use from the theme (e.g., `'base'`, `'small'`).
- *
- * @returns A function that takes a theme context and returns:
- *          - A single resolved value (e.g., `'16px'`) if `value` is a number.
- *          - A space-separated string (e.g., `'8px 12px'`) if `value` is an array.
- *          - `never` if the input is a raw string (unsupported).
- */
-export const resolveSpacing =
-  <Value extends HoneyCSSSpacingValue, Unit extends Nullable<HoneyCSSDimensionUnit> = 'px'>(
-    value: Value,
-    unit: Unit = 'px' as Unit,
-    type: keyof HoneySpacings = 'base',
-  ): ((context: HoneyStyledContext<object>) => HoneyResolveSpacingResult<Value, Unit>) =>
-  ({ theme }) => {
-    if (typeof value === 'string') {
-      return value as never;
-    }
-
-    const selectedSpacing = theme.spacings[type] ?? 0;
-
-    if (typeof value === 'number') {
-      const normalizedValue = value * selectedSpacing;
-
-      return (unit ? `${normalizedValue}${unit}` : normalizedValue) as HoneyResolveSpacingResult<
-        Value,
-        Unit
-      >;
-    }
-
-    const calculatedValues = value.map(shorthandValue => {
-      if (typeof shorthandValue === 'string') {
-        return shorthandValue;
-      }
-
-      const calculatedValue = shorthandValue * selectedSpacing;
-
-      return unit ? `${calculatedValue}${unit}` : calculatedValue;
-    });
-
-    return calculatedValues.join(' ') as HoneyResolveSpacingResult<Value, Unit>;
-  };
 
 /**
  * Type guard function that checks whether a given CSS property name

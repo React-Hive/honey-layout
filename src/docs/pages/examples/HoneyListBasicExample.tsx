@@ -1,7 +1,6 @@
 import React from 'react';
-import { css, styled } from '@react-hive/honey-style';
+import { css, resolveSpacing, styled } from '@react-hive/honey-style';
 
-import { resolveSpacing } from '../../../helpers';
 import { HoneyBox, HoneyList } from '../../../components';
 
 export const ListItem = styled('li')`

@@ -1,13 +1,13 @@
 import React from 'react';
+import { useHoneyStyle } from '@react-hive/honey-style';
 
-import { useHoneyLayout } from '../../../hooks';
 import { HoneyBox } from '../../../components';
 
 export const HoneyBoxBasicExample = () => {
   const {
     theme: { colors },
     resolveColor,
-  } = useHoneyLayout();
+  } = useHoneyStyle();
 
   return (
     <HoneyBox

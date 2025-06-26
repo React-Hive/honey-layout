@@ -1,6 +1,4 @@
-import { css, styled } from '@react-hive/honey-style';
-
-import { resolveSpacing } from '../../helpers';
+import { css, styled, resolveSpacing } from '@react-hive/honey-style';
 
 export const MDXWrapper = styled('div')`
   ${({ theme }) => css`

@@ -1,4 +1,5 @@
 import React from 'react';
+import { useHoneyStyle } from '@react-hive/honey-style';
 
 import { HoneyLayoutProvider } from '../../../providers';
 import { useHoneyLayout } from '../../../hooks';
@@ -6,7 +7,8 @@ import { HoneyBox } from '../../../components';
 import theme from './theme';
 
 const Main = () => {
-  const { screenState, resolveColor, resolveSpacing } = useHoneyLayout();
+  const { resolveColor, resolveSpacing } = useHoneyStyle();
+  const { screenState } = useHoneyLayout();
 
   return (
     <HoneyBox as="ol">

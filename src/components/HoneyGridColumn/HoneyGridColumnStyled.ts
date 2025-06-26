@@ -1,8 +1,8 @@
-import { css, styled } from '@react-hive/honey-style';
+import { css, styled, resolveSpacing } from '@react-hive/honey-style';
 import type { ElementType } from 'react';
 import type { HoneyBreakpointName } from '@react-hive/honey-style';
 
-import { bpMedia, resolveSpacing } from '../../helpers';
+import { bpMedia } from '../../helpers';
 import { HoneyFlexBox } from '../HoneyFlexBox';
 import type { HoneyFlexBoxProps } from '../HoneyFlexBox';
 

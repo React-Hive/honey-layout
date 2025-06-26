@@ -1,11 +1,11 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-import { styled, css } from '@react-hive/honey-style';
+import { styled, css, resolveSpacing } from '@react-hive/honey-style';
 
 import { PAGES } from '../constants';
 import { useHoneyLayout } from '../../hooks';
 import { useCurrentApp } from '../providers';
-import { bpMedia, resolveSpacing } from '../../helpers';
+import { bpMedia } from '../../helpers';
 
 interface MenuStyledProps {
   open: boolean;

@@ -1,8 +1,7 @@
 import * as CSS from 'csstype';
-import { css, styled } from '@react-hive/honey-style';
+import { css, styled, resolveSpacing } from '@react-hive/honey-style';
 import type { FastOmit } from '@react-hive/honey-style';
 
-import { resolveSpacing } from '../../helpers';
 import { HoneyBox } from '../HoneyBox';
 import { HoneyGridColumnStyled } from '../HoneyGridColumn/HoneyGridColumnStyled';
 import type { HoneyBoxProps } from '../HoneyBox';

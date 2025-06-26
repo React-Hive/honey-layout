@@ -1,6 +1,6 @@
-import { styled, css } from '@react-hive/honey-style';
+import { styled, css, resolveColor } from '@react-hive/honey-style';
 
-import { resolveColor, bpMedia } from '../../helpers';
+import { bpMedia } from '../../helpers';
 import { flattenNestedList } from '../../utils';
 import { useHoneyLayout } from '../../hooks';
 
@@ -104,7 +104,7 @@ Returns a string representing the 8-character HEX with alpha (RRGGBBAA) format c
 ### Usage
 
 ```ts
-import { convertHexToHexWithAlpha } from '@react-hive/honey-layout';
+import { convertHexToHexWithAlpha } from '@react-hive/honey-style';
 
 const hexWithAlpha = convertHexToHexWithAlpha('#1A5297', 0.5);
 ```
@@ -128,8 +128,7 @@ A function that takes the theme and returns the CSS for the specified font. The 
 The `resolveFont` function generates CSS font styles based on the `fontName` parameter.
 
 ```tsx
-import { styled } from '@react-hive/honey-style';
-import { resolveFont } from '@react-hive/honey-layout';
+import { styled, resolveFont } from '@react-hive/honey-style';
 
 // Assume the theme object includes 'heading' font configuration
 
@@ -164,8 +163,7 @@ Dynamically resolve color values from the theme based on color keys, enabling co
 <ColoredBox/>
 
 ```tsx
-import { styled } from '@react-hive/honey-style';
-import { resolveColor } from '@react-hive/honey-layout';
+import { styled, resolveColor } from '@react-hive/honey-style';
 
 export const ColoredBox = styled('div')`
   width: 100px;
@@ -208,8 +206,7 @@ Here's how it works:
 * **type**: Indicates the type of spacing ('base', 'small', 'large', etc.) to fetch from the theme. Defaults to 'base'.
 
 ```tsx
-import { styled } from '@react-hive/honey-style';
-import { resolveSpacing } from '@react-hive/honey-layout';
+import { styled, resolveSpacing } from '@react-hive/honey-style';
 
 const Button = styled('button')`
   margin: ${resolveSpacing(1)}; /* Using default unit 'px' */
@@ -286,8 +283,7 @@ A function that takes the theme and returns the resolved dimension value for the
 The `resolveDimension` function accesses a specific dimension value from the theme configuration using the dimension name.
 
 ```tsx
-import { styled } from '@react-hive/honey-style';
-import { resolveDimension } from '@react-hive/honey-layout';
+import { styled, resolveDimension } from '@react-hive/honey-style';
 
 const Box = styled('div')`
   width: ${resolveDimension('width')}; /* Retrieves the 'width' dimension value from the theme */

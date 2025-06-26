@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
+import { useHoneyStyle } from '@react-hive/honey-style';
 
 import { Button } from './components';
 import { HoneyBox, HoneyFlexBox, HoneyPopup } from '../../../components';
-import { useHoneyLayout } from '../../../hooks';
 
 const PopupContent = () => {
-  const { resolveSpacing } = useHoneyLayout();
+  const { resolveSpacing } = useHoneyStyle();
 
   const [length, setLength] = useState(3);
 
