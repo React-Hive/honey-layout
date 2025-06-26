@@ -1,17 +1,11 @@
 import * as CSS from 'csstype';
-import { css, mediaQuery } from '@react-hive/honey-style';
+import { css, checkIsThemeColorValue, resolveColor, mediaQuery } from '@react-hive/honey-style';
 import type { HTMLAttributes } from 'react';
 import type {
   FastOmit,
   HoneyTheme,
-  HoneyFontName,
-  HoneyColors,
-  HoneyColor,
-  HoneyColorKey,
-  HoneyCSSColor,
   HoneyStyledContext,
   HoneyStyledFunction,
-  HoneyDimensionName,
   HoneyBreakpointName,
   HoneyBreakpoints,
   HoneySpacings,
@@ -20,7 +14,7 @@ import type {
   HoneyCSSDimensionValue,
 } from '@react-hive/honey-style';
 
-import { camelToDashCase, convertHexToHexWithAlpha, pxToRem } from '../utils';
+import { camelToDashCase } from '../utils';
 import { CSS_COLOR_PROPERTIES, CSS_SPACING_PROPERTIES } from '../constants';
 import type {
   Nullable,
@@ -92,7 +86,7 @@ export type HoneyResolveSpacingResult<
   ? Value
   : Unit extends null
     ? Value
-    : Value extends HoneyCSSShorthandTuple<number | HoneyCSSDimensionValue>
+    : Value extends HoneyCSSShorthandTuple<HoneyCSSDimensionValue>
       ? HoneyCSSShorthandDimensionOutput<Value, NonNullable<Unit>>
       : HoneyCSSDimensionValue<NonNullable<Unit>>;
 
@@ -154,70 +148,6 @@ export const resolveSpacing =
   };
 
 /**
- * Resolves a color value from the theme or returns the input color directly if it's a standalone color name or HEX value.
- *
- * @param colorInput - A string representing the color to resolve.
- *                 This can be:
- *                  - A theme key in the format 'colorType.colorName'.
- *                  - A standalone color name (e.g., "red", "blue").
- *                  - A HEX color value (e.g., "#RRGGBB").
- * @param [alpha] - The alpha transparency value between 0 (fully transparent) and 1 (fully opaque).
- *                  Default to `undefined`.
- *
- * @returns A function that takes an `ExecutionContext` with a `theme` and resolves the color value:
- *           - A HEX color string from the theme (e.g., "#RRGGBB").
- *           - A HEX color string with alpha (e.g., "#RRGGBBAA") if `alpha` is provided.
- *           - The input `colorKey` value directly if it's a standalone color name or HEX value.
- *
- * @throws Will throw an error if the provided alpha value is not within the valid range (0 to 1).
- * @throws Will throw an error if the color format is invalid.
- */
-export const resolveColor =
-  (colorInput: HoneyColor, alpha?: number) =>
-  ({ theme }: HoneyStyledContext<object>): HoneyCSSColor => {
-    const [colorType, colorName] = colorInput.split('.');
-
-    const color = colorName
-      ? theme.colors[colorType as keyof HoneyColors][colorName]
-      : (colorType as HoneyCSSColor);
-
-    return alpha === undefined ? color : convertHexToHexWithAlpha(color, alpha);
-  };
-
-/**
- * Resolves the font styles based on the provided font name from the theme.
- *
- * @param fontName - The name of the font to be resolved from the theme.
- *
- * @returns A style function that takes a theme object and returns the CSS styles for the specified font.
- */
-export const resolveFont =
-  (fontName: HoneyFontName) =>
-  ({ theme }: HoneyStyledContext<object>) => {
-    const font = theme.fonts[fontName];
-
-    return css`
-      font-family: ${font.family};
-      font-size: ${pxToRem(font.size)};
-      font-weight: ${font.weight};
-      line-height: ${font.lineHeight !== undefined && pxToRem(font.lineHeight)};
-      letter-spacing: ${font.letterSpacing !== undefined && pxToRem(font.letterSpacing)};
-    `;
-  };
-
-/**
- * Resolves a specific dimension value from the theme configuration.
- *
- * @param dimensionName - The name of the dimension to resolve.
- *
- * @returns A style function that takes the theme and returns the resolved dimension value from the theme.
- */
-export const resolveDimension =
-  (dimensionName: HoneyDimensionName) =>
-  ({ theme }: HoneyStyledContext<object>): HoneyCSSDimensionValue =>
-    theme.dimensions[dimensionName];
-
-/**
  * Type guard function that checks whether a given CSS property name
  * is classified as a spacing-related property.
  *
@@ -255,18 +185,6 @@ const isCSSColorProperty = (
  */
 const isCSSPrefixedProperty = (propertyName: string): propertyName is HoneyPrefixedCSSProperty =>
   propertyName[0] === '$';
-
-/**
- * Type guard function to check if a string value follows the pattern of a theme color value.
- *
- * A theme color value is assumed to be a string containing exactly one dot (e.g., 'primary.main').
- *
- * @param propertyValue - The string value to check.
- *
- * @returns True if the string value is a theme color value, false otherwise.
- */
-const isThemeColorValue = (propertyValue: string): propertyValue is HoneyColorKey =>
-  propertyValue.split('.').length === 2;
 
 /**
  * Retrieves the CSS property value for a specific breakpoint, potentially resolving it to include units.
@@ -308,7 +226,7 @@ const getCSSPropertyValue = <CSSProperty extends keyof CSS.Properties>(
       return resolveSpacing(resolvedValue, 'px');
     }
   } else if (isCSSColorProperty(propertyName)) {
-    if (typeof resolvedValue === 'string' && isThemeColorValue(resolvedValue)) {
+    if (typeof resolvedValue === 'string' && checkIsThemeColorValue(resolvedValue)) {
       return resolveColor(resolvedValue);
     }
   }

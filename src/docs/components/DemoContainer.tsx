@@ -32,7 +32,7 @@ export const DemoContainer = ({ children }: PropsWithChildren) => {
         $display="flex"
         $flexWrap="wrap"
         $gap="8px"
-        $margin={['0', 'auto']}
+        $margin={[0, 'auto']}
         $color={theme.colors.neutral.goldenrod}
       >
         <span>

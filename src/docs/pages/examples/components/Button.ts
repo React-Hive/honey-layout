@@ -1,7 +1,7 @@
-import { css, styled } from '@react-hive/honey-style';
+import { css, styled, resolveColor } from '@react-hive/honey-style';
 import type { HoneyColorKey } from '@react-hive/honey-style';
 
-import { resolveColor, resolveSpacing } from '../../../../helpers';
+import { resolveSpacing } from '../../../../helpers';
 import { HoneyBox } from '../../../../components';
 import type { HoneyBoxProps } from '../../../../components';
 

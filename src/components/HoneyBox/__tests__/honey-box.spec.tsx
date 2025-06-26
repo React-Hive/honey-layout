@@ -30,7 +30,7 @@ describe('[HoneyBox]: basic behavior', () => {
 
   it('should apply shorthand `padding` and `margin` with 2 values', () => {
     const { getByTestId } = customRender(
-      <HoneyBox $padding={['8px', '4px']} $margin={['0', 'auto']} />,
+      <HoneyBox $padding={['8px', '4px']} $margin={[0, 'auto']} />,
     );
 
     expect(getByTestId('honey-box')).toHaveStyle({
@@ -41,7 +41,7 @@ describe('[HoneyBox]: basic behavior', () => {
 
   it('should apply shorthand `padding` and `margin` with 3 values', () => {
     const { getByTestId } = customRender(
-      <HoneyBox $padding={['8px', '4px', '12px']} $margin={['0', 'auto', '8px']} />,
+      <HoneyBox $padding={['8px', '4px', '12px']} $margin={[0, 'auto', '8px']} />,
     );
 
     expect(getByTestId('honey-box')).toHaveStyle({
@@ -52,7 +52,7 @@ describe('[HoneyBox]: basic behavior', () => {
 
   it('should apply shorthand `padding` and `margin` with 4 values', () => {
     const { getByTestId } = customRender(
-      <HoneyBox $padding={['8px', '4px', '12px', '4px']} $margin={['0', 'auto', '8px', 'auto']} />,
+      <HoneyBox $padding={['8px', '4px', '12px', '4px']} $margin={[0, 'auto', '8px', 'auto']} />,
     );
 
     expect(getByTestId('honey-box')).toHaveStyle({

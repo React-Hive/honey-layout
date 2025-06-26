@@ -13,7 +13,7 @@ export const HoneyBoxBasicExample = () => {
     <HoneyBox
       $width="100px"
       $height="100px"
-      $margin={['0', 'auto']}
+      $margin={[0, 'auto']}
       $backgroundColor={{
         xs: 'white',
         sm: colors.neutral.forestGreen,

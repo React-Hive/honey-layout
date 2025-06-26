@@ -1,10 +1,15 @@
 import React, { useMemo } from 'react';
-import { HoneyStyleProvider } from '@react-hive/honey-style';
+import {
+  resolveFont,
+  resolveColor,
+  resolveDimension,
+  HoneyStyleProvider,
+} from '@react-hive/honey-style';
 import type { PropsWithChildren } from 'react';
 import type { HoneyStyleContextValue } from '@react-hive/honey-style';
 
 import { useHoneyMediaQuery } from '../hooks';
-import { resolveDimension, resolveFont, resolveColor, resolveSpacing } from '../helpers';
+import { resolveSpacing } from '../helpers';
 import { HoneyLayoutContext } from '../contexts';
 import { useHoneyOverlays } from './hooks';
 import type { HoneyLayoutContextValue } from '../contexts';
