@@ -1,4 +1,5 @@
 import * as CSS from 'csstype';
+import { CSS_COLOR_PROPERTIES, CSS_SPACING_PROPERTIES } from '@react-hive/honey-style';
 import {
   css,
   checkIsThemeColorValue,
@@ -14,15 +15,14 @@ import type {
   HoneyBreakpointName,
   HoneyBreakpoints,
   HoneyMediaQueryRule,
+  HoneyCSSSpacingProperty,
+  HoneyCSSColorProperty,
 } from '@react-hive/honey-style';
 
 import { camelToDashCase } from '../utils';
-import { CSS_COLOR_PROPERTIES, CSS_SPACING_PROPERTIES } from '../constants';
 import type {
   HoneyScreenState,
   HoneyCSSPropertyValue,
-  HoneyCSSSpacingProperty,
-  HoneyCSSColorProperty,
   HoneyPrefixedCSSProperty,
   HoneyPrefixedCSSProperties,
 } from '../types';

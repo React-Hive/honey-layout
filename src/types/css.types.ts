@@ -4,10 +4,13 @@
 import * as CSS from 'csstype';
 import type {
   HoneyBreakpointName,
-  HoneyCSSDimensionValue,
   HoneyStyledContext,
   HoneyColor,
   HoneyCSSSpacingValue,
+  HoneyCSSColorProperty,
+  HoneyCSSSpacingProperty,
+  HoneyCSSShorthandSpacingProperty,
+  HoneyRawCSSSpacingValue,
 } from '@react-hive/honey-style';
 
 /**
@@ -42,59 +45,6 @@ export type HoneyCSSTimingFunction =
   | `steps(${number}, ${HoneyCSSStepFunctionPosition})`;
 
 /**
- * Represents CSS properties related to spacing and positioning.
- */
-export type HoneyCSSSpacingProperty = keyof Pick<
-  CSS.Properties,
-  | 'margin'
-  | 'marginTop'
-  | 'marginRight'
-  | 'marginBottom'
-  | 'marginLeft'
-  | 'padding'
-  | 'paddingTop'
-  | 'paddingRight'
-  | 'paddingBottom'
-  | 'paddingLeft'
-  | 'top'
-  | 'right'
-  | 'bottom'
-  | 'left'
-  | 'gap'
-  | 'rowGap'
-  | 'columnGap'
->;
-
-/**
- * Represents shorthand spacing properties that support multi-value arrays.
- *
- * These properties accept 2–4 space-separated values
- * to control spacing on multiple sides (e.g., top, right, bottom, left).
- */
-export type HoneyCSSShorthandSpacingProperty = keyof Pick<
-  CSS.Properties,
-  'margin' | 'padding' | 'gap'
->;
-
-/**
- * Represents a subset of CSS properties that define color-related styles.
- */
-export type HoneyCSSColorProperty = keyof Pick<
-  CSS.Properties,
-  | 'color'
-  | 'backgroundColor'
-  | 'borderColor'
-  | 'borderTopColor'
-  | 'borderRightColor'
-  | 'borderBottomColor'
-  | 'borderLeftColor'
-  | 'outlineColor'
-  | 'textDecorationColor'
-  | 'fill'
-  | 'stroke'
->;
-
-/**
  * A type representing a function that returns a value for a specific CSS property based on the provided theme.
  *
  * @template CSSProperty - The CSS property this function will generate a value for.
@@ -102,8 +52,6 @@ export type HoneyCSSColorProperty = keyof Pick<
 type HoneyCSSPropertyValueFn<CSSProperty extends keyof CSS.Properties> = (
   context: HoneyStyledContext<object>,
 ) => CSS.Properties[CSSProperty];
-
-type HoneyRawCSSSpacingValue = number | HoneyCSSDimensionValue | CSS.Globals;
 
 /**
  * Represents a non-responsive (raw) CSS property value for a specific CSS property.
