@@ -112,7 +112,7 @@ export type HoneyCSSPropertyValue<CSSProperty extends keyof CSS.Properties> =
  *
  * @template CSSProperty - The string type representing a CSS property name.
  */
-export type HoneyPrefixedCSSProperty<
+export type Honey$PrefixedCSSProperty<
   CSSProperty extends keyof CSS.Properties = keyof CSS.Properties,
 > = `$${CSSProperty}`;
 
@@ -127,6 +127,6 @@ export type HoneyPrefixedCSSProperty<
  * };
  * ```
  */
-export type HoneyPrefixedCSSProperties = {
-  [CSSProperty in keyof CSS.Properties as HoneyPrefixedCSSProperty<CSSProperty>]?: HoneyCSSPropertyValue<CSSProperty>;
+export type Honey$PrefixedCSSProperties = {
+  [CSSProperty in keyof CSS.Properties as Honey$PrefixedCSSProperty<CSSProperty>]?: HoneyCSSPropertyValue<CSSProperty>;
 };

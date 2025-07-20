@@ -1,7 +1,7 @@
 import { useContext } from 'react';
+import { assert } from '@react-hive/honey-utils';
 
 import { HoneyLayoutContext } from '../contexts';
-import { assert } from '../helpers';
 
 /**
  * Custom hook to access the Honey layout context.

@@ -1,5 +1,6 @@
 import React, { useMemo, useCallback } from 'react';
 import { FloatingArrow, FloatingFocusManager, FloatingNode } from '@floating-ui/react';
+import { invokeIfFunction } from '@react-hive/honey-utils';
 import type { CSSProperties, ReactNode } from 'react';
 import type {
   ReferenceType,
@@ -9,7 +10,6 @@ import type {
 } from '@floating-ui/react';
 import type { FastOmit } from '@react-hive/honey-style';
 
-import { invokeIfFunction } from '../../helpers';
 import { HoneyOverlay } from '../HoneyOverlay';
 import { HoneyPopupContext } from './HoneyPopupContext';
 import { HoneyPopupStyled } from './HoneyPopupStyled';

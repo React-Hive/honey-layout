@@ -1,9 +1,9 @@
 import React from 'react';
+import { noop } from '@react-hive/honey-utils';
 import { render } from '@testing-library/react';
 import type { ReactElement } from 'react';
 
 import { themeMock } from '../../__mocks__';
-import { noop } from '../../helpers';
 import { useHoneyOverlay } from '../use-honey-overlay';
 import { HoneyLayoutProvider } from '../../providers';
 import { HoneyOverlay } from '../../components';

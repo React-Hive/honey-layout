@@ -1,10 +1,11 @@
 import React, { useCallback } from 'react';
+import { invokeIfFunction } from '@react-hive/honey-utils';
 import type { FastOmit } from '@react-hive/honey-style';
 import type { ReactNode } from 'react';
 
 import { HoneyFlexBox } from './HoneyFlexBox';
 import { useRegisterHoneyOverlay } from '../hooks';
-import { mergeRefs, invokeIfFunction } from '../helpers';
+import { mergeRefs } from '../helpers';
 import type { HoneyActiveOverlay, HoneyOverlayId, Nullable } from '../types';
 import type { HoneyFlexBoxProps } from './HoneyFlexBox';
 

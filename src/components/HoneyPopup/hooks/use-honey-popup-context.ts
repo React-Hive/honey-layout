@@ -1,7 +1,7 @@
 import { useContext } from 'react';
+import { assert } from '@react-hive/honey-utils';
 import type { ReferenceType } from '@floating-ui/react';
 
-import { assert } from '../../../helpers';
 import { HoneyPopupContext } from '../HoneyPopupContext';
 import type { HoneyPopupContextValue } from '../HoneyPopupContext';
 

@@ -16,7 +16,7 @@ export interface HoneyGridProps extends HoneyGridStyledProps {
    *
    * @default true
    */
-  isColumnGrowing?: boolean;
+  columnsGrowing?: boolean;
   /**
    * Specifies the breakpoint at which the max-width should be applied to the columns or disables it if set to `false`.
    * Can be a breakpoint name.
@@ -31,7 +31,7 @@ export const HoneyGrid = ({
   children,
   columns,
   spacing,
-  isColumnGrowing = true,
+  columnsGrowing = true,
   applyColumnMaxWidth = false,
   ...props
 }: HoneyGridProps) => {
@@ -39,10 +39,10 @@ export const HoneyGrid = ({
     () => ({
       columns,
       spacing,
-      isColumnGrowing,
+      isColumnsGrowing: columnsGrowing,
       applyColumnMaxWidth,
     }),
-    [columns, spacing, isColumnGrowing, applyColumnMaxWidth],
+    [columns, spacing, columnsGrowing, applyColumnMaxWidth],
   );
 
   return (

@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
+import { calculateEuclideanDistance, calculateMovingSpeed } from '@react-hive/honey-utils';
 import type { RefObject } from 'react';
 
-import { calculateEuclideanDistance, calculateMovingSpeed } from '../utils';
 import type { Nullable } from '../types';
 
 /**

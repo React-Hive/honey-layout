@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react';
 
-import type { HoneyActiveOverlay, HoneyOverlayConfig, Nullable } from '../types';
 import { useHoneyLayout } from './use-honey-layout';
+import type { HoneyActiveOverlay, HoneyOverlayConfig, Nullable } from '../types';
 
 /**
  * A hook for registering and managing an overlay in the layout system.

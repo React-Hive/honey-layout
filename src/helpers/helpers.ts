@@ -1,5 +1,6 @@
 import * as CSS from 'csstype';
 import { CSS_COLOR_PROPERTIES, CSS_SPACING_PROPERTIES } from '@react-hive/honey-style';
+import { assert, camelToDashCase } from '@react-hive/honey-utils';
 import {
   css,
   checkIsThemeColorValue,
@@ -19,21 +20,12 @@ import type {
   HoneyCSSColorProperty,
 } from '@react-hive/honey-style';
 
-import { camelToDashCase } from '../utils';
 import type {
   HoneyScreenState,
   HoneyCSSPropertyValue,
-  HoneyPrefixedCSSProperty,
-  HoneyPrefixedCSSProperties,
+  Honey$PrefixedCSSProperty,
+  Honey$PrefixedCSSProperties,
 } from '../types';
-
-export const noop = () => {};
-
-export function assert(condition: any, message: string): asserts condition {
-  if (!condition) {
-    throw new Error(message);
-  }
-}
 
 export const generateUniqueId = () => {
   const timestamp = Date.now().toString();
@@ -43,23 +35,6 @@ export const generateUniqueId = () => {
 
   return `${timestamp}${randomNum}`;
 };
-
-/**
- * Invokes the given input if it is a function, passing the provided arguments.
- * Otherwise, returns the input as-is.
- *
- * @template Args - Tuple of argument types to pass to the function.
- * @template Result - Return type of the function or the value.
- *
- * @param input - A function to invoke with `args`, or a direct value of type `Result`.
- * @param args - Arguments to pass if `input` is a function.
- *
- * @returns The result of invoking the function, or the original value if it's not a function.
- */
-export const invokeIfFunction = <Args extends any[], Result>(
-  input: ((...args: Args) => Result) | Result,
-  ...args: Args
-): Result => (typeof input === 'function' ? (input as (...args: Args) => Result)(...args) : input);
 
 /**
  * Type guard function that checks whether a given CSS property name
@@ -72,7 +47,7 @@ export const invokeIfFunction = <Args extends any[], Result>(
  *
  * @returns `true` if the property is a spacing property, otherwise `false`.
  */
-const isCSSSpacingProperty = (
+const checkIsSpacingCSSProperty = (
   propertyName: keyof CSS.Properties,
 ): propertyName is HoneyCSSSpacingProperty =>
   (CSS_SPACING_PROPERTIES as string[]).includes(propertyName as string);
@@ -84,7 +59,7 @@ const isCSSSpacingProperty = (
  *
  * @returns True if the property name is a color property, false otherwise.
  */
-const isCSSColorProperty = (
+const checkIsColorCSSProperty = (
   propertyName: keyof CSS.Properties,
 ): propertyName is HoneyCSSColorProperty =>
   (CSS_COLOR_PROPERTIES as string[]).includes(propertyName as string);
@@ -97,8 +72,9 @@ const isCSSColorProperty = (
  *
  * @returns Returns true if the property is a valid prefixed CSS property, otherwise false.
  */
-const isCSSPrefixedProperty = (propertyName: string): propertyName is HoneyPrefixedCSSProperty =>
-  propertyName[0] === '$';
+const checkIs$PrefixedCSSProperty = (
+  propertyName: string,
+): propertyName is Honey$PrefixedCSSProperty => propertyName[0] === '$';
 
 /**
  * Retrieves the CSS property value for a specific breakpoint, potentially resolving it to include units.
@@ -135,11 +111,11 @@ const getCSSPropertyValue = <CSSProperty extends keyof CSS.Properties>(
     return undefined;
   }
 
-  if (isCSSSpacingProperty(propertyName)) {
+  if (checkIsSpacingCSSProperty(propertyName)) {
     if (typeof resolvedValue === 'number' || Array.isArray(resolvedValue)) {
       return resolveSpacing(resolvedValue, 'px');
     }
-  } else if (isCSSColorProperty(propertyName)) {
+  } else if (checkIsColorCSSProperty(propertyName)) {
     if (typeof resolvedValue === 'string' && checkIsThemeColorValue(resolvedValue)) {
       return resolveColor(resolvedValue);
     }
@@ -148,7 +124,7 @@ const getCSSPropertyValue = <CSSProperty extends keyof CSS.Properties>(
   return resolvedValue;
 };
 
-export type HoneyStyledBoxProps = HTMLAttributes<HTMLElement> & HoneyPrefixedCSSProperties;
+export type HoneyStyledBoxProps = HTMLAttributes<HTMLElement> & Honey$PrefixedCSSProperties;
 
 /**
  * Filters and matches CSS properties from the provided props object based on the specified breakpoint.
@@ -166,9 +142,9 @@ const matchCSSProperties = <Props extends HoneyStyledBoxProps>(
 ) =>
   Object.entries(props).filter(
     ([propertyName, propertyValue]) =>
-      (isCSSPrefixedProperty(propertyName) && breakpoint === 'xs') ||
+      (checkIs$PrefixedCSSProperty(propertyName) && breakpoint === 'xs') ||
       (propertyValue && typeof propertyValue === 'object' && breakpoint in propertyValue),
-  ) as [HoneyPrefixedCSSProperty, CSS.Properties[keyof CSS.Properties]][];
+  ) as [Honey$PrefixedCSSProperty, CSS.Properties[keyof CSS.Properties]][];
 
 /**
  * Generates CSS styles based on the provided breakpoint and properties.
@@ -214,7 +190,7 @@ const hasBreakpointStyles = (
 ): boolean =>
   Object.entries(props).some(
     ([propertyName, propertyValue]) =>
-      isCSSPrefixedProperty(propertyName) &&
+      checkIs$PrefixedCSSProperty(propertyName) &&
       typeof propertyValue === 'object' &&
       breakpoint in propertyValue,
   );
@@ -235,9 +211,7 @@ export const bpMedia = (
 ) => {
   const resolveBpValue = (theme: HoneyTheme) => {
     const value = theme.breakpoints[breakpoint];
-    if (!value) {
-      throw new Error(`[honey-layout]: Setup for breakpoint "${breakpoint}" was not found.`);
-    }
+    assert(value, `[honey-layout]: Setup for breakpoint "${breakpoint}" was not found.`);
 
     return value;
   };

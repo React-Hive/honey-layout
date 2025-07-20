@@ -4,7 +4,7 @@ import type { HoneyBreakpointName } from '@react-hive/honey-style';
 export interface HoneyGridContextProps {
   columns: number;
   spacing: number | undefined;
-  isColumnGrowing: boolean;
+  isColumnsGrowing: boolean;
   applyColumnMaxWidth: HoneyBreakpointName | false;
 }
 

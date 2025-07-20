@@ -1,4 +1,5 @@
-import { splitStringIntoWords } from './utils';
+import { splitStringIntoWords } from '@react-hive/honey-utils';
+
 import type {
   HoneyFlattenedItem,
   KeysWithArrayValues,
