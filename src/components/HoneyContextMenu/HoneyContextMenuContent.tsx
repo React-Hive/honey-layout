@@ -48,7 +48,7 @@ export const HoneyContextMenuContent = <
   );
 
   return (
-    <HoneyList items={visibleOptions} itemKey="id" noContent="No options">
+    <HoneyList items={visibleOptions} itemKey="id" emptyContent="No options">
       {option =>
         option.options?.length ? (
           <HoneyPopup

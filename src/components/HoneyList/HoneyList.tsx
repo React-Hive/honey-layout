@@ -13,14 +13,14 @@ export type HoneyListProps<Item extends HoneyListItem> = FastOmit<
   'children'
 > &
   HoneyListGenericProps<Item> &
-  FastOmit<HoneyStatusContentProps, 'isNoContent'>;
+  FastOmit<HoneyStatusContentProps, 'empty'>;
 
 /**
  * A generic and reusable list component that handles different states such as loading, error, or no content,
  * and dynamically renders a list of items with custom content for each item.
  *
  * This component provides a flexible and accessible way to display lists, with built-in support for
- * various states to enhance user experience. It accepts a `ref` to access the underlying HTML element
+ * various states to enhance the user experience. It accepts a `ref` to access the underlying HTML element
  * for greater control and customization.
  *
  * @template Item - Represents the type of the items to be rendered in the list. This allows the component
@@ -31,12 +31,12 @@ export const HoneyList = <Item extends HoneyListItem>({
   children,
   items,
   itemKey,
-  isLoading,
-  isLoadingOverContent,
+  loading,
+  loadingOverContent,
   loadingContent,
-  isError,
+  error,
   errorContent,
-  noContent,
+  emptyContent,
   ...props
 }: HoneyListProps<Item>) => {
   return (
@@ -44,19 +44,19 @@ export const HoneyList = <Item extends HoneyListItem>({
       ref={ref}
       role="list"
       // ARIA
-      aria-busy={isLoading}
+      aria-busy={loading}
       // Data
       data-testid="honey-list"
       {...props}
     >
       <HoneyStatusContent
-        isLoading={isLoading}
-        isLoadingOverContent={isLoadingOverContent}
+        loading={loading}
+        loadingOverContent={loadingOverContent}
         loadingContent={loadingContent}
-        isError={isError}
+        error={error}
         errorContent={errorContent}
-        isNoContent={items?.length === 0}
-        noContent={noContent}
+        empty={items?.length === 0}
+        emptyContent={emptyContent}
       >
         {items?.map((item, itemIndex, thisItems) => (
           <Fragment key={String(getHoneyListItemId(item, itemKey, itemIndex))}>

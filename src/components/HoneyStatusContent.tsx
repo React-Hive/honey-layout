@@ -11,25 +11,7 @@ export interface HoneyStatusContentProps {
    *
    * @default false
    */
-  isLoading?: boolean;
-  /**
-   * A flag indicating whether the loading content should appear on top of the content.
-   *
-   * @default false
-   */
-  isLoadingOverContent?: boolean;
-  /**
-   * A flag indicating whether the component has encountered an error.
-   *
-   * @default false
-   */
-  isError?: boolean;
-  /**
-   * A flag indicating whether the component has no content to display.
-   *
-   * @default false
-   */
-  isNoContent?: boolean;
+  loading?: boolean;
   /**
    * The content to display when the component is in a loading state.
    *
@@ -37,17 +19,35 @@ export interface HoneyStatusContentProps {
    */
   loadingContent?: ReactNode;
   /**
+   * A flag indicating whether the loading content should appear on top of the content.
+   *
+   * @default false
+   */
+  loadingOverContent?: boolean;
+  /**
+   * A flag indicating whether the component has encountered an error.
+   *
+   * @default false
+   */
+  error?: boolean;
+  /**
    * The content to display when the component has encountered an error.
    *
    * @default null
    */
   errorContent?: ReactNode;
   /**
+   * A flag indicating whether the component has no content to display.
+   *
+   * @default false
+   */
+  empty?: boolean;
+  /**
    * The content to display when the component has no content to display.
    *
    * @default null
    */
-  noContent?: ReactNode;
+  emptyContent?: ReactNode;
 }
 
 /**
@@ -55,27 +55,27 @@ export interface HoneyStatusContentProps {
  */
 export const HoneyStatusContent = ({
   children,
-  isLoading = false,
-  isLoadingOverContent = false,
-  isError = false,
-  isNoContent = false,
+  loading = false,
+  loadingOverContent = false,
+  error = false,
+  empty = false,
   loadingContent = null,
   errorContent = null,
-  noContent = null,
+  emptyContent = null,
 }: PropsWithChildren<HoneyStatusContentProps>) => {
-  if (isError) {
+  if (error) {
     return errorContent;
   }
 
-  if (!isLoadingOverContent && isLoading) {
+  if (!loadingOverContent && loading) {
     return loadingContent;
   }
 
   return (
     <>
-      {isLoadingOverContent && isLoading && loadingContent}
+      {loadingOverContent && loading && loadingContent}
 
-      {isNoContent ? noContent : children}
+      {empty ? emptyContent : children}
     </>
   );
 };
