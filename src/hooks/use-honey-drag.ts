@@ -10,6 +10,7 @@ import type { Nullable } from '../types';
  * @template Element - The type of the draggable element (must extend HTMLElement).
  *
  * @param draggableElement - The element being dragged.
+ * @param e - The event that initiated the drag. Can be either a `MouseEvent` or a `TouchEvent`.
  *
  * @returns A Promise that resolves to a boolean:
  *          - `false` to cancel the drag.
@@ -17,6 +18,7 @@ import type { Nullable } from '../types';
  */
 export type HoneyDragOnStartHandler<Element extends HTMLElement> = (
   draggableElement: Element,
+  e: MouseEvent | TouchEvent,
 ) => Promise<boolean>;
 
 /**
@@ -95,12 +97,14 @@ interface HoneyDragEndContext {
  * @param context - The context containing details about the drag operation at its end.
  *                  Provides information such as the final position and drag result.
  * @param draggableElement - The element that was being dragged.
+ * @param e - The event that ended the drag. Can be either a `MouseEvent` or a `TouchEvent`.
  *
  * @returns A Promise that resolves when the end handler completes its operations.
  */
 export type HoneyDragOnEndHandler<Element extends HTMLElement> = (
   context: HoneyDragEndContext,
   draggableElement: Element,
+  e: MouseEvent | TouchEvent,
 ) => Promise<void>;
 
 /**
@@ -200,8 +204,8 @@ export const useHoneyDrag = <Element extends HTMLElement>(
     // Store the start time of the drag to calculate speed later.
     let startTime = 0;
 
-    const startDrag = async (clientX: number, clientY: number) => {
-      if (onStartDrag && !(await onStartDrag(draggableElement))) {
+    const startDrag = async (clientX: number, clientY: number, e: MouseEvent | TouchEvent) => {
+      if (onStartDrag && !(await onStartDrag(draggableElement, e))) {
         // Exit when `onStartDrag` returns false, preventing the dragging
         return;
       }
@@ -213,11 +217,10 @@ export const useHoneyDrag = <Element extends HTMLElement>(
       lastX = clientX;
       lastY = clientY;
 
-      // Record the start time for speed calculations.
       startTime = Date.now();
     };
 
-    const stopDrag = async (isTriggerOnEndDrag: boolean) => {
+    const stopDrag = async (isTriggerOnEndDrag: boolean, e: MouseEvent | TouchEvent) => {
       if (!isDragging) {
         return;
       }
@@ -242,12 +245,12 @@ export const useHoneyDrag = <Element extends HTMLElement>(
           },
         };
 
-        await onEndDrag(endContext, draggableElement);
+        await onEndDrag(endContext, draggableElement, e);
       }
     };
 
-    const releaseDrag = async (isTriggerOnEndDrag: boolean) => {
-      await stopDrag(isTriggerOnEndDrag);
+    const releaseDrag = async (isTriggerOnEndDrag: boolean, e: MouseEvent | TouchEvent) => {
+      await stopDrag(isTriggerOnEndDrag, e);
 
       window.removeEventListener('mousemove', mouseMoveHandler);
       window.removeEventListener('mouseup', mouseUpHandler);
@@ -257,11 +260,11 @@ export const useHoneyDrag = <Element extends HTMLElement>(
       window.removeEventListener('touchcancel', touchCancelHandler);
     };
 
-    const mouseUpHandler = async () => {
-      await releaseDrag(true);
+    const mouseUpHandler = async (e: MouseEvent) => {
+      await releaseDrag(true, e);
     };
 
-    const moveHandler = async (clientX: number, clientY: number) => {
+    const moveHandler = async (clientX: number, clientY: number, e: MouseEvent | TouchEvent) => {
       if (!isDragging) {
         return;
       }
@@ -278,7 +281,7 @@ export const useHoneyDrag = <Element extends HTMLElement>(
         lastX = clientX;
         lastY = clientY;
 
-        await releaseDrag(!skipOnEndDragWhenStopped);
+        await releaseDrag(!skipOnEndDragWhenStopped, e);
         return;
       }
 
@@ -287,21 +290,21 @@ export const useHoneyDrag = <Element extends HTMLElement>(
     };
 
     const mouseMoveHandler = async (e: MouseEvent) => {
-      await moveHandler(e.clientX, e.clientY);
+      await moveHandler(e.clientX, e.clientY, e);
     };
 
     const touchMoveHandler = async (e: TouchEvent) => {
       const touch = e.touches[0];
 
-      await moveHandler(touch.clientX, touch.clientY);
+      await moveHandler(touch.clientX, touch.clientY, e);
     };
 
-    const touchEndHandler = async () => {
-      await releaseDrag(true);
+    const touchEndHandler = async (e: TouchEvent) => {
+      await releaseDrag(true, e);
     };
 
-    const touchCancelHandler = async () => {
-      await releaseDrag(true);
+    const touchCancelHandler = async (e: TouchEvent) => {
+      await releaseDrag(true, e);
     };
 
     const touchStartHandler = async (e: TouchEvent) => {
@@ -309,7 +312,7 @@ export const useHoneyDrag = <Element extends HTMLElement>(
 
       const touch = e.touches[0];
 
-      await startDrag(touch.clientX, touch.clientY);
+      await startDrag(touch.clientX, touch.clientY, e);
 
       window.addEventListener('touchmove', touchMoveHandler, {
         passive: true,
@@ -321,7 +324,7 @@ export const useHoneyDrag = <Element extends HTMLElement>(
     const mouseDownHandler = async (e: MouseEvent) => {
       e.stopPropagation();
 
-      await startDrag(e.clientX, e.clientY);
+      await startDrag(e.clientX, e.clientY, e);
 
       window.addEventListener('mousemove', mouseMoveHandler);
       window.addEventListener('mouseup', mouseUpHandler);
