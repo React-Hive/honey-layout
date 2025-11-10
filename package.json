@@ -1,6 +1,6 @@
 {
   "name": "@react-hive/honey-layout",
-  "version": "9.4.1",
+  "version": "9.5.0",
   "description": "",
   "keywords": [
     "react",
@@ -20,17 +20,25 @@
   "license": "MIT",
   "scripts": {
     "prepare": "husky",
-    "start": "vite serve --config vite-docs.config.ts",
+    "start": "NODE_ENV=development webpack serve --config webpack-docs.config.mjs",
     "test": "jest --collect-coverage",
-    "build:lib": "vite build --config vite-lib.config.ts",
-    "build:docs": "vite build --config vite-docs.config.ts",
+    "build:lib": "webpack --config webpack.config.mjs",
+    "build:docs": "webpack --config webpack-docs.config.mjs",
     "diagnostics": "tsx scripts/collect-diagnostics.ts"
   },
   "type": "module",
-  "main": "dist/index.js",
+  "main": "dist/index.cjs",
+  "module": "dist/index.mjs",
   "types": "dist/index.d.ts",
+  "exports": {
+    "import": "./dist/index.mjs",
+    "require": "./dist/index.cjs"
+  },
   "files": [
-    "dist"
+    "dist",
+    "!dist/**/__mocks__",
+    "!dist/**/__tests__",
+    "!dist/**/jest*"
   ],
   "peerDependencies": {
     "@react-hive/honey-style": "^2.0.0",
@@ -60,7 +68,7 @@
     "@types/node": "22.19.0",
     "@types/react": "^19.2.2",
     "@types/react-dom": "^19.2.2",
-    "@vitejs/plugin-react": "5.1.0",
+    "copy-webpack-plugin": "13.0.1",
     "eslint": "9.39.1",
     "eslint-plugin-react": "7.37.5",
     "husky": "9.1.7",
@@ -69,11 +77,13 @@
     "prettier": "3.6.2",
     "ts-jest": "29.4.1",
     "tsx": "4.20.6",
+    "ts-loader": "9.5.4",
+    "ts-node": "10.9.2",
     "typescript": "5.9.3",
     "typescript-eslint": "8.46.3",
-    "vite": "7.2.2",
-    "vite-plugin-checker": "0.11.0",
-    "vite-plugin-dts": "4.5.4"
+    "webpack": "5.102.1",
+    "webpack-cli": "5.1.4",
+    "webpack-dev-server": "5.2.2"
   },
   "jest": {
     "preset": "ts-jest",
