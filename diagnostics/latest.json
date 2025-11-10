@@ -10,7 +10,7 @@
   "symbols": 215570,
   "types": 85578,
   "instantiations": 384547,
-  "memoryUsed": 364996608,
+  "memoryUsed": 367763456,
   "assignabilityCacheSize": 23773,
   "identityCacheSize": 378,
   "subtypeCacheSize": 13495,
@@ -19,14 +19,14 @@
   "parseTime": 0.24,
   "resolveModuleTime": 0.03,
   "resolveTypeReferenceTime": 0,
-  "resolveLibraryTime": 0,
+  "resolveLibraryTime": 0.01,
   "programTime": 0.34,
   "bindTime": 0.13,
   "checkTime": 3.67,
   "transformTimeTime": 0.1,
   "commentTimeTime": 0.01,
   "iOWriteTime": 0.02,
-  "printTimeTime": 0.16,
-  "emitTime": 0.16,
-  "totalTime": 4.29
+  "printTimeTime": 0.17,
+  "emitTime": 0.17,
+  "totalTime": 4.3
 }

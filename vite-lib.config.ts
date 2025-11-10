@@ -24,7 +24,7 @@ export default {
       fileName: 'index',
     },
     rollupOptions: {
-      external: ['react', '@react-hive/honey-style'],
+      external: ['react'],
     },
   },
 } satisfies UserConfig;
