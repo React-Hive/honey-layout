@@ -29,7 +29,6 @@ const baseConfig = {
   },
   externals: {
     react: 'react',
-    '@react-hive/honey-style': '@react-hive/honey-style',
   },
 };
 
