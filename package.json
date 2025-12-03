@@ -1,6 +1,6 @@
 {
   "name": "@react-hive/honey-layout",
-  "version": "9.7.0",
+  "version": "9.8.0",
   "description": "",
   "keywords": [
     "react",
@@ -48,7 +48,7 @@
   "dependencies": {
     "@floating-ui/dom": "1.7.4",
     "@floating-ui/react": "0.27.16",
-    "@react-hive/honey-utils": "2.4.0",
+    "@react-hive/honey-utils": "3.6.0",
     "csstype": "3.2.3",
     "highlight.js": "11.11.1",
     "lodash.merge": "4.6.2",
@@ -66,7 +66,7 @@
     "@types/lodash.throttle": "4.1.9",
     "@types/mdx": "2.0.13",
     "@types/node": "22.19.1",
-    "@types/react": "^19.2.6",
+    "@types/react": "^19.2.7",
     "@types/react-dom": "^19.2.3",
     "copy-webpack-plugin": "13.0.1",
     "css-loader": "7.1.2",

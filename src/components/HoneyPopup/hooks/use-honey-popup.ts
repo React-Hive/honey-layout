@@ -21,6 +21,7 @@ import type {
   FlipOptions,
   OffsetOptions,
   ShiftOptions,
+  SizeOptions,
   Middleware,
   OpenChangeReason,
   UseFloatingOptions,
@@ -126,6 +127,12 @@ export interface UseHoneyPopupOptions<
    */
   useAutoSize?: UseAutoSize;
   /**
+   * Configuration for auto-size behavior.
+   *
+   * @see https://floating-ui.com/docs/size
+   */
+  sizeOptions?: Omit<SizeOptions, 'apply'>;
+  /**
    * @default 0
    *
    * @remarks Only works when `useAutoSize` is `true`.
@@ -216,6 +223,7 @@ export const useHoneyPopup = <Reference extends ReferenceType>({
   useAutoUpdate = false,
   autoUpdateOptions,
   useAutoSize = false,
+  sizeOptions,
   minAcceptableWidth = 0,
   minAcceptableHeight = 0,
   maxAcceptableWidth,
@@ -268,6 +276,7 @@ export const useHoneyPopup = <Reference extends ReferenceType>({
   if (useAutoSize) {
     // https://floating-ui.com/docs/size
     const sizeMiddleware = size({
+      ...sizeOptions,
       apply({ elements, rects, availableWidth, availableHeight }) {
         Object.assign(elements.floating.style, {
           minWidth: `${Math.max(minAcceptableWidth, rects.reference.width)}px`,
