@@ -129,6 +129,8 @@ export interface UseHoneyPopupOptions<
   /**
    * Configuration for auto-size behavior.
    *
+   * @remarks Only works when `useAutoSize` is `true`.
+   *
    * @see https://floating-ui.com/docs/size
    */
   sizeOptions?: Omit<SizeOptions, 'apply'>;

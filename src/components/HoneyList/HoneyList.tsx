@@ -8,12 +8,10 @@ import type { HoneyListGenericProps, HoneyListItem } from './HoneyList.types';
 import type { HoneyStatusContentProps } from '../HoneyStatusContent';
 import type { HoneyListStyledProps } from './HoneyListStyled';
 
-export type HoneyListProps<Item extends HoneyListItem> = FastOmit<
-  HoneyListStyledProps,
-  'children'
-> &
-  HoneyListGenericProps<Item> &
-  FastOmit<HoneyStatusContentProps, 'empty'>;
+export interface HoneyListProps<Item extends HoneyListItem>
+  extends FastOmit<HoneyListStyledProps, 'children'>,
+    HoneyListGenericProps<Item>,
+    HoneyStatusContentProps {}
 
 /**
  * A generic and reusable list component that handles different states such as loading, error, or no content,
@@ -27,7 +25,6 @@ export type HoneyListProps<Item extends HoneyListItem> = FastOmit<
  * to be used with any item type.
  */
 export const HoneyList = <Item extends HoneyListItem>({
-  ref,
   children,
   items,
   itemKey,
@@ -36,12 +33,12 @@ export const HoneyList = <Item extends HoneyListItem>({
   loadingContent,
   error,
   errorContent,
+  empty = false,
   emptyContent,
   ...props
 }: HoneyListProps<Item>) => {
   return (
     <HoneyListStyled
-      ref={ref}
       role="list"
       // ARIA
       aria-busy={loading}
@@ -55,7 +52,7 @@ export const HoneyList = <Item extends HoneyListItem>({
         loadingContent={loadingContent}
         error={error}
         errorContent={errorContent}
-        empty={items?.length === 0}
+        empty={empty || items?.length === 0}
         emptyContent={emptyContent}
       >
         {items?.map((item, itemIndex, thisItems) => (
