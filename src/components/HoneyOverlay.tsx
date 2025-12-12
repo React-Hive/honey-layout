@@ -3,11 +3,11 @@ import { invokeIfFunction } from '@react-hive/honey-utils';
 import type { FastOmit } from '@react-hive/honey-style';
 import type { ReactNode } from 'react';
 
-import { HoneyFlexBox } from './HoneyFlexBox';
+import { HoneyFlex } from './HoneyFlex';
 import { useRegisterHoneyOverlay } from '../hooks';
 import { mergeRefs } from '../helpers';
 import type { HoneyActiveOverlay, HoneyOverlayId, Nullable } from '../types';
-import type { HoneyFlexBoxProps } from './HoneyFlexBox';
+import type { HoneyFlexProps } from './HoneyFlex';
 
 export interface HoneyOverlayContext {
   /**
@@ -20,7 +20,7 @@ export interface HoneyOverlayContext {
   deactivateOverlay: () => void;
 }
 
-export interface HoneyOverlayProps extends FastOmit<HoneyFlexBoxProps, 'children'> {
+export interface HoneyOverlayProps extends FastOmit<HoneyFlexProps, 'children'> {
   /**
    * The content of the overlay, either as static nodes or a function that receives the object
    * with the current overlay state and helper methods.
@@ -86,11 +86,11 @@ export const HoneyOverlay = ({
   const mergedRef = mergeRefs(overlay?.setContainerRef, ref);
 
   return (
-    <HoneyFlexBox ref={mergedRef} inert={!active} {...props}>
+    <HoneyFlex ref={mergedRef} inert={!active} {...props}>
       {invokeIfFunction(children, {
         overlay,
         deactivateOverlay: onDeactivate,
       })}
-    </HoneyFlexBox>
+    </HoneyFlex>
   );
 };

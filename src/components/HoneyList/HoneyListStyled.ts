@@ -1,12 +1,12 @@
 import { styled } from '@react-hive/honey-style';
 
-import { HoneyFlexBox } from '../HoneyFlexBox';
-import type { HoneyFlexBoxProps } from '../HoneyFlexBox';
+import { HoneyFlex } from '../HoneyFlex';
+import type { HoneyFlexProps } from '../HoneyFlex';
 
-export type HoneyListStyledProps = HoneyFlexBoxProps;
+export type HoneyListStyledProps = HoneyFlexProps;
 
 export const HoneyListStyled = styled<HoneyListStyledProps>(
-  HoneyFlexBox,
+  HoneyFlex,
   ({ $overflow = 'hidden auto' }) => ({
     $overflow,
   }),

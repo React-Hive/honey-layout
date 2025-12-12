@@ -1,12 +1,12 @@
 import { styled } from '@react-hive/honey-style';
 
-import { HoneyFlexBox } from '../HoneyFlexBox';
-import type { HoneyFlexBoxProps } from '../HoneyFlexBox';
+import { HoneyFlex } from '../HoneyFlex';
+import type { HoneyFlexProps } from '../HoneyFlex';
 
-export type HoneyPopupStyledProps = HoneyFlexBoxProps;
+export type HoneyPopupStyledProps = HoneyFlexProps;
 
 export const HoneyPopupStyled = styled<HoneyPopupStyledProps>(
-  HoneyFlexBox,
+  HoneyFlex,
   ({ $width = 'max-content' }) => ({
     $width,
   }),

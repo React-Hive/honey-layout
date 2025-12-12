@@ -1,8 +1,8 @@
 import { css, styled } from '@react-hive/honey-style';
 
-import { HoneyFlexBox } from '../../components';
+import { HoneyFlex } from '../../components';
 
-export const HoneyContainer = styled(HoneyFlexBox)`
+export const HoneyContainer = styled(HoneyFlex)`
   ${({ theme }) => css`
     width: 100%;
     max-width: ${theme.container.maxWidth};

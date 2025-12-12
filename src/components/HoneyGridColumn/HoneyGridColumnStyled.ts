@@ -3,11 +3,11 @@ import type { ElementType } from 'react';
 import type { HoneyBreakpointName } from '@react-hive/honey-style';
 
 import { bpMedia } from '../../helpers';
-import { HoneyFlexBox } from '../HoneyFlexBox';
-import type { HoneyFlexBoxProps } from '../HoneyFlexBox';
+import { HoneyFlex } from '../HoneyFlex';
+import type { HoneyFlexProps } from '../HoneyFlex';
 
 export type HoneyGridColumnStyledProps<Element extends ElementType = 'div'> =
-  HoneyFlexBoxProps<Element> & {
+  HoneyFlexProps<Element> & {
     /**
      * Total number of columns in the grid.
      */
@@ -36,7 +36,7 @@ export type HoneyGridColumnStyledProps<Element extends ElementType = 'div'> =
  * It provides flexibility in specifying the number of columns to take, the total number of columns in the grid,
  * and the spacing between columns.
  */
-export const HoneyGridColumnStyled = styled<HoneyGridColumnStyledProps>(HoneyFlexBox)`
+export const HoneyGridColumnStyled = styled<HoneyGridColumnStyledProps>(HoneyFlex)`
   ${({ columns, takeColumns = 1, spacing = 0, applyMaxWidth, theme }) => {
     const fractionalWidth = 100 / columns;
 

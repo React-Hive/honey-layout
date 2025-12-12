@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useHoneyStyle } from '@react-hive/honey-style';
 
 import { Button } from './components';
-import { HoneyBox, HoneyFlexBox, HoneyPopup } from '../../../components';
+import { HoneyBox, HoneyFlex, HoneyPopup } from '../../../components';
 
 const PopupContent = () => {
   const { resolveSpacing } = useHoneyStyle();
@@ -16,7 +16,7 @@ const PopupContent = () => {
   }, []);
 
   return (
-    <HoneyFlexBox $gap={0.5} $height="100%" $padding={1} $overflow="auto">
+    <HoneyFlex $gap={0.5} $height="100%" $padding={1} $overflow="auto">
       {Array.from({ length }).map((_, i) => (
         <HoneyPopup
           key={i}
@@ -41,7 +41,7 @@ const PopupContent = () => {
           </HoneyBox>
         </HoneyPopup>
       ))}
-    </HoneyFlexBox>
+    </HoneyFlex>
   );
 };
 
