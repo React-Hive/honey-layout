@@ -1,6 +1,5 @@
 export * from './HoneyBox';
 export * from './HoneyFlex';
-export * from './HoneyCenter';
 export * from './HoneyGrid';
 export * from './HoneyGridColumn';
 export * from './HoneyList';
