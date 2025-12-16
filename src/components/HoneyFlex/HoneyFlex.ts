@@ -6,69 +6,105 @@ import type { HoneyBoxProps } from '../HoneyBox';
 
 export type HoneyFlexProps<Element extends ElementType = 'div'> = HoneyBoxProps<Element> & {
   /**
-   * Enables horizontal (row) layout.
+   * Enables horizontal (row-based) layout.
    *
-   * When `true`, applies:
+   * When enabled, this prop applies:
    * - `flex-direction: row`
    *
-   * When `false` (default), applies:
+   * When disabled (default), the layout uses:
    * - `flex-direction: column`
    *
-   * This prop is a semantic shortcut and can be overridden
-   * by explicitly providing `$flexDirection`.
+   * This is a semantic convenience prop. If `$flexDirection`
+   * is explicitly provided, it will always take precedence.
    *
    * @default false
    */
   row?: boolean;
   /**
-   * Centers children along both axes.
+   * Centers children along both the main and cross axes.
    *
-   * When enabled, applies:
+   * When enabled, this applies:
    * - `align-items: center`
    * - `justify-content: center`
    *
-   * This is a semantic convenience prop intended for common
-   * centering scenarios. Explicit style props such as
-   * `$alignItems` or `$justifyContent` will always take precedence.
+   * This prop is intended for common centering use cases and
+   * improves readability over manually specifying flex styles.
+   *
+   * Explicit style props (`$alignItems`, `$justifyContent`)
+   * always override this behavior.
    *
    * @default false
    */
   center?: boolean;
+  /**
+   * Centers children along the horizontal axis.
+   *
+   * - In column layouts: maps to `align-items: center`
+   * - In row layouts: maps to `justify-content: center`
+   *
+   * Ignored if `center` is enabled or if the corresponding
+   * explicit style prop is provided.
+   *
+   * @default false
+   */
+  centerX?: boolean;
+  /**
+   * Centers children along the vertical axis.
+   *
+   * - In column layouts: maps to `justify-content: center`
+   * - In row layouts: maps to `align-items: center`
+   *
+   * Ignored if `center` is enabled or if the corresponding
+   * explicit style prop is provided.
+   *
+   * @default false
+   */
+  centerY?: boolean;
 };
 
 /**
  * A flexbox-based layout primitive built on top of {@link HoneyBox}.
  *
- * `HoneyFlex` provides a minimal, opinionated flex container with sensible
- * defaults, while remaining fully customizable via standard Honey style props.
+ * `HoneyFlex` is the canonical flex container within the Honey design system.
+ * It provides sensible defaults, readable semantic helpers, and full access
+ * to low-level flexbox customization when needed.
+ *
+ * ---
  *
  * ### Default behavior
  * - `display: flex`
  * - `flex-direction: column`
  *
- * ### Semantic helpers
- * - `row` → switches layout to a horizontal flow
- * - `center` → centers content on both axes
+ * ---
  *
- * Semantic helpers are designed for convenience and readability.
- * Any explicitly provided style props always take precedence.
+ * ### Semantic helpers
+ * - `row` → switches layout to horizontal flow
+ * - `center` → centers content on both axes
+ * - `centerX`, `centerY` → axis-aware centering helpers
+ *
+ * Semantic helpers exist purely for convenience and readability.
+ * Any explicitly provided style props **always take precedence**.
+ *
+ * ---
  *
  * @remarks
  * This component is intended to be the primary flex layout primitive
- * within the Honey design system and should be preferred over raw
- * flexbox usage for consistency.
+ * in the Honey ecosystem. Prefer it over raw flexbox usage to ensure
+ * consistent behavior, defaults, and testability.
+ *
+ * ---
  *
  * @example Basic column layout
  * ```tsx
- * <HoneyFlex $gap={2} />
+ * <HoneyFlex $gap={2} row/>
  * ```
  *
- * @example Horizontal layout
+ * @example Horizontal layout with spacing
  * ```tsx
- * <HoneyFlex row $gap={3} />
+ * <HoneyFlex $gap={3} />
  * ```
  *
- * @example Fully centered content
+ * @example Centered fullscreen container
  * ```tsx
  * <HoneyFlex $minHeight="100vh" center>
  *   <Spinner />
@@ -80,10 +116,12 @@ export const HoneyFlex = styled<HoneyFlexProps>(
   ({
     row = false,
     center = false,
+    centerX = false,
+    centerY = false,
     $display = 'flex',
     $flexDirection = row ? 'row' : 'column',
-    $alignItems = center ? 'center' : undefined,
-    $justifyContent = !row && center ? 'center' : undefined,
+    $alignItems = center || (row ? centerY : centerX) ? 'center' : undefined,
+    $justifyContent = center || (row ? centerX : centerY) ? 'center' : undefined,
     ...props
   }) => ({
     $display,
