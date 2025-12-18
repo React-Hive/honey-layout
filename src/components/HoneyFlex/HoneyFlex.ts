@@ -1,6 +1,7 @@
 import { styled } from '@react-hive/honey-style';
 import type { ElementType } from 'react';
 
+import { __DEV__ } from '../../constants';
 import { HoneyBox } from '../HoneyBox';
 import type { HoneyBoxProps } from '../HoneyBox';
 
@@ -94,12 +95,12 @@ export type HoneyFlexProps<Element extends ElementType = 'div'> = HoneyBoxProps<
  *
  * ---
  *
- * @example Basic column layout
+ * @example Horizontal layout
  * ```tsx
  * <HoneyFlex $gap={2} row/>
  * ```
  *
- * @example Horizontal layout with spacing
+ * @example Column layout
  * ```tsx
  * <HoneyFlex $gap={3} />
  * ```
@@ -120,17 +121,42 @@ export const HoneyFlex = styled<HoneyFlexProps>(
     centerY = false,
     $display = 'flex',
     $flexDirection = row ? 'row' : 'column',
-    $alignItems = center || (row ? centerY : centerX) ? 'center' : undefined,
-    $justifyContent = center || (row ? centerX : centerY) ? 'center' : undefined,
-    ...props
-  }) => ({
-    $display,
-    $flexDirection,
     $alignItems,
     $justifyContent,
-    // Data
-    'data-testid': props['data-testid'] ?? 'honey-flex',
-  }),
+    ...props
+  }) => {
+    const affectsAlignItems = center || (row ? centerY : centerX);
+    const affectsJustifyContent = center || (row ? centerX : centerY);
+
+    if (__DEV__) {
+      const hasAlignConflict = affectsAlignItems && $alignItems !== undefined;
+      const hasJustifyConflict = affectsJustifyContent && $justifyContent !== undefined;
+
+      if (hasAlignConflict || hasJustifyConflict) {
+        console.warn(
+          [
+            '[@react-hive/honey-layout]: HoneyFlex.',
+            'Semantic centering props conflict with explicit flex alignment styles:',
+            hasAlignConflict && `   - align-items is controlled by both semantics and $alignItems`,
+            hasJustifyConflict &&
+              `   - justify-content is controlled by both semantics and $justifyContent`,
+            'Explicit styles always win. Remove one side to silence this warning.',
+          ]
+            .filter(Boolean)
+            .join('\n'),
+        );
+      }
+    }
+
+    return {
+      $display,
+      $flexDirection,
+      $alignItems: $alignItems ?? (affectsAlignItems ? 'center' : undefined),
+      $justifyContent: $justifyContent ?? (affectsJustifyContent ? 'center' : undefined),
+      // Data
+      'data-testid': props['data-testid'] ?? 'honey-flex',
+    };
+  },
 )``;
 
 /**

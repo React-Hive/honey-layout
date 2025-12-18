@@ -1,6 +1,6 @@
 {
   "name": "@react-hive/honey-layout",
-  "version": "9.13.0",
+  "version": "9.14.0",
   "description": "",
   "keywords": [
     "react",
@@ -48,7 +48,7 @@
   "dependencies": {
     "@floating-ui/dom": "1.7.4",
     "@floating-ui/react": "0.27.16",
-    "@react-hive/honey-utils": "3.7.0",
+    "@react-hive/honey-utils": "3.8.0",
     "csstype": "3.2.3",
     "highlight.js": "11.11.1",
     "lodash.merge": "4.6.2",
@@ -56,21 +56,21 @@
     "react-router-dom": "6.30.1"
   },
   "devDependencies": {
-    "@eslint/js": "9.39.1",
+    "@eslint/js": "9.39.2",
     "@mdx-js/loader": "3.1.1",
     "@mdx-js/react": "3.1.1",
     "@testing-library/jest-dom": "6.9.1",
-    "@testing-library/react": "16.3.0",
+    "@testing-library/react": "16.3.1",
     "@types/jest": "29.5.14",
     "@types/lodash.merge": "4.6.9",
     "@types/lodash.throttle": "4.1.9",
     "@types/mdx": "2.0.13",
-    "@types/node": "22.19.2",
+    "@types/node": "22.19.3",
     "@types/react": "^19.2.7",
     "@types/react-dom": "^19.2.3",
     "copy-webpack-plugin": "13.0.1",
     "css-loader": "7.1.2",
-    "eslint": "9.39.1",
+    "eslint": "9.39.2",
     "eslint-plugin-react": "7.37.5",
     "html-webpack-plugin": "5.6.5",
     "husky": "9.1.7",
@@ -83,8 +83,8 @@
     "ts-node": "10.9.2",
     "tsx": "4.21.0",
     "typescript": "5.9.3",
-    "typescript-eslint": "8.49.0",
-    "webpack": "5.103.0",
+    "typescript-eslint": "8.50.0",
+    "webpack": "5.104.0",
     "webpack-cli": "6.0.1",
     "webpack-dev-server": "5.2.2"
   },

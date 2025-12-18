@@ -7,6 +7,7 @@ const resolveSpacing = deprecatedImport__resolveSpacing;
 
 export { resolveSpacing };
 
+export * from './constants';
 export * from './types';
 export * from './components';
 export * from './providers';
