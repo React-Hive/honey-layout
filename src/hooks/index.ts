@@ -5,3 +5,7 @@ export * from './use-honey-document-key-up-handler';
 export * from './use-honey-layout';
 export * from './use-register-honey-overlay';
 export * from './use-honey-overlay';
+export * from './use-honey-resize';
+export * from './use-honey-synthetic-scroll';
+export * from './use-honey-synthetic-scroll-x';
+export * from './use-honey-synthetic-scroll-y';

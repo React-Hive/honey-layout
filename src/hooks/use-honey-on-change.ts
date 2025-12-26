@@ -16,7 +16,7 @@ import type { EffectCallback } from 'react';
  * @returns void
  *
  * @example
- * ```tsx
+ * ```ts
  * useHoneyOnChange(someValue, (newValue) => {
  *   console.log('Value changed to:', newValue);
  *
