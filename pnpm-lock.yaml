@@ -18,8 +18,8 @@ importers:
         specifier: ^2.0.0
         version: 2.13.0(@types/react@19.2.7)(react@19.2.3)(styled-components@6.1.19(react-dom@19.2.3(react@19.2.3))(react@19.2.3))
       '@react-hive/honey-utils':
-        specifier: 3.8.0
-        version: 3.8.0
+        specifier: 3.9.0
+        version: 3.9.0
       csstype:
         specifier: 3.2.3
         version: 3.2.3
@@ -719,8 +719,8 @@ packages:
   '@react-hive/honey-utils@3.7.0':
     resolution: {integrity: sha512-n6fnWcZ79vvfVz8f82PbqKLwUJu5t6gRMV1ah1zyWxwbehFT5XrUvniwh0g0CnOsw06vr+GGrvSXo9TpmGqzgg==}
 
-  '@react-hive/honey-utils@3.8.0':
-    resolution: {integrity: sha512-DuXjalj2tyl+jVtF04AVE95HBP38cuL7I631zasPpLp8W153fw6Jc/n+74e3nVJDfu3v8kO1l/mijMT1YfUT6Q==}
+  '@react-hive/honey-utils@3.9.0':
+    resolution: {integrity: sha512-KcKx6GYur25O8eaVdtBJfFMt1T6LLTbrZsOWZwA2zDel+ELtwqFX8zuyZLW9jlHQRFQZloimltpQL5f8BSJuVg==}
 
   '@remix-run/router@1.23.0':
     resolution: {integrity: sha512-O3rHJzAQKamUz1fvE0Qaw0xSFqsA/yafi2iqeE0pvdFtCO1viYx8QL6f3Ln/aCCTLxs68SLf0KPM9eSeM8yBnA==}
@@ -4763,7 +4763,7 @@ snapshots:
 
   '@react-hive/honey-utils@3.7.0': {}
 
-  '@react-hive/honey-utils@3.8.0': {}
+  '@react-hive/honey-utils@3.9.0': {}
 
   '@remix-run/router@1.23.0': {}
 

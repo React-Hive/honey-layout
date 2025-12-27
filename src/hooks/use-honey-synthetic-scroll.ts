@@ -1,7 +1,7 @@
 import { useCallback, useRef } from 'react';
 import type { RefObject } from 'react';
 
-import { parse2DMatrix } from '@react-hive/honey-utils';
+import { getXOverflowWidth, getYOverflowHeight, parse2DMatrix } from '@react-hive/honey-utils';
 
 import type { Nullable } from '../types';
 import type { HoneyDragHandlers, HoneyDragOnMoveHandler } from './use-honey-drag';
@@ -9,7 +9,58 @@ import type { UseHoneyResizeHandler } from './use-honey-resize';
 import { useHoneyDrag } from './use-honey-drag';
 import { useHoneyResize } from './use-honey-resize';
 
-type ScrollAxis = 'x' | 'y' | 'both';
+type Axis = 'x' | 'y' | 'both';
+
+interface ApplyAxisScrollParams {
+  /**
+   * Drag delta for the axis (deltaX or deltaY).
+   */
+  delta: number;
+  /**
+   * Current translate value for the axis.
+   */
+  currentTranslate: number;
+  /**
+   * Visible container size for the axis (width or height).
+   */
+  containerSize: number;
+  /**
+   * Overflow size for the axis.
+   */
+  overflowSize: number;
+  /**
+   * Overscroll window percentage.
+   */
+  overscrollPct: number;
+}
+
+/**
+ * Calculates the next translate value for a single scroll axis
+ * and determines whether movement is allowed within bounds.
+ *
+ * @returns The next translate value, or `null` if movement is not allowed.
+ */
+export const applyAxisScroll = ({
+  delta,
+  currentTranslate,
+  containerSize,
+  overflowSize,
+  overscrollPct,
+}: ApplyAxisScrollParams): Nullable<number> => {
+  if (overflowSize <= 0 || delta === 0) {
+    return null;
+  }
+
+  const threshold = containerSize * (overscrollPct / 100);
+  const candidate = currentTranslate + delta;
+
+  const min = -(overflowSize + threshold);
+  const max = threshold;
+
+  const isWithinBounds = (delta < 0 && candidate >= min) || (delta > 0 && candidate <= max);
+
+  return isWithinBounds ? candidate : null;
+};
 
 export interface UseHoneySyntheticScrollOptions<Element extends HTMLElement> extends Pick<
   HoneyDragHandlers<Element>,
@@ -24,7 +75,7 @@ export interface UseHoneySyntheticScrollOptions<Element extends HTMLElement> ext
    *
    * @default 'both'
    */
-  axis?: ScrollAxis;
+  axis?: Axis;
   /**
    * Percentage of the container size used as an overscroll buffer
    * on each enabled axis.
@@ -36,7 +87,7 @@ export interface UseHoneySyntheticScrollOptions<Element extends HTMLElement> ext
    *
    * @default 0
    */
-  availableWindowPct?: number;
+  overscrollPct?: number;
   /**
    * Whether to clear any applied translation transforms when the window resizes.
    *
@@ -71,7 +122,7 @@ export interface UseHoneySyntheticScrollOptions<Element extends HTMLElement> ext
  */
 export const useHoneySyntheticScroll = <Element extends HTMLElement>({
   axis = 'both',
-  availableWindowPct = 0,
+  overscrollPct = 0,
   onStartDrag,
   onEndDrag,
   resetOnResize = true,
@@ -93,52 +144,46 @@ export const useHoneySyntheticScroll = <Element extends HTMLElement>({
 
         let nextX = translateX;
         let nextY = translateY;
-        let handled = false;
+        let shouldScroll = false;
 
         if (axis === 'x' || axis === 'both') {
-          const overflowX = scrollableContainer.scrollWidth - scrollableContainer.clientWidth;
+          const next = applyAxisScroll({
+            delta: deltaX,
+            currentTranslate: translateX,
+            containerSize: scrollableContainer.clientWidth,
+            overflowSize: getXOverflowWidth(scrollableContainer),
+            overscrollPct,
+          });
 
-          if (overflowX > 0) {
-            const thresholdX = scrollableContainer.clientWidth * (availableWindowPct / 100);
-
-            const candidateX = translateX + deltaX;
-
-            const minX = -(overflowX + thresholdX);
-            const maxX = thresholdX;
-
-            if ((deltaX < 0 && candidateX >= minX) || (deltaX > 0 && candidateX <= maxX)) {
-              nextX = candidateX;
-              handled = true;
-            }
+          if (next !== null) {
+            nextX = next;
+            shouldScroll = true;
           }
         }
 
         if (axis === 'y' || axis === 'both') {
-          const overflowY = scrollableContainer.scrollHeight - scrollableContainer.clientHeight;
+          const next = applyAxisScroll({
+            delta: deltaY,
+            currentTranslate: translateY,
+            containerSize: scrollableContainer.clientHeight,
+            overflowSize: getYOverflowHeight(scrollableContainer),
+            overscrollPct,
+          });
 
-          if (overflowY > 0) {
-            const thresholdY = scrollableContainer.clientHeight * (availableWindowPct / 100);
-
-            const candidateY = translateY + deltaY;
-
-            const minY = -(overflowY + thresholdY);
-            const maxY = thresholdY;
-
-            if ((deltaY < 0 && candidateY >= minY) || (deltaY > 0 && candidateY <= maxY)) {
-              nextY = candidateY;
-              handled = true;
-            }
+          if (next !== null) {
+            nextY = next;
+            shouldScroll = true;
           }
         }
 
         // Apply transform only when at least one axis was updated
-        if (handled) {
+        if (shouldScroll) {
           scrollableContainer.style.transform = `translate(${nextX}px, ${nextY}px)`;
         }
 
-        return handled;
+        return shouldScroll;
       },
-    [availableWindowPct],
+    [overscrollPct],
   );
 
   useHoneyDrag(scrollableContainerRef, {
