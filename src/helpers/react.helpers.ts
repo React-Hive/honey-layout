@@ -1,4 +1,5 @@
 import type { RefObject, Ref, RefCallback } from 'react';
+import { isFunction, isObject } from '@react-hive/honey-utils';
 
 import type { Nullable } from '../types';
 
@@ -14,9 +15,9 @@ export const mergeRefs =
   <T>(...refs: (Ref<T> | undefined)[]): RefCallback<T> =>
   value => {
     refs.forEach(ref => {
-      if (typeof ref === 'function') {
+      if (isFunction(ref)) {
         ref(value);
-      } else if (ref && typeof ref === 'object') {
+      } else if (isObject(ref)) {
         (ref as RefObject<Nullable<T>>).current = value;
       }
     });
