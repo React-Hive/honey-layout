@@ -11,9 +11,11 @@ import {
   useFloatingNodeId,
   useTransitionStyles,
 } from '@floating-ui/react';
+import { isFunction } from '@react-hive/honey-utils';
 import type { RefObject } from 'react';
 import type { Derivable } from '@floating-ui/dom';
 import type {
+  Rect,
   ReferenceType,
   AutoUpdateOptions,
   AutoPlacementOptions,
@@ -135,29 +137,61 @@ export interface UseHoneyPopupOptions<
    */
   sizeOptions?: Omit<SizeOptions, 'apply'>;
   /**
-   * @default 0
+   * Minimum acceptable width for the floating element when auto-sizing.
    *
-   * @remarks Only works when `useAutoSize` is `true`.
-   */
-  minAcceptableWidth?: number;
-  /**
-   * @default 0
+   * - If a number is provided, it is used directly as the minimum width (in pixels).
+   * - If a function is provided, it is called with the reference element's `Rect`
+   *   and should return the minimum width.
+   * - If `null`, the reference element’s width is used as the minimum.
    *
-   * @remarks Only works when `useAutoSize` is `true`.
+   * The final applied value is clamped against `maxAcceptableWidth`.
+   *
+   * @default null
+   *
+   * @remarks Only applied when `useAutoSize` is `true`.
    */
-  minAcceptableHeight?: number;
+  minAcceptableWidth?: Nullable<number | ((reference: Rect) => number)>;
   /**
+   * Minimum acceptable height for the floating element when auto-sizing.
+   *
+   * - If a number is provided, it is used directly as the minimum height (in pixels).
+   * - If a function is provided, it is called with the reference element's `Rect`
+   *   and should return the minimum height.
+   * - If `null`, `0` is used as the minimum height.
+   *
+   * The final applied value is clamped against `maxAcceptableHeight`.
+   *
+   * @default null
+   *
+   * @remarks Only applied when `useAutoSize` is `true`.
+   */
+  minAcceptableHeight?: Nullable<number | ((reference: Rect) => number)>;
+  /**
+   * Maximum acceptable width for the floating element when auto-sizing.
+   *
+   * - If a number is provided, it represents the absolute maximum width (in pixels).
+   * - If a function is provided, it is called with the reference element's `Rect`
+   *   and should return the maximum width.
+   * - If `undefined`, the available width calculated by Floating UI is used.
+   *
    * @default undefined
    *
-   * @remarks Only works when `useAutoSize` is `true`.
+   * @remarks Only applied when `useAutoSize` is `true`.
    */
-  maxAcceptableWidth?: number;
+  maxAcceptableWidth?: number | ((reference: Rect) => number);
   /**
+   * Maximum acceptable height for the floating element when auto-sizing.
+   *
+   * - If a number is provided, it represents the absolute maximum height (in pixels).
+   * - If a function is provided, it is called with the reference element's `Rect`
+   *   and should return the maximum height.
+   * - If `undefined`, the available height calculated by Floating UI is used.
+   *
    * @default undefined
    *
-   * @remarks Only works when `useAutoSize` is `true`.
+   * @remarks Only applied when `useAutoSize` is `true`.
    */
-  maxAcceptableHeight?: number;
+  maxAcceptableHeight?: number | ((reference: Rect) => number);
   /**
    * Callback invoked when the popup opens.
    */
@@ -226,8 +260,8 @@ export const useHoneyPopup = <Reference extends ReferenceType>({
   autoUpdateOptions,
   useAutoSize = false,
   sizeOptions,
-  minAcceptableWidth = 0,
-  minAcceptableHeight = 0,
+  minAcceptableWidth = null,
+  minAcceptableHeight = null,
   maxAcceptableWidth,
   maxAcceptableHeight,
   onOpen,
@@ -280,11 +314,27 @@ export const useHoneyPopup = <Reference extends ReferenceType>({
     const sizeMiddleware = size({
       ...sizeOptions,
       apply({ elements, rects, availableWidth, availableHeight }) {
+        const minWidth = isFunction(minAcceptableWidth)
+          ? minAcceptableWidth(rects.reference)
+          : (minAcceptableWidth ?? rects.reference.width);
+
+        const maxWidth = isFunction(maxAcceptableWidth)
+          ? maxAcceptableWidth(rects.reference)
+          : Math.min(availableWidth, maxAcceptableWidth ?? Infinity);
+
+        const minHeight = isFunction(minAcceptableHeight)
+          ? minAcceptableHeight(rects.reference)
+          : (minAcceptableHeight ?? 0);
+
+        const maxHeight = isFunction(maxAcceptableHeight)
+          ? maxAcceptableHeight(rects.reference)
+          : Math.min(availableHeight, maxAcceptableHeight ?? Infinity);
+
         Object.assign(elements.floating.style, {
-          minWidth: `${Math.max(minAcceptableWidth, rects.reference.width)}px`,
-          minHeight: `${Math.max(minAcceptableHeight, rects.reference.height)}px`,
-          maxWidth: `${Math.min(availableWidth, maxAcceptableWidth ?? Infinity)}px`,
-          maxHeight: `${Math.min(availableHeight, maxAcceptableHeight ?? Infinity)}px`,
+          minWidth: `${Math.min(minWidth, maxWidth)}px`,
+          maxWidth: `${maxWidth}px`,
+          minHeight: `${Math.min(minHeight, maxHeight)}px`,
+          maxHeight: `${maxHeight}px`,
         });
       },
     });
