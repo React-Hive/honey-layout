@@ -1,17 +1,27 @@
-import { useCallback, useRef } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 import type { RefObject } from 'react';
 
-import { getXOverflowWidth, getYOverflowHeight, parse2DMatrix } from '@react-hive/honey-utils';
+import { Axis } from '@react-hive/honey-utils';
+import {
+  resolveBoundedDelta,
+  getXOverflowWidth,
+  getYOverflowHeight,
+  parse2DMatrix,
+  resolveAxisDelta,
+} from '@react-hive/honey-utils';
 
-import type { Nullable } from '../types';
-import type { HoneyDragHandlers, HoneyDragOnMoveHandler } from './use-honey-drag';
+import type { Nullable } from '~/types';
+import type {
+  HoneyDragHandlers,
+  HoneyDragOnEndHandler,
+  HoneyDragOnMoveHandler,
+  HoneyDragOnStartHandler,
+} from './use-honey-drag';
 import type { UseHoneyResizeHandler } from './use-honey-resize';
 import { useHoneyDrag } from './use-honey-drag';
 import { useHoneyResize } from './use-honey-resize';
 
-type Axis = 'x' | 'y' | 'both';
-
-interface ApplyAxisScrollParams {
+interface ResolveAxisTranslateOptions {
   /**
    * Drag delta for the axis (deltaX or deltaY).
    */
@@ -19,7 +29,7 @@ interface ApplyAxisScrollParams {
   /**
    * Current translate value for the axis.
    */
-  currentTranslate: number;
+  translate: number;
   /**
    * Visible container size for the axis (width or height).
    */
@@ -34,32 +44,83 @@ interface ApplyAxisScrollParams {
   overscrollPct: number;
 }
 
-/**
- * Calculates the next translate value for a single scroll axis
- * and determines whether movement is allowed within bounds.
- *
- * @returns The next translate value, or `null` if movement is not allowed.
- */
-export const applyAxisScroll = ({
+export const resolveAxisTranslate = ({
   delta,
-  currentTranslate,
+  translate,
   containerSize,
   overflowSize,
   overscrollPct,
-}: ApplyAxisScrollParams): Nullable<number> => {
-  if (overflowSize <= 0 || delta === 0) {
+}: ResolveAxisTranslateOptions): Nullable<number> => {
+  if (overflowSize <= 0) {
     return null;
   }
 
   const threshold = containerSize * (overscrollPct / 100);
-  const candidate = currentTranslate + delta;
 
-  const min = -(overflowSize + threshold);
-  const max = threshold;
+  return resolveBoundedDelta({
+    delta,
+    value: translate,
+    min: -(overflowSize + threshold),
+    max: threshold,
+  });
+};
 
-  const isWithinBounds = (delta < 0 && candidate >= min) || (delta > 0 && candidate <= max);
+interface ApplyScrollDeltaOptions {
+  axis: Axis;
+  container: HTMLElement;
+  deltaX: number;
+  deltaY: number;
+  overscrollPct: number;
+}
 
-  return isWithinBounds ? candidate : null;
+const applyScrollDelta = ({
+  axis,
+  container,
+  deltaX,
+  deltaY,
+  overscrollPct,
+}: ApplyScrollDeltaOptions): boolean => {
+  const { translateX, translateY } = parse2DMatrix(container);
+
+  let nextX = translateX;
+  let nextY = translateY;
+  let shouldScroll = false;
+
+  if (axis === 'x' || axis === 'both') {
+    const next = resolveAxisTranslate({
+      delta: deltaX,
+      translate: translateX,
+      containerSize: container.clientWidth,
+      overflowSize: getXOverflowWidth(container),
+      overscrollPct,
+    });
+
+    if (next !== null) {
+      nextX = next;
+      shouldScroll = true;
+    }
+  }
+
+  if (axis === 'y' || axis === 'both') {
+    const next = resolveAxisTranslate({
+      delta: deltaY,
+      translate: translateY,
+      containerSize: container.clientHeight,
+      overflowSize: getYOverflowHeight(container),
+      overscrollPct,
+    });
+
+    if (next !== null) {
+      nextY = next;
+      shouldScroll = true;
+    }
+  }
+
+  if (shouldScroll) {
+    container.style.transform = `translate(${nextX}px, ${nextY}px)`;
+  }
+
+  return shouldScroll;
 };
 
 export interface UseHoneySyntheticScrollOptions<Element extends HTMLElement> extends Pick<
@@ -96,6 +157,19 @@ export interface UseHoneySyntheticScrollOptions<Element extends HTMLElement> ext
    * @default true
    */
   resetOnResize?: boolean;
+  /**
+   * Enables synthetic scrolling driven by pointer-based scroll input,
+   * such as mouse wheels and trackpads.
+   *
+   * When enabled, scroll input is intercepted and converted into bounded
+   * translation using the same logic as drag gestures.
+   *
+   * When disabled, native scrolling behavior is preserved and no scroll
+   * input is handled by this hook.
+   *
+   * @default true
+   */
+  enablePointerScroll?: boolean;
 }
 
 /**
@@ -126,8 +200,16 @@ export const useHoneySyntheticScroll = <Element extends HTMLElement>({
   onStartDrag,
   onEndDrag,
   resetOnResize = true,
+  enablePointerScroll = true,
 }: UseHoneySyntheticScrollOptions<Element> = {}): RefObject<Nullable<Element>> => {
-  const scrollableContainerRef = useRef<Nullable<Element>>(null);
+  const containerRef = useRef<Nullable<Element>>(null);
+
+  const handleOnStartDrag = useCallback<HoneyDragOnStartHandler<Element>>(
+    async (...args) => {
+      return onStartDrag?.(...args) ?? true;
+    },
+    [onStartDrag],
+  );
 
   /**
    * Handles drag movement and applies clamped translation along the enabled axis or axes.
@@ -137,65 +219,37 @@ export const useHoneySyntheticScroll = <Element extends HTMLElement>({
    * - Compute the candidate translate value from the drag delta.
    * - Clamp movement within calculated min / max bounds.
    */
-  const onMoveDrag = useCallback<HoneyDragOnMoveHandler<Element>>(
-    scrollableContainer =>
+  const handleOnMoveDrag = useCallback<HoneyDragOnMoveHandler<Element>>(
+    container =>
       async ({ deltaX, deltaY }) => {
-        const { translateX, translateY } = parse2DMatrix(scrollableContainer);
-
-        let nextX = translateX;
-        let nextY = translateY;
-        let shouldScroll = false;
-
-        if (axis === 'x' || axis === 'both') {
-          const next = applyAxisScroll({
-            delta: deltaX,
-            currentTranslate: translateX,
-            containerSize: scrollableContainer.clientWidth,
-            overflowSize: getXOverflowWidth(scrollableContainer),
-            overscrollPct,
-          });
-
-          if (next !== null) {
-            nextX = next;
-            shouldScroll = true;
-          }
-        }
-
-        if (axis === 'y' || axis === 'both') {
-          const next = applyAxisScroll({
-            delta: deltaY,
-            currentTranslate: translateY,
-            containerSize: scrollableContainer.clientHeight,
-            overflowSize: getYOverflowHeight(scrollableContainer),
-            overscrollPct,
-          });
-
-          if (next !== null) {
-            nextY = next;
-            shouldScroll = true;
-          }
-        }
-
-        // Apply transform only when at least one axis was updated
-        if (shouldScroll) {
-          scrollableContainer.style.transform = `translate(${nextX}px, ${nextY}px)`;
-        }
-
-        return shouldScroll;
+        return applyScrollDelta({
+          container,
+          deltaX,
+          deltaY,
+          axis,
+          overscrollPct,
+        });
       },
-    [overscrollPct],
+    [axis, overscrollPct],
   );
 
-  useHoneyDrag(scrollableContainerRef, {
-    onStartDrag,
-    onMoveDrag,
-    onEndDrag,
+  const handleOnEndDrag = useCallback<HoneyDragOnEndHandler<Element>>(
+    async (...args) => {
+      onEndDrag?.(...args);
+    },
+    [axis, overscrollPct, onEndDrag],
+  );
+
+  useHoneyDrag(containerRef, {
+    onStartDrag: handleOnStartDrag,
+    onMoveDrag: handleOnMoveDrag,
+    onEndDrag: handleOnEndDrag,
   });
 
   const resizeHandler = useCallback<UseHoneyResizeHandler>(() => {
-    const scrollableContainer = scrollableContainerRef.current;
-    if (scrollableContainer) {
-      scrollableContainer.style.removeProperty('transform');
+    const container = containerRef.current;
+    if (container) {
+      container.style.removeProperty('transform');
     }
   }, []);
 
@@ -203,5 +257,50 @@ export const useHoneySyntheticScroll = <Element extends HTMLElement>({
     enabled: resetOnResize,
   });
 
-  return scrollableContainerRef;
+  useEffect(() => {
+    const container = containerRef.current;
+    if (!container) {
+      return;
+    }
+
+    container.style.overscrollBehavior = 'contain';
+    container.style.touchAction = 'none';
+
+    const handleOnWheel = (event: WheelEvent) => {
+      const { deltaX, deltaY } = resolveAxisDelta(
+        {
+          deltaX: event.deltaX,
+          deltaY: event.deltaY,
+        },
+        axis,
+      );
+
+      const didScroll = applyScrollDelta({
+        container,
+        deltaX,
+        deltaY,
+        axis,
+        overscrollPct,
+      });
+
+      if (didScroll) {
+        event.preventDefault();
+      }
+    };
+
+    if (enablePointerScroll) {
+      container.addEventListener('wheel', handleOnWheel, { passive: false });
+    }
+
+    return () => {
+      container.style.removeProperty('overscroll-behavior');
+      container.style.removeProperty('touch-action');
+
+      if (enablePointerScroll) {
+        container.removeEventListener('wheel', handleOnWheel);
+      }
+    };
+  }, [enablePointerScroll]);
+
+  return containerRef;
 };

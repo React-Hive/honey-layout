@@ -26,6 +26,9 @@ const baseConfig = {
   },
   resolve: {
     extensions: ['.ts', '.tsx', '.js'],
+    alias: {
+      '~': path.resolve('./src'),
+    },
   },
   externals: {
     react: 'react',

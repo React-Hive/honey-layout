@@ -3,11 +3,11 @@ import { invokeIfFunction } from '@react-hive/honey-utils';
 import type { FastOmit } from '@react-hive/honey-style';
 import type { ReactNode } from 'react';
 
-import { HoneyFlex } from './HoneyFlex';
-import { useRegisterHoneyOverlay } from '../hooks';
-import { mergeRefs } from '../helpers';
-import type { HoneyActiveOverlay, HoneyOverlayId, Nullable } from '../types';
+import { useRegisterHoneyOverlay } from '~/hooks';
+import { mergeRefs } from '~/helpers';
+import type { HoneyActiveOverlay, HoneyOverlayId, Nullable } from '~/types';
 import type { HoneyFlexProps } from './HoneyFlex';
+import { HoneyFlex } from './HoneyFlex';
 
 export interface HoneyOverlayContext {
   /**
