@@ -252,12 +252,12 @@ export const useHoneyDrag = <Element extends HTMLElement>(
     const releaseDrag = async (isTriggerOnEndDrag: boolean, e: MouseEvent | TouchEvent) => {
       await stopDrag(isTriggerOnEndDrag, e);
 
-      window.removeEventListener('mousemove', mouseMoveHandler);
-      window.removeEventListener('mouseup', mouseUpHandler);
+      window.removeEventListener('mousemove', mouseMoveHandler, { capture: true });
+      window.removeEventListener('mouseup', mouseUpHandler, { capture: true });
 
-      window.removeEventListener('touchmove', touchMoveHandler);
-      window.removeEventListener('touchend', touchEndHandler);
-      window.removeEventListener('touchcancel', touchCancelHandler);
+      window.removeEventListener('touchmove', touchMoveHandler, { capture: true });
+      window.removeEventListener('touchend', touchEndHandler, { capture: true });
+      window.removeEventListener('touchcancel', touchCancelHandler, { capture: true });
     };
 
     const mouseUpHandler = async (e: MouseEvent) => {
@@ -316,9 +316,10 @@ export const useHoneyDrag = <Element extends HTMLElement>(
 
       window.addEventListener('touchmove', touchMoveHandler, {
         passive: true,
+        capture: true,
       });
-      window.addEventListener('touchend', touchEndHandler);
-      window.addEventListener('touchcancel', touchCancelHandler);
+      window.addEventListener('touchend', touchEndHandler, { capture: true });
+      window.addEventListener('touchcancel', touchCancelHandler, { capture: true });
     };
 
     const mouseDownHandler = async (e: MouseEvent) => {
@@ -326,8 +327,8 @@ export const useHoneyDrag = <Element extends HTMLElement>(
 
       await startDrag(e.clientX, e.clientY, e);
 
-      window.addEventListener('mousemove', mouseMoveHandler);
-      window.addEventListener('mouseup', mouseUpHandler);
+      window.addEventListener('mousemove', mouseMoveHandler, { capture: true });
+      window.addEventListener('mouseup', mouseUpHandler, { capture: true });
     };
 
     draggableElement.addEventListener('mousedown', mouseDownHandler);
