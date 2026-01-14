@@ -10,3 +10,4 @@ export * from './use-honey-synthetic-scroll';
 export * from './use-honey-synthetic-scroll-x';
 export * from './use-honey-synthetic-scroll-y';
 export * from './use-honey-raf-loop';
+export * from './use-honey-timer';

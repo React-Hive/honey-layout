@@ -2,40 +2,41 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 
 import type { Nullable } from '~/types';
 
-interface HoneyRafCallbackContext {
+interface HoneyRafOnFrameContext {
   /**
-   * Stops the currently running RAF loop.
+   * Immediately terminates the active `requestAnimationFrame` loop.
    *
-   * Calling this function immediately:
-   * - Cancels the next animation frame
-   * - Resets internal timing state
-   * - Sets `isRafLoopRunning` to `false`
+   * This method is **safe to call synchronously from within the frame handler**
+   * and is the **recommended mechanism** for ending frame-driven processes based on runtime conditions.
    *
-   * This function is safe to call from within the RAF callback
-   * and is the preferred way to terminate the loop based on
-   * frame-driven conditions (e.g. inertia decay, animation completion).
+   * Typical use cases:
+   * - Inertia or momentum decay reaching a threshold
+   * - Animation or transition completion
+   * - Time- or state-based termination conditions
    */
-  stop: () => void;
+  stopRafLoop: () => void;
 }
 
 /**
- * RAF callback invoked on every animation frame.
+ * Function invoked on every animation frame while the RAF loop is active.
  *
- * The callback is invoked with the elapsed time since the previous
- * frame and a control context for managing the RAF loop lifecycle.
+ * The handler is expected to be **side-effect driven** and may:
+ * - Mutate refs
+ * - Update React state
+ * - Stop the RAF loop via `context.stop()`
  *
- * ⚠️ Callback stability
- * The callback should be wrapped in `useCallback` to ensure
- * referential stability and to make dependencies explicit.
+ * ⚠️ Referential stability
+ * This handler **must be wrapped in `useCallback`** to avoid unnecessary
+ * re-bindings and to ensure predictable behavior across renders.
  *
- * @param dtMs - Delta time in milliseconds since the previous frame.
- *               The value is clamped to `maxDeltaMs` to avoid large jumps
- *               when the tab is inactive, backgrounded, or the browser
- *               throttles animation frames.
+ * @param deltaTimeMs - Time delta in milliseconds since the previous frame.
+ *                      This value is clamped to `maxDeltaMs` to prevent large
+ *                      time steps caused by tab backgrounding, visibility changes,
+ *                      or browser throttling.
  *
- * @param context - RAF loop control helpers.
+ * @param context - RAF lifecycle control context. See {@link HoneyRafOnFrameContext}.
  */
-export type HoneyRafCallback = (dtMs: number, context: HoneyRafCallbackContext) => void;
+export type HoneyRafOnFrameHandler = (deltaTimeMs: number, context: HoneyRafOnFrameContext) => void;
 
 /**
  * Configuration options for {@link useHoneyRafLoop}.
@@ -108,7 +109,7 @@ interface UseHoneyRafLoopOptions {
  * This hook is designed for gesture handling, inertia, physics simulations,
  * and animation loops that must not trigger React re-renders on every frame.
  *
- * @param callback - Function invoked on each animation frame.
+ * @param onFrame - Function invoked on each animation frame.
  * @param options  - Optional configuration for the RAF loop.
  *
  * @returns Control helpers and RAF loop state.
@@ -120,7 +121,7 @@ interface UseHoneyRafLoopOptions {
  *
  * const velocityRef = useRef({ x: 12, y: 4 });
  *
- * const onFrame = useCallback<HoneyRafCallback>(
+ * const onFrame = useCallback<HoneyRafOnFrameHandler>(
  *   (dtMs, { stop }) => {
  *     velocityRef.current.x *= 0.94;
  *     velocityRef.current.y *= 0.94;
@@ -144,7 +145,7 @@ interface UseHoneyRafLoopOptions {
  * ```
  */
 export const useHoneyRafLoop = (
-  callback: HoneyRafCallback,
+  onFrame: HoneyRafOnFrameHandler,
   {
     autoStart = false,
     resumeOnVisibility = false,
@@ -153,31 +154,31 @@ export const useHoneyRafLoop = (
   }: UseHoneyRafLoopOptions = {},
 ) => {
   const rafIdRef = useRef<Nullable<number>>(null);
-  const lastTimeRef = useRef<Nullable<number>>(null);
+  const lastTimeMsRef = useRef<Nullable<number>>(null);
 
-  const callbackRef = useRef(callback);
+  const onFrameRef = useRef(onFrame);
   // Always keep the latest callback without restarting RAF
-  callbackRef.current = callback;
+  onFrameRef.current = onFrame;
 
   const [isRafLoopRunning, setIsRafLoopRunning] = useState(false);
 
   const loop = useCallback<FrameRequestCallback>(
-    time => {
-      if (lastTimeRef.current === null) {
-        lastTimeRef.current = time;
+    timeMs => {
+      if (lastTimeMsRef.current === null) {
+        lastTimeMsRef.current = timeMs;
       }
 
-      let dt = time - lastTimeRef.current;
-      lastTimeRef.current = time;
+      let deltaTimeMs = timeMs - lastTimeMsRef.current;
+      lastTimeMsRef.current = timeMs;
 
       // Clamp delta (prevents jumps after background tab / lag)
-      if (dt > maxDeltaMs) {
-        dt = maxDeltaMs;
+      if (deltaTimeMs > maxDeltaMs) {
+        deltaTimeMs = maxDeltaMs;
       }
 
       try {
-        callbackRef.current(dt, {
-          stop: stopRafLoop,
+        onFrameRef.current(deltaTimeMs, {
+          stopRafLoop,
         });
 
         rafIdRef.current = requestAnimationFrame(loop);
@@ -195,7 +196,7 @@ export const useHoneyRafLoop = (
       return;
     }
 
-    lastTimeRef.current = null;
+    lastTimeMsRef.current = null;
 
     setIsRafLoopRunning(true);
 
@@ -210,7 +211,7 @@ export const useHoneyRafLoop = (
     cancelAnimationFrame(rafIdRef.current);
 
     rafIdRef.current = null;
-    lastTimeRef.current = null;
+    lastTimeMsRef.current = null;
 
     setIsRafLoopRunning(false);
   }, []);
@@ -241,8 +242,8 @@ export const useHoneyRafLoop = (
   }, [autoStart, resumeOnVisibility, startRafLoop, stopRafLoop]);
 
   return {
+    isRafLoopRunning,
     startRafLoop,
     stopRafLoop,
-    isRafLoopRunning,
   };
 };
