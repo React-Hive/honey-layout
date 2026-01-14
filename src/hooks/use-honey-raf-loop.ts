@@ -14,7 +14,7 @@ interface HoneyRafOnFrameContext {
    * - Animation or transition completion
    * - Time- or state-based termination conditions
    */
-  stopRafLoop: () => void;
+  stop: () => void;
 }
 
 /**
@@ -93,11 +93,35 @@ interface UseHoneyRafLoopOptions {
 }
 
 /**
+ * Public control API returned by {@link useHoneyRafLoop}.
+ */
+export interface HoneyRafLoopApi {
+  /**
+   * Indicates whether the RAF loop is currently running.
+   */
+  isRunning: boolean;
+  /**
+   * Starts the RAF loop.
+   *
+   * If the loop is already running, this call is ignored.
+   */
+  start: () => void;
+  /**
+   * Stops the RAF loop immediately.
+   *
+   * This method is safe to call:
+   * - From user code
+   * - From within the RAF frame handler
+   */
+  stop: () => void;
+}
+
+/**
  * A hook for running a controlled `requestAnimationFrame` loop.
  *
  * Features:
  * - Explicit RAF lifecycle control (`start` / `stop`)
- * - Delta time (`dt`) calculation with frame clamping
+ * - Delta time calculation with frame clamping
  * - Automatic cleanup on unmounting
  * - Conservative handling of tab visibility changes (mobile-safe)
  * - Safe error handling (stops loop on exception)
@@ -152,7 +176,7 @@ export const useHoneyRafLoop = (
     maxDeltaMs = 32, // ~30fps clamp
     onError,
   }: UseHoneyRafLoopOptions = {},
-) => {
+): HoneyRafLoopApi => {
   const rafIdRef = useRef<Nullable<number>>(null);
   const lastTimeMsRef = useRef<Nullable<number>>(null);
 
@@ -160,7 +184,7 @@ export const useHoneyRafLoop = (
   // Always keep the latest callback without restarting RAF
   onFrameRef.current = onFrame;
 
-  const [isRafLoopRunning, setIsRafLoopRunning] = useState(false);
+  const [isRunning, setIsRunning] = useState(false);
 
   const loop = useCallback<FrameRequestCallback>(
     timeMs => {
@@ -178,12 +202,12 @@ export const useHoneyRafLoop = (
 
       try {
         onFrameRef.current(deltaTimeMs, {
-          stopRafLoop,
+          stop,
         });
 
         rafIdRef.current = requestAnimationFrame(loop);
       } catch (e) {
-        stopRafLoop();
+        stop();
 
         onError?.(e);
       }
@@ -191,19 +215,19 @@ export const useHoneyRafLoop = (
     [maxDeltaMs, onError],
   );
 
-  const startRafLoop = useCallback(() => {
+  const start = useCallback(() => {
     if (rafIdRef.current !== null) {
       return;
     }
 
     lastTimeMsRef.current = null;
 
-    setIsRafLoopRunning(true);
+    setIsRunning(true);
 
     rafIdRef.current = requestAnimationFrame(loop);
   }, [loop]);
 
-  const stopRafLoop = useCallback(() => {
+  const stop = useCallback(() => {
     if (rafIdRef.current === null) {
       return;
     }
@@ -213,24 +237,24 @@ export const useHoneyRafLoop = (
     rafIdRef.current = null;
     lastTimeMsRef.current = null;
 
-    setIsRafLoopRunning(false);
+    setIsRunning(false);
   }, []);
 
   useEffect(() => {
     if (autoStart) {
-      startRafLoop();
+      start();
     }
 
-    return stopRafLoop;
-  }, [autoStart, startRafLoop, stopRafLoop]);
+    return stop;
+  }, [autoStart, start, stop]);
 
   // Pause when a tab is hidden (important for mobile)
   useEffect(() => {
     const onVisibilityChange = () => {
       if (document.hidden) {
-        stopRafLoop();
+        stop();
       } else if (resumeOnVisibility && autoStart) {
-        startRafLoop();
+        start();
       }
     };
 
@@ -239,11 +263,11 @@ export const useHoneyRafLoop = (
     return () => {
       document.removeEventListener('visibilitychange', onVisibilityChange);
     };
-  }, [autoStart, resumeOnVisibility, startRafLoop, stopRafLoop]);
+  }, [autoStart, resumeOnVisibility, start, stop]);
 
   return {
-    isRafLoopRunning,
-    startRafLoop,
-    stopRafLoop,
+    isRunning,
+    start,
+    stop,
   };
 };

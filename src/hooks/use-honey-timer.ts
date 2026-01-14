@@ -51,37 +51,40 @@ export interface UseHoneyTimerOptions {
   onEnd?: UseHoneyTimerOnEndHandler;
 }
 
+/**
+ * Public control API returned by {@link useHoneyTimer}.
+ */
 export interface UseHoneyTimerApi {
   /**
    * Current timer value in milliseconds.
    *
    * This value updates over time while the timer is running.
    */
-  timerTimeMs: number;
+  timeMs: number;
   /**
    * Indicates whether the timer is currently progressing.
    */
-  isTimerRunning: boolean;
+  isRunning: boolean;
   /**
    * Starts the timer from `initialTimeMs`, resetting any previous state.
    */
-  startTimer: () => void;
+  start: () => void;
   /**
    * Pauses the timer while preserving the current time value.
    */
-  pauseTimer: () => void;
+  pause: () => void;
   /**
    * Resumes the timer from its current time value.
    *
    * Has no effect if the timer is already running.
    */
-  resumeTimer: () => void;
+  resume: () => void;
   /**
    * Resets the timer to a specific time value.
    *
    * @param timeMs - Optional new timer value. Defaults to `initialTimeMs`.
    */
-  resetTimer: (timeMs?: number) => void;
+  reset: (timeMs?: number) => void;
 }
 
 /**
@@ -133,7 +136,7 @@ export const useHoneyTimer = ({
    * - Updates React state with the derived value
    */
   const onFrameHandler = useCallback<HoneyRafOnFrameHandler>(
-    (deltaTimeMs, { stopRafLoop }) => {
+    (deltaTimeMs, { stop }) => {
       let nextTime =
         mode === 'countdown' ? timeRef.current - deltaTimeMs : timeRef.current + deltaTimeMs;
 
@@ -153,7 +156,7 @@ export const useHoneyTimer = ({
       setTimeMs(nextTime);
 
       if (finished) {
-        stopRafLoop();
+        stop();
 
         onEndRef.current?.();
       }
@@ -161,49 +164,47 @@ export const useHoneyTimer = ({
     [mode, targetTimeMs],
   );
 
-  const { startRafLoop, stopRafLoop, isRafLoopRunning } = useHoneyRafLoop(onFrameHandler, {
-    autoStart,
-  });
+  const rafLoop = useHoneyRafLoop(onFrameHandler);
 
-  const startTimer = useCallback(() => {
+  const start = useCallback(() => {
     timeRef.current = initialTimeMs;
 
     setTimeMs(initialTimeMs);
-    startRafLoop();
-  }, [initialTimeMs, startRafLoop]);
+    rafLoop.start();
+  }, [initialTimeMs, rafLoop.start]);
 
-  const pauseTimer = useCallback(() => {
-    stopRafLoop();
-  }, [stopRafLoop]);
+  const pause = useCallback(() => {
+    rafLoop.stop();
+  }, [rafLoop.stop]);
 
-  const resumeTimer = useCallback(() => {
-    if (!isRafLoopRunning) {
-      startRafLoop();
+  const resume = useCallback(() => {
+    if (!rafLoop.isRunning) {
+      rafLoop.start();
     }
-  }, [isRafLoopRunning, startRafLoop]);
+  }, [rafLoop.isRunning, rafLoop.start]);
 
-  const resetTimer = useCallback(
+  const reset = useCallback(
     (nextTimeMs = initialTimeMs) => {
-      stopRafLoop();
+      rafLoop.stop();
 
       timeRef.current = nextTimeMs;
       setTimeMs(nextTimeMs);
     },
-    [initialTimeMs, stopRafLoop],
+    [initialTimeMs, rafLoop.stop],
   );
 
   useEffect(() => {
     if (autoStart) {
-      startTimer();
+      start();
     }
-  }, [autoStart, startTimer]);
+  }, [autoStart, start]);
 
   return {
-    timerTimeMs: timeMs,
-    isTimerRunning: isRafLoopRunning,
-    startTimer,
-    pauseTimer,
-    resumeTimer,
-    resetTimer,
+    timeMs,
+    isRunning: rafLoop.isRunning,
+    start,
+    pause,
+    resume,
+    reset,
   };
 };
