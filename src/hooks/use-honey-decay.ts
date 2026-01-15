@@ -1,7 +1,7 @@
 import { useCallback, useRef, useState } from 'react';
 import { applyInertiaStep } from '@react-hive/honey-utils';
 
-import type { HoneyRafOnFrameHandler } from './use-honey-raf-loop';
+import type { HoneyRafFrameHandler } from './use-honey-raf-loop';
 import { useHoneyRafLoop } from './use-honey-raf-loop';
 
 /**
@@ -65,6 +65,17 @@ export interface UseHoneyDecayApi {
    * Indicates whether inertial motion is currently active.
    */
   isRunning: boolean;
+  /**
+   * Updates the hard bounds used by the decay simulation.
+   *
+   * The current value is clamped implicitly on the next frame if it lies outside the new bounds.
+   *
+   * This is intended for dynamic layouts where overflow can change (e.g. resize, content updates).
+   *
+   * @param min - New lower bound (inclusive)
+   * @param max - New upper bound (inclusive)
+   */
+  setBounds: (min: number, max: number) => void;
   /**
    * Starts inertial motion from the current value using
    * the provided initial velocity.
@@ -151,21 +162,24 @@ export const useHoneyDecay = ({
   initialValue,
   min,
   max,
-  friction,
-  minVelocityPxMs,
+  friction = 0.002,
+  minVelocityPxMs = 0.01,
 }: UseHoneyDecayOptions): UseHoneyDecayApi => {
   const [value, setValue] = useState(initialValue);
 
   const valueRef = useRef(initialValue);
   const velocityPxMsRef = useRef(0);
 
-  const onFrameHandler = useCallback<HoneyRafOnFrameHandler>(
+  const minRef = useRef(min);
+  const maxRef = useRef(max);
+
+  const frameHandler = useCallback<HoneyRafFrameHandler>(
     (deltaTimeMs, frameContext) => {
       const result = applyInertiaStep({
         value: valueRef.current,
         velocityPxMs: velocityPxMsRef.current,
-        min,
-        max,
+        min: minRef.current,
+        max: maxRef.current,
         deltaTimeMs,
         friction,
         minVelocityPxMs,
@@ -183,10 +197,25 @@ export const useHoneyDecay = ({
 
       setValue(result.value);
     },
-    [min, max, friction, minVelocityPxMs],
+    [friction, minVelocityPxMs],
   );
 
-  const rafLoop = useHoneyRafLoop(onFrameHandler);
+  const rafLoop = useHoneyRafLoop(frameHandler);
+
+  const setBounds = useCallback((nextMin: number, nextMax: number) => {
+    minRef.current = nextMin;
+    maxRef.current = nextMax;
+
+    if (valueRef.current < nextMin) {
+      valueRef.current = nextMin;
+
+      setValue(nextMin);
+    } else if (valueRef.current > nextMax) {
+      valueRef.current = nextMax;
+
+      setValue(nextMax);
+    }
+  }, []);
 
   const start = useCallback(
     (velocityPxMs: number) => {
@@ -217,6 +246,7 @@ export const useHoneyDecay = ({
   return {
     value,
     isRunning: rafLoop.isRunning,
+    setBounds,
     start,
     stop,
     snapTo,

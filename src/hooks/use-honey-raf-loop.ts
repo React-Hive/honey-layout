@@ -2,7 +2,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 
 import type { Nullable } from '~/types';
 
-interface HoneyRafOnFrameContext {
+interface HoneyRafFrameContext {
   /**
    * Immediately terminates the active `requestAnimationFrame` loop.
    *
@@ -34,9 +34,9 @@ interface HoneyRafOnFrameContext {
  *                      time steps caused by tab backgrounding, visibility changes,
  *                      or browser throttling.
  *
- * @param context - RAF lifecycle control context. See {@link HoneyRafOnFrameContext}.
+ * @param context - RAF lifecycle control context. See {@link HoneyRafFrameContext}.
  */
-export type HoneyRafOnFrameHandler = (deltaTimeMs: number, context: HoneyRafOnFrameContext) => void;
+export type HoneyRafFrameHandler = (deltaTimeMs: number, context: HoneyRafFrameContext) => void;
 
 /**
  * Configuration options for {@link useHoneyRafLoop}.
@@ -169,7 +169,7 @@ export interface HoneyRafLoopApi {
  * ```
  */
 export const useHoneyRafLoop = (
-  onFrame: HoneyRafOnFrameHandler,
+  onFrame: HoneyRafFrameHandler,
   {
     autoStart = false,
     resumeOnVisibility = false,

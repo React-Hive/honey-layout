@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 
 import type { Nullable } from '../types';
-import type { HoneyRafOnFrameHandler } from './use-honey-raf-loop';
+import type { HoneyRafFrameHandler } from './use-honey-raf-loop';
 import { useHoneyRafLoop } from './use-honey-raf-loop';
 
 /**
@@ -12,7 +12,7 @@ import { useHoneyRafLoop } from './use-honey-raf-loop';
  */
 type UseHoneyTimerMode = 'countdown' | 'countup';
 
-type UseHoneyTimerOnEndHandler = () => void;
+type UseHoneyTimerEndHandler = () => void;
 
 export interface UseHoneyTimerOptions {
   /**
@@ -48,7 +48,7 @@ export interface UseHoneyTimerOptions {
   /**
    * Optional callback invoked exactly once when the timer reaches the target time.
    */
-  onEnd?: UseHoneyTimerOnEndHandler;
+  onEnd?: UseHoneyTimerEndHandler;
 }
 
 /**
@@ -125,7 +125,7 @@ export const useHoneyTimer = ({
   const timeRef = useRef(timeMs);
   timeRef.current = timeMs;
 
-  const onEndRef = useRef<Nullable<UseHoneyTimerOnEndHandler>>(onEnd);
+  const onEndRef = useRef<Nullable<UseHoneyTimerEndHandler>>(onEnd);
   onEndRef.current = onEnd;
 
   /**
@@ -135,7 +135,7 @@ export const useHoneyTimer = ({
    * - Detects completion and stops the RAF loop
    * - Updates React state with the derived value
    */
-  const onFrameHandler = useCallback<HoneyRafOnFrameHandler>(
+  const frameHandler = useCallback<HoneyRafFrameHandler>(
     (deltaTimeMs, frameContext) => {
       let nextTime =
         mode === 'countdown' ? timeRef.current - deltaTimeMs : timeRef.current + deltaTimeMs;
@@ -164,7 +164,7 @@ export const useHoneyTimer = ({
     [mode, targetTimeMs],
   );
 
-  const rafLoop = useHoneyRafLoop(onFrameHandler);
+  const rafLoop = useHoneyRafLoop(frameHandler);
 
   const start = useCallback(() => {
     timeRef.current = initialTimeMs;
