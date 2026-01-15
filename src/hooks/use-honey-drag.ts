@@ -1,20 +1,27 @@
 import { useEffect } from 'react';
-import { calculateEuclideanDistance, calculateMovingSpeed } from '@react-hive/honey-utils';
 import type { RefObject } from 'react';
 
 import type { Nullable } from '../types';
 
 /**
- * Handler triggered when a drag operation starts.
+ * Invoked when a drag gesture is about to start.
  *
- * @template Element - The type of the draggable element (must extend HTMLElement).
+ * This handler is called on the initial pointer-down interaction
+ * (mouse or touch) **before** drag tracking begins.
  *
- * @param draggableElement - The element being dragged.
- * @param e - The event that initiated the drag. Can be either a `MouseEvent` or a `TouchEvent`.
+ * It can be used to:
+ * - Conditionally allow or block dragging
+ * - Capture initial external state
+ * - Cancel dragging based on application logic
  *
- * @returns A Promise that resolves to a boolean:
- *          - `false` to cancel the drag.
- *          - `true` to proceed with the drag.
+ * @template Element - The draggable element type.
+ *
+ * @param draggableElement - The element that will be dragged.
+ * @param e - The initiating pointer event.
+ *
+ * @returns A promise resolving to:
+ * - `true` to allow the drag to begin
+ * - `false` to cancel the drag
  */
 export type HoneyDragOnStartHandler<Element extends HTMLElement> = (
   draggableElement: Element,
@@ -22,84 +29,105 @@ export type HoneyDragOnStartHandler<Element extends HTMLElement> = (
 ) => Promise<boolean>;
 
 /**
- * Context provided to the move handler, containing information about the drag's movement.
+ * Context describing pointer movement during an active drag gesture.
+ *
+ * All values are expressed in **pixels** and are relative
+ * to the drag start or previous frame as noted.
  */
 export interface HoneyDragMoveContext {
   /**
-   * The horizontal distance has moved since the last frame.
+   * Horizontal delta since the previous move event.
+   *
+   * Positive values indicate movement to the right.
    */
   deltaX: number;
   /**
-   * The vertical distance has moved since the last frame.
+   * Vertical delta since the previous move event.
+   *
+   * Positive values indicate movement downward.
    */
   deltaY: number;
   /**
-   * The total horizontal distance from the starting position to the current position.
+   * Total horizontal displacement from the drag start position.
    */
   distanceX: number;
   /**
-   * The total vertical distance from the starting position to the current position.
+   * Total vertical displacement from the drag start position.
    */
   distanceY: number;
-  /**
-   * The straight-line distance from the starting position to the current position.
-   */
-  euclideanDistance: number;
 }
 
 /**
- * Handler triggered during a drag operation.
+ * Handler invoked continuously while a drag gesture is active.
  *
- * @template Element - The type of the draggable element (must extend HTMLElement).
+ * This handler:
+ * - Is created once per drag start
+ * - Receives incremental movement data on each pointer move
+ * - Can synchronously or asynchronously decide whether dragging continues
  *
- * Behavior:
- * - The handler receives the draggable element and returns a function that is called on every move event.
- * - If the returned function resolves to `false`, the drag operation stops immediately.
+ * Returning `false` from the move callback immediately terminates the drag.
  *
- * This allows for real-time handling of drag events and asynchronous conditions during dragging.
+ * @template Element - The draggable element type.
  *
  * @param draggableElement - The element being dragged.
  *
- * @returns A function that handles move events and returns a Promise that resolves to `true`
- *          to continue dragging, or `false` to stop it.
+ * @returns A function invoked on every pointer move, receiving
+ *          {@link HoneyDragMoveContext}, and resolving to:
+ *          - `true` to continue dragging
+ *          - `false` to stop dragging immediately
  */
 export type HoneyDragOnMoveHandler<Element extends HTMLElement> = (
   draggableElement: Element,
 ) => (context: HoneyDragMoveContext) => Promise<boolean>;
 
 /**
- * Context provided to the end handler, containing information about the drag's end state.
+ * Context describing the final state of a completed drag gesture.
+ *
+ * This context exposes **release velocity**, which is suitable for
+ * inertia, momentum, or decay-based motion systems.
  */
 interface HoneyDragEndContext {
   /**
-   * The total horizontal movement from the starting position to the ending position.
+   * Total horizontal displacement from drag start to release.
    */
   deltaX: number;
   /**
-   * The total vertical movement from the starting position to the ending position.
+   * Total vertical displacement from drag start to release.
    */
   deltaY: number;
   /**
-   * The speed of movement in the horizontal direction (X axis).
+   * Horizontal release velocity in pixels per millisecond (`px/ms`).
+   *
+   * This value represents the **instantaneous velocity at release**
+   * and is suitable for inertia or momentum-based motion.
    */
-  movingSpeedX: number;
+  velocityXPxMs: number;
   /**
-   * The speed of movement in the vertical direction (Y axis).
+   * Vertical release velocity in pixels per millisecond (`px/ms`).
+   *
+   * This value represents the **instantaneous velocity at release**
+   * and is suitable for inertia or momentum-based motion.
    */
-  movingSpeedY: number;
+  velocityYPxMs: number;
 }
 
 /**
- * Handler triggered when a drag operation ends.
+ * Invoked when a drag gesture ends.
  *
- * @template Element - The type of the draggable element (must extend HTMLElement).
+ * This handler is called when:
+ * - The pointer is released
+ * - The drag is programmatically terminated (unless explicitly skipped)
  *
- * @param context - The context containing details about the drag operation at its end.
- *                  Provides information such as the final position and drag result.
- * @param draggableElement - The element that was being dragged.
- * @param e - The event that ended the drag. Can be either a `MouseEvent` or a `TouchEvent`.
+ * It provides final displacement and **release velocity**, making it
+ * ideal for triggering inertia or decay animations.
  *
- * @returns A Promise that resolves when the end handler completes its operations.
+ * @template Element - The draggable element type.
+ *
+ * @param context - Final drag metrics, including release velocity.
+ * @param draggableElement - The element that was dragged.
+ * @param e - The pointer event that finished the drag.
+ *
+ * @returns A promise that resolves when cleanup or follow-up logic completes.
  */
 export type HoneyDragOnEndHandler<Element extends HTMLElement> = (
   context: HoneyDragEndContext,
@@ -108,8 +136,12 @@ export type HoneyDragOnEndHandler<Element extends HTMLElement> = (
 ) => Promise<void>;
 
 /**
- * A set of handlers that define the behavior of the drag operation at different stages.
- * These handlers are customizable for managing drag initialization, movement, and completion.
+ * Collection of handlers controlling the lifecycle of a drag gesture.
+ *
+ * Together, these handlers define:
+ * - Whether dragging is allowed
+ * - How movement is handled
+ * - What happens when dragging ends
  */
 export interface HoneyDragHandlers<Element extends HTMLElement> {
   /**
@@ -143,8 +175,10 @@ export interface HoneyDragHandlers<Element extends HTMLElement> {
 }
 
 /**
- * Configuration options for the drag functionality.
- * These options control the behavior of the drag hook and modify how the drag events are handled.
+ * Configuration options controlling drag behavior.
+ *
+ * These options affect lifecycle handling and enable/disable logic,
+ * but do not influence movement physics directly.
  */
 export interface HoneyDragOptions<Element extends HTMLElement> extends HoneyDragHandlers<Element> {
   /**
@@ -163,17 +197,23 @@ export interface HoneyDragOptions<Element extends HTMLElement> extends HoneyDrag
 }
 
 /**
- * A hook that provides touch and mouse-based dragging functionality for an element.
- * It enables the ability to drag an element on both mouse and touch interfaces,
- * with customizable handlers for different stages of the drag.
+ * Enables high-precision mouse and touch dragging for an element.
  *
- * @template Element - The type of the HTML element that is being dragged.
+ * This hook:
+ * - Tracks pointer movement using `performance.now()`
+ * - Computes **instantaneous release velocity** (px/ms)
+ * - Emits deterministic drag lifecycle events
+ * - Supports both mouse and touch input
  *
- * @param draggableElementRef - A reference to the element that can be dragged.
- * @param options - Handlers for different stages of the drag operation and configuration options
- *                  for controlling drag behavior.
+ * Architectural notes:
+ * - Velocity is computed **during movement**, not at drag end
+ * - Release velocity is suitable for inertia / decay systems
+ * - No layout reads or writes are performed internally
  *
- * @returns A cleanup function to remove event listeners when the component is unmounted.
+ * @template Element - The draggable HTML element type.
+ *
+ * @param draggableElementRef - Ref pointing to the draggable element.
+ * @param options - Drag lifecycle handlers and configuration flags.
  */
 export const useHoneyDrag = <Element extends HTMLElement>(
   draggableElementRef: RefObject<Nullable<Element>>,
@@ -200,15 +240,17 @@ export const useHoneyDrag = <Element extends HTMLElement>(
     let startY = 0;
     let lastX = 0;
     let lastY = 0;
-
-    // Store the start time of the drag to calculate speed later.
-    let startTime = 0;
+    let lastMoveTimeMs = 0;
+    let velocityXPxMs = 0;
+    let velocityYPxMs = 0;
 
     const startDrag = async (clientX: number, clientY: number, e: MouseEvent | TouchEvent) => {
       if (onStartDrag && !(await onStartDrag(draggableElement, e))) {
         // Exit when `onStartDrag` returns false, preventing the dragging
         return;
       }
+
+      lastMoveTimeMs = performance.now();
 
       isDragging = true;
 
@@ -217,7 +259,8 @@ export const useHoneyDrag = <Element extends HTMLElement>(
       lastX = clientX;
       lastY = clientY;
 
-      startTime = Date.now();
+      velocityXPxMs = 0;
+      velocityYPxMs = 0;
     };
 
     const stopDrag = async (isTriggerOnEndDrag: boolean, e: MouseEvent | TouchEvent) => {
@@ -228,21 +271,14 @@ export const useHoneyDrag = <Element extends HTMLElement>(
       isDragging = false;
 
       if (isTriggerOnEndDrag && onEndDrag) {
-        // Calculate the elapsed time for speed calculations.
-        const elapsedTime = Date.now() - startTime;
-
         const deltaX = lastX - startX;
         const deltaY = lastY - startY;
 
         const endContext: HoneyDragEndContext = {
           deltaX,
           deltaY,
-          get movingSpeedX() {
-            return calculateMovingSpeed(deltaX, elapsedTime);
-          },
-          get movingSpeedY() {
-            return calculateMovingSpeed(deltaY, elapsedTime);
-          },
+          velocityXPxMs,
+          velocityYPxMs,
         };
 
         await onEndDrag(endContext, draggableElement, e);
@@ -269,24 +305,34 @@ export const useHoneyDrag = <Element extends HTMLElement>(
         return;
       }
 
-      const moveContext: HoneyDragMoveContext = {
-        deltaX: clientX - lastX,
-        deltaY: clientY - lastY,
-        distanceX: clientX - startX,
-        distanceY: clientY - startY,
-        euclideanDistance: calculateEuclideanDistance(startX, startY, clientX, clientY),
-      };
+      const nowMs = performance.now();
+      const deltaTimeMs = nowMs - lastMoveTimeMs;
 
-      if (!(await onMove(moveContext))) {
-        lastX = clientX;
-        lastY = clientY;
+      const deltaX = clientX - lastX;
+      const deltaY = clientY - lastY;
 
-        await releaseDrag(!skipOnEndDragWhenStopped, e);
-        return;
+      if (deltaTimeMs > 0) {
+        velocityXPxMs = deltaX / deltaTimeMs;
+        velocityYPxMs = deltaY / deltaTimeMs;
       }
+
+      const distanceX = clientX - startX;
+      const distanceY = clientY - startY;
+
+      const isContinue = await onMove({
+        deltaX,
+        deltaY,
+        distanceX,
+        distanceY,
+      });
 
       lastX = clientX;
       lastY = clientY;
+      lastMoveTimeMs = nowMs;
+
+      if (!isContinue) {
+        await releaseDrag(!skipOnEndDragWhenStopped, e);
+      }
     };
 
     const mouseMoveHandler = async (e: MouseEvent) => {

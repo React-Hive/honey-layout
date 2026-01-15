@@ -128,10 +128,7 @@ describe('[useHoneyDrag]: mouse-based dragging interaction', () => {
       deltaY: 100,
       distanceX: -80,
       distanceY: 100,
-      euclideanDistance: expect.any(Number),
     });
-
-    expect(moveDragSpy.mock.calls[0][0].euclideanDistance).toBeCloseTo(128.06, 1);
 
     await act(async () =>
       dispatchWindowMouseEvent('mousemove', {
@@ -147,10 +144,7 @@ describe('[useHoneyDrag]: mouse-based dragging interaction', () => {
       deltaY: -290,
       distanceX: 20,
       distanceY: -190,
-      euclideanDistance: expect.any(Number),
     });
-
-    expect(moveDragSpy.mock.calls[1][0].euclideanDistance).toBeCloseTo(191.04, 1);
   });
 
   it('should not trigger any handlers when dragging is disabled via enabled is false', async () => {

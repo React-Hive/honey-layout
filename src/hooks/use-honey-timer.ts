@@ -136,7 +136,7 @@ export const useHoneyTimer = ({
    * - Updates React state with the derived value
    */
   const onFrameHandler = useCallback<HoneyRafOnFrameHandler>(
-    (deltaTimeMs, { stop }) => {
+    (deltaTimeMs, frameContext) => {
       let nextTime =
         mode === 'countdown' ? timeRef.current - deltaTimeMs : timeRef.current + deltaTimeMs;
 
@@ -156,7 +156,7 @@ export const useHoneyTimer = ({
       setTimeMs(nextTime);
 
       if (finished) {
-        stop();
+        frameContext.stop();
 
         onEndRef.current?.();
       }
