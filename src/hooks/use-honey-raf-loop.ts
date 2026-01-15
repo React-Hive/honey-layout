@@ -1,6 +1,8 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 
 import type { Nullable } from '~/types';
+import { __DEV__ } from '~/constants';
+import { useHoneyLatest } from '~/hooks';
 
 interface HoneyRafFrameContext {
   /**
@@ -180,14 +182,34 @@ export const useHoneyRafLoop = (
   const rafIdRef = useRef<Nullable<number>>(null);
   const lastTimeMsRef = useRef<Nullable<number>>(null);
 
-  const onFrameRef = useRef(onFrame);
-  // Always keep the latest callback without restarting RAF
-  onFrameRef.current = onFrame;
+  const onFrameRef = useHoneyLatest(onFrame);
 
   const [isRunning, setIsRunning] = useState(false);
+  const isRunningRef = useRef(false);
+
+  const stop = useCallback(() => {
+    if (!isRunningRef.current) {
+      return;
+    }
+
+    isRunningRef.current = false;
+
+    if (rafIdRef.current !== null) {
+      cancelAnimationFrame(rafIdRef.current);
+
+      rafIdRef.current = null;
+    }
+
+    lastTimeMsRef.current = null;
+    setIsRunning(false);
+  }, []);
 
   const loop = useCallback<FrameRequestCallback>(
     timeMs => {
+      if (!isRunningRef.current) {
+        return;
+      }
+
       if (lastTimeMsRef.current === null) {
         lastTimeMsRef.current = timeMs;
       }
@@ -205,40 +227,34 @@ export const useHoneyRafLoop = (
           stop,
         });
 
-        rafIdRef.current = requestAnimationFrame(loop);
+        if (isRunningRef.current) {
+          rafIdRef.current = requestAnimationFrame(loop);
+        }
       } catch (e) {
+        if (__DEV__) {
+          console.error(e);
+        }
+
         stop();
 
         onError?.(e);
       }
     },
-    [maxDeltaMs, onError],
+    [maxDeltaMs, stop, onError],
   );
 
   const start = useCallback(() => {
-    if (rafIdRef.current !== null) {
+    if (isRunningRef.current) {
       return;
     }
 
     lastTimeMsRef.current = null;
 
+    isRunningRef.current = true;
     setIsRunning(true);
 
     rafIdRef.current = requestAnimationFrame(loop);
   }, [loop]);
-
-  const stop = useCallback(() => {
-    if (rafIdRef.current === null) {
-      return;
-    }
-
-    cancelAnimationFrame(rafIdRef.current);
-
-    rafIdRef.current = null;
-    lastTimeMsRef.current = null;
-
-    setIsRunning(false);
-  }, []);
 
   useEffect(() => {
     if (autoStart) {
@@ -246,7 +262,7 @@ export const useHoneyRafLoop = (
     }
 
     return stop;
-  }, [autoStart, start, stop]);
+  }, [autoStart]);
 
   // Pause when a tab is hidden (important for mobile)
   useEffect(() => {

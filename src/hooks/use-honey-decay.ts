@@ -1,13 +1,17 @@
 import { useCallback, useRef, useState } from 'react';
+import type { InertiaOptions } from '@react-hive/honey-utils';
 import { applyInertiaStep } from '@react-hive/honey-utils';
 
-import type { HoneyRafFrameHandler } from './use-honey-raf-loop';
-import { useHoneyRafLoop } from './use-honey-raf-loop';
+import type { HoneyRafFrameHandler } from '~/hooks';
+import { useHoneyLatest, useHoneyRafLoop } from '~/hooks';
 
 /**
  * Configuration options for {@link useHoneyDecay}.
  */
-export interface UseHoneyDecayOptions {
+export interface UseHoneyDecayOptions extends Pick<
+  InertiaOptions,
+  'friction' | 'minVelocityPxMs' | 'emaAlpha'
+> {
   /**
    * Initial numeric value from which inertial motion starts.
    *
@@ -28,24 +32,16 @@ export interface UseHoneyDecayOptions {
    */
   max: number;
   /**
-   * Exponential friction coefficient applied per millisecond.
+   * Optional callback invoked exactly once when inertial motion terminates.
    *
-   * Controls how quickly velocity decays over time.
+   * Triggered when inertia ends due to:
+   * - velocity decaying below `minVelocityPxMs`
+   * - movement being blocked by bounds
+   * - an explicit call to `stop()`
    *
-   * Smaller values produce longer, floatier inertia;
-   * larger values result in a quicker stop.
-   *
-   * @default 0.002
+   * Not invoked if inertia was never started.
    */
-  friction?: number;
-  /**
-   * Minimum absolute velocity below which inertia is considered complete.
-   *
-   * This prevents unnecessary micro-updates and jitter near rest.
-   *
-   * @default 0.01
-   */
-  minVelocityPxMs?: number;
+  onStop?: () => void;
 }
 
 /**
@@ -88,19 +84,31 @@ export interface UseHoneyDecayApi {
    */
   start: (velocityPxMs: number) => void;
   /**
+   * Immediately sets the value and starts inertial motion from that value in a single atomic operation.
+   *
+   * This is the preferred way to hand off from a gesture (e.g. drag end) to inertia, as it:
+   * - avoids transient intermediate states
+   * - guarantees correct value/velocity ordering
+   * - ensures `onStop` semantics remain consistent
+   *
+   * @param value - Starting value for the inertia simulation
+   * @param velocityPxMs - Initial velocity in pixels per millisecond (`px/ms`)
+   */
+  startFrom: (value: number, velocityPxMs: number) => void;
+  /**
    * Immediately stops inertial motion.
+   *
+   * If inertia is currently active, this will:
+   * - cancel the RAF loop
+   * - reset internal velocity
+   * - invoke `onStop` exactly once
    */
   stop: () => void;
-  /**
-   * Immediately sets the value and cancels any active inertia.
-   *
-   * @param value - The value to apply immediately.
-   */
-  snapTo: (value: number) => void;
 }
 
 /**
- * A bounded, velocity-based inertia (decay) hook built on top of {@link useHoneyRafLoop} and {@link applyInertiaStep}.
+ * A bounded, velocity-based inertia (decay) hook built on top
+ * of {@link useHoneyRafLoop} and {@link applyInertiaStep}.
  *
  * This hook models **momentum-driven motion** where:
  * - Motion starts with an initial velocity
@@ -164,17 +172,27 @@ export const useHoneyDecay = ({
   max,
   friction = 0.002,
   minVelocityPxMs = 0.01,
+  emaAlpha = 0.2,
+  onStop,
 }: UseHoneyDecayOptions): UseHoneyDecayApi => {
   const [value, setValue] = useState(initialValue);
 
   const valueRef = useRef(initialValue);
   const velocityPxMsRef = useRef(0);
+  const hasActiveInertiaRef = useRef(false);
 
   const minRef = useRef(min);
   const maxRef = useRef(max);
 
+  const onStopRef = useHoneyLatest(onStop);
+
   const frameHandler = useCallback<HoneyRafFrameHandler>(
     (deltaTimeMs, frameContext) => {
+      // Ignore the first RAF tick
+      if (deltaTimeMs === 0) {
+        return;
+      }
+
       const result = applyInertiaStep({
         value: valueRef.current,
         velocityPxMs: velocityPxMsRef.current,
@@ -183,21 +201,30 @@ export const useHoneyDecay = ({
         deltaTimeMs,
         friction,
         minVelocityPxMs,
+        emaAlpha,
       });
 
-      if (!result) {
+      if (result === null) {
         velocityPxMsRef.current = 0;
+
+        if (hasActiveInertiaRef.current) {
+          hasActiveInertiaRef.current = false;
+
+          onStopRef.current?.();
+        }
 
         frameContext.stop();
         return;
       }
+
+      hasActiveInertiaRef.current = true;
 
       valueRef.current = result.value;
       velocityPxMsRef.current = result.velocityPxMs;
 
       setValue(result.value);
     },
-    [friction, minVelocityPxMs],
+    [friction, minVelocityPxMs, emaAlpha],
   );
 
   const rafLoop = useHoneyRafLoop(frameHandler);
@@ -220,35 +247,42 @@ export const useHoneyDecay = ({
   const start = useCallback(
     (velocityPxMs: number) => {
       velocityPxMsRef.current = velocityPxMs;
+      hasActiveInertiaRef.current = true;
 
       rafLoop.start();
     },
     [rafLoop.start],
   );
 
-  const stop = useCallback(() => {
-    velocityPxMsRef.current = 0;
+  const startFrom = useCallback(
+    (nextValue: number, velocityPxMs: number) => {
+      valueRef.current = nextValue;
+      velocityPxMsRef.current = velocityPxMs;
+      hasActiveInertiaRef.current = true;
 
+      setValue(nextValue);
+      rafLoop.start();
+    },
+    [rafLoop.start],
+  );
+
+  const stop = useCallback(() => {
+    if (hasActiveInertiaRef.current) {
+      hasActiveInertiaRef.current = false;
+
+      onStopRef.current?.();
+    }
+
+    velocityPxMsRef.current = 0;
     rafLoop.stop();
   }, [rafLoop.stop]);
-
-  const snapTo = useCallback(
-    (nextValue: number) => {
-      velocityPxMsRef.current = 0;
-      valueRef.current = nextValue;
-
-      rafLoop.stop();
-      setValue(nextValue);
-    },
-    [rafLoop.stop],
-  );
 
   return {
     value,
     isRunning: rafLoop.isRunning,
     setBounds,
     start,
+    startFrom,
     stop,
-    snapTo,
   };
 };

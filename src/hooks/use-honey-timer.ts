@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 
 import type { Nullable } from '../types';
-import type { HoneyRafFrameHandler } from './use-honey-raf-loop';
-import { useHoneyRafLoop } from './use-honey-raf-loop';
+import type { HoneyRafFrameHandler } from '~/hooks';
+import { useHoneyLatest, useHoneyRafLoop } from '~/hooks';
 
 /**
  * Timer operating mode.
@@ -121,9 +121,7 @@ export const useHoneyTimer = ({
   onEnd,
 }: UseHoneyTimerOptions): UseHoneyTimerApi => {
   const [timeMs, setTimeMs] = useState(initialTimeMs);
-
-  const timeRef = useRef(timeMs);
-  timeRef.current = timeMs;
+  const timeRef = useHoneyLatest(timeMs);
 
   const onEndRef = useRef<Nullable<UseHoneyTimerEndHandler>>(onEnd);
   onEndRef.current = onEnd;
@@ -197,7 +195,7 @@ export const useHoneyTimer = ({
     if (autoStart) {
       start();
     }
-  }, [autoStart, start]);
+  }, [autoStart]);
 
   return {
     timeMs,

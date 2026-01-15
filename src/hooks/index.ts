@@ -12,3 +12,4 @@ export * from './use-honey-synthetic-scroll-y';
 export * from './use-honey-raf-loop';
 export * from './use-honey-timer';
 export * from './use-honey-decay';
+export * from './use-honey-latest';

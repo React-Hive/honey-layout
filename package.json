@@ -1,6 +1,6 @@
 {
   "name": "@react-hive/honey-layout",
-  "version": "11.1.0",
+  "version": "11.2.0",
   "description": "",
   "keywords": [
     "react",
@@ -48,7 +48,7 @@
   "dependencies": {
     "@floating-ui/dom": "1.7.4",
     "@floating-ui/react": "0.27.16",
-    "@react-hive/honey-utils": "3.18.0",
+    "@react-hive/honey-utils": "3.20.0",
     "csstype": "3.2.3",
     "highlight.js": "11.11.1",
     "lodash.merge": "4.6.2",
@@ -96,7 +96,10 @@
     ],
     "testMatch": [
       "**/src/**/__tests__/**/*.spec.ts?(x)"
-    ]
+    ],
+    "moduleNameMapper": {
+      "^~/(.*)$": "<rootDir>/src/$1"
+    }
   },
   "browserslist": [
     "defaults",
