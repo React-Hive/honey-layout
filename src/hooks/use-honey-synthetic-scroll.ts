@@ -12,10 +12,10 @@ import {
 
 import type { Nullable } from '~/types';
 import type {
-  HoneyDragHandlers,
-  HoneyDragOnEndHandler,
-  HoneyDragOnMoveHandler,
-  HoneyDragOnStartHandler,
+  UseHoneyDragHandlers,
+  UseHoneyDragOnEndHandler,
+  UseHoneyDragOnMoveHandler,
+  UseHoneyDragOnStartHandler,
 } from './use-honey-drag';
 import type { UseHoneyResizeHandler } from './use-honey-resize';
 import { useHoneyDrag } from './use-honey-drag';
@@ -124,7 +124,7 @@ const applyScrollDelta = ({
 };
 
 export interface UseHoneySyntheticScrollOptions<Element extends HTMLElement> extends Pick<
-  HoneyDragHandlers<Element>,
+  UseHoneyDragHandlers<Element>,
   'onStartDrag' | 'onEndDrag'
 > {
   /**
@@ -204,7 +204,7 @@ export const useHoneySyntheticScroll = <Element extends HTMLElement>({
 }: UseHoneySyntheticScrollOptions<Element> = {}): RefObject<Nullable<Element>> => {
   const containerRef = useRef<Nullable<Element>>(null);
 
-  const handleOnStartDrag = useCallback<HoneyDragOnStartHandler<Element>>(
+  const handleOnStartDrag = useCallback<UseHoneyDragOnStartHandler<Element>>(
     async (...args) => {
       return onStartDrag?.(...args) ?? true;
     },
@@ -219,7 +219,7 @@ export const useHoneySyntheticScroll = <Element extends HTMLElement>({
    * - Compute the candidate translate value from the drag delta.
    * - Clamp movement within calculated min / max bounds.
    */
-  const handleOnMoveDrag = useCallback<HoneyDragOnMoveHandler<Element>>(
+  const handleOnMoveDrag = useCallback<UseHoneyDragOnMoveHandler<Element>>(
     container =>
       async ({ deltaX, deltaY }) => {
         return applyScrollDelta({
@@ -233,7 +233,7 @@ export const useHoneySyntheticScroll = <Element extends HTMLElement>({
     [axis, overscrollPct],
   );
 
-  const handleOnEndDrag = useCallback<HoneyDragOnEndHandler<Element>>(
+  const handleOnEndDrag = useCallback<UseHoneyDragOnEndHandler<Element>>(
     async (...args) => {
       onEndDrag?.(...args);
     },

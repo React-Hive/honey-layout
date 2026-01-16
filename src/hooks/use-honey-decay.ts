@@ -2,7 +2,7 @@ import { useCallback, useRef, useState } from 'react';
 import type { InertiaOptions } from '@react-hive/honey-utils';
 import { applyInertiaStep } from '@react-hive/honey-utils';
 
-import type { HoneyRafFrameHandler } from '~/hooks';
+import type { UseHoneyRafOnFrameHandler } from '~/hooks';
 import { useHoneyLatest, useHoneyRafLoop } from '~/hooks';
 
 /**
@@ -207,14 +207,14 @@ export const useHoneyDecay = ({
 
   const onStopRef = useHoneyLatest(onStop);
 
-  const frameHandler = useCallback<HoneyRafFrameHandler>(
+  const frameHandler = useCallback<UseHoneyRafOnFrameHandler>(
     (deltaTimeMs, frameContext) => {
       // Ignore the first RAF tick
       if (deltaTimeMs === 0) {
         return;
       }
 
-      const result = applyInertiaStep({
+      const inertia = applyInertiaStep({
         value: valueRef.current,
         velocityPxMs: velocityPxMsRef.current,
         min: minRef.current,
@@ -225,7 +225,7 @@ export const useHoneyDecay = ({
         emaAlpha,
       });
 
-      if (result === null) {
+      if (inertia === null) {
         velocityPxMsRef.current = 0;
 
         if (hasActiveInertiaRef.current) {
@@ -240,10 +240,10 @@ export const useHoneyDecay = ({
 
       hasActiveInertiaRef.current = true;
 
-      valueRef.current = result.value;
-      velocityPxMsRef.current = result.velocityPxMs;
+      valueRef.current = inertia.value;
+      velocityPxMsRef.current = inertia.velocityPxMs;
 
-      setValue(result.value);
+      setValue(inertia.value);
     },
     [friction, minVelocityPxMs, emaAlpha],
   );

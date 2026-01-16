@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import type { RefObject } from 'react';
 
-import type { Nullable } from '../types';
+import type { Nullable } from '~/types';
 
 /**
  * Invoked when a drag gesture is about to start.
@@ -23,7 +23,7 @@ import type { Nullable } from '../types';
  * - `true` to allow the drag to begin
  * - `false` to cancel the drag
  */
-export type HoneyDragOnStartHandler<Element extends HTMLElement> = (
+export type UseHoneyDragOnStartHandler<Element extends HTMLElement> = (
   draggableElement: Element,
   e: MouseEvent | TouchEvent,
 ) => Promise<boolean>;
@@ -34,7 +34,7 @@ export type HoneyDragOnStartHandler<Element extends HTMLElement> = (
  * All values are expressed in **pixels** and are relative
  * to the drag start or previous frame as noted.
  */
-export interface HoneyDragMoveContext {
+export interface UseHoneyDragOnMoveContext {
   /**
    * Horizontal delta since the previous move event.
    *
@@ -72,13 +72,13 @@ export interface HoneyDragMoveContext {
  * @param draggableElement - The element being dragged.
  *
  * @returns A function invoked on every pointer move, receiving
- *          {@link HoneyDragMoveContext}, and resolving to:
+ *          {@link UseHoneyDragOnMoveContext}, and resolving to:
  *          - `true` to continue dragging
  *          - `false` to stop dragging immediately
  */
-export type HoneyDragOnMoveHandler<Element extends HTMLElement> = (
+export type UseHoneyDragOnMoveHandler<Element extends HTMLElement> = (
   draggableElement: Element,
-) => (context: HoneyDragMoveContext) => Promise<boolean>;
+) => (context: UseHoneyDragOnMoveContext) => Promise<boolean>;
 
 /**
  * Context describing the final state of a completed drag gesture.
@@ -86,7 +86,7 @@ export type HoneyDragOnMoveHandler<Element extends HTMLElement> = (
  * This context exposes **release velocity**, which is suitable for
  * inertia, momentum, or decay-based motion systems.
  */
-interface HoneyDragEndContext {
+interface UseHoneyDragOnEndContext {
   /**
    * Total horizontal displacement from drag start to release.
    */
@@ -129,8 +129,8 @@ interface HoneyDragEndContext {
  *
  * @returns A promise that resolves when cleanup or follow-up logic completes.
  */
-export type HoneyDragOnEndHandler<Element extends HTMLElement> = (
-  context: HoneyDragEndContext,
+export type UseHoneyDragOnEndHandler<Element extends HTMLElement> = (
+  context: UseHoneyDragOnEndContext,
   draggableElement: Element,
   e: MouseEvent | TouchEvent,
 ) => Promise<void>;
@@ -143,7 +143,7 @@ export type HoneyDragOnEndHandler<Element extends HTMLElement> = (
  * - How movement is handled
  * - What happens when dragging ends
  */
-export interface HoneyDragHandlers<Element extends HTMLElement> {
+export interface UseHoneyDragHandlers<Element extends HTMLElement> {
   /**
    * Optional handler triggered when the drag operation starts.
    * This is useful for capturing the initial state or performing any setup actions before the drag starts.
@@ -152,7 +152,7 @@ export interface HoneyDragHandlers<Element extends HTMLElement> {
    *
    * @returns A boolean or Promise resolving to a boolean indicating if the drag should proceed.
    */
-  onStartDrag?: HoneyDragOnStartHandler<Element>;
+  onStartDrag?: UseHoneyDragOnStartHandler<Element>;
   /**
    * Required handler triggered continuously during the drag operation.
    * This handler is responsible for updating the drag state and typically tracks the element's movement.
@@ -161,7 +161,7 @@ export interface HoneyDragHandlers<Element extends HTMLElement> {
    *
    * @returns A boolean or Promise resolving to a boolean indicating whether the drag should continue.
    */
-  onMoveDrag: HoneyDragOnMoveHandler<Element>;
+  onMoveDrag: UseHoneyDragOnMoveHandler<Element>;
   /**
    * Optional handler triggered when the drag operation ends.
    * This is commonly used for cleanup or finalizing the drag process.
@@ -171,7 +171,7 @@ export interface HoneyDragHandlers<Element extends HTMLElement> {
    *
    * @returns A Promise.
    */
-  onEndDrag?: HoneyDragOnEndHandler<Element>;
+  onEndDrag?: UseHoneyDragOnEndHandler<Element>;
 }
 
 /**
@@ -180,7 +180,9 @@ export interface HoneyDragHandlers<Element extends HTMLElement> {
  * These options affect lifecycle handling and enable/disable logic,
  * but do not influence movement physics directly.
  */
-export interface HoneyDragOptions<Element extends HTMLElement> extends HoneyDragHandlers<Element> {
+export interface UseHoneyDragOptions<
+  Element extends HTMLElement,
+> extends UseHoneyDragHandlers<Element> {
   /**
    * Controls whether the `onEndDrag` handler is skipped when the drag operation is forcibly stopped.
    * This can be useful when dragging is interrupted or terminated early due to movement restrictions.
@@ -223,7 +225,7 @@ export const useHoneyDrag = <Element extends HTMLElement>(
     onMoveDrag,
     onStartDrag,
     onEndDrag,
-  }: HoneyDragOptions<Element>,
+  }: UseHoneyDragOptions<Element>,
 ) => {
   useEffect(() => {
     const draggableElement = draggableElementRef.current;
@@ -274,7 +276,7 @@ export const useHoneyDrag = <Element extends HTMLElement>(
         const deltaX = lastX - startX;
         const deltaY = lastY - startY;
 
-        const endContext: HoneyDragEndContext = {
+        const endContext: UseHoneyDragOnEndContext = {
           deltaX,
           deltaY,
           velocityXPxMs,

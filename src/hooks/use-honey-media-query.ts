@@ -2,8 +2,8 @@ import { useEffect, useState } from 'react';
 import throttle from 'lodash.throttle';
 import type { HoneyTheme } from '@react-hive/honey-style';
 
-import { resolveScreenState } from '../helpers';
-import type { HoneyScreenState } from '../types';
+import { resolveScreenState } from '~/helpers';
+import type { HoneyScreenState } from '~/types';
 
 export interface UseHoneyMediaQueryOptions {
   /**

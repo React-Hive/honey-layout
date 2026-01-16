@@ -1,10 +1,13 @@
 import { useEffect } from 'react';
 
-import type { HoneyKeyboardEventCode } from '../types';
+import type { HoneyKeyboardEventCode } from '~/types';
 
-export type HoneyDocumentKeyUpHandler = (keyCode: HoneyKeyboardEventCode, e: KeyboardEvent) => void;
+export type UseHoneyDocumentOnKeyUpHandler = (
+  keyCode: HoneyKeyboardEventCode,
+  e: KeyboardEvent,
+) => void;
 
-interface UseHoneyDocumentKeyUpHandlerOptions {
+interface UseHoneyDocumentKeyUpOptions {
   /**
    * Whether the event listener should be active.
    *
@@ -27,13 +30,13 @@ interface UseHoneyDocumentKeyUpHandlerOptions {
  * This hook adds a `keyup` event listener at the document level and triggers the provided `keyUpHandler`
  * when one of the specified `listenKeys` is released.
  *
- * @param keyUpHandler - The callback function invoked when a matching key is released.
+ * @param onKeyUp - The callback function invoked when a matching key is released.
  * @param listenKeys - An array of key codes (`KeyboardEvent.code`) to listen for.
  * @param options - Optional configuration to control event behavior and listener activation.
  *
  * @example
  * ```tsx
- * useHoneyDocumentKeyUpHandler(
+ * useHoneyDocumentKeyUp(
  *   (keyCode, event) => {
  *     console.log('Key released:', keyCode);
  *   },
@@ -41,10 +44,10 @@ interface UseHoneyDocumentKeyUpHandlerOptions {
  * );
  * ```
  */
-export const useHoneyDocumentKeyUpHandler = (
-  keyUpHandler: HoneyDocumentKeyUpHandler,
+export const useHoneyDocumentKeyUp = (
+  onKeyUp: UseHoneyDocumentOnKeyUpHandler,
   listenKeys: HoneyKeyboardEventCode[],
-  { enabled = true, preventDefault = true }: UseHoneyDocumentKeyUpHandlerOptions = {},
+  { enabled = true, preventDefault = true }: UseHoneyDocumentKeyUpOptions = {},
 ) => {
   useEffect(() => {
     if (!enabled) {
@@ -59,7 +62,7 @@ export const useHoneyDocumentKeyUpHandler = (
           e.preventDefault();
         }
 
-        keyUpHandler(keyCode, e);
+        onKeyUp(keyCode, e);
       }
     };
 
@@ -68,5 +71,5 @@ export const useHoneyDocumentKeyUpHandler = (
     return () => {
       document.removeEventListener('keyup', handleKeyUp);
     };
-  }, [keyUpHandler, enabled, preventDefault]);
+  }, [onKeyUp, enabled, preventDefault]);
 };

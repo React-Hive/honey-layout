@@ -1,13 +1,13 @@
 import { act, renderHook } from '@testing-library/react';
 
-import { useHoneyDrag } from '../use-honey-drag';
+import type { UseHoneyDragOnMoveContext } from '~/hooks';
+import { useHoneyDrag } from '~/hooks';
 import {
   createTouch,
   dispatchWindowMouseEvent,
   dispatchWindowTouchEvent,
   setupDraggableElement,
 } from './use-honey-drag.test-utils';
-import type { HoneyDragMoveContext } from '../use-honey-drag';
 
 describe('[useHoneyDrag]: mouse-based dragging interaction', () => {
   const { getDraggableElement, dispatchDraggableElementMouseEvent } = setupDraggableElement();
@@ -96,7 +96,7 @@ describe('[useHoneyDrag]: mouse-based dragging interaction', () => {
   });
 
   it('should pass correct delta and distance values in move context', async () => {
-    const moveDragSpy = jest.fn((context: HoneyDragMoveContext) => Promise.resolve(true));
+    const moveDragSpy = jest.fn((context: UseHoneyDragOnMoveContext) => Promise.resolve(true));
 
     const draggableElement = getDraggableElement();
 

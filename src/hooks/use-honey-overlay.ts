@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 
-import { useHoneyLayout } from './use-honey-layout';
-import type { HoneyOverlayId, HoneyOverlayEventListenerHandler } from '../types';
+import { useHoneyLayout } from '~/hooks';
+import type { HoneyOverlayId, HoneyOverlayEventListenerHandler } from '~/types';
 
 interface UseHoneyOverlayOptions {
   onKeyUp?: HoneyOverlayEventListenerHandler;

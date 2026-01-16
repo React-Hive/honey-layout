@@ -1,16 +1,16 @@
 import { renderHook } from '@testing-library/react';
 
-import { useHoneyDocumentKeyUpHandler } from '../use-honey-document-key-up-handler';
+import { useHoneyDocumentKeyUp } from '~/hooks';
 
 export const dispatchDocumentKeyboardEvent = (eventName: string, eventData?: KeyboardEventInit) => {
   document.dispatchEvent(new KeyboardEvent(eventName, eventData));
 };
 
-describe('[useHoneyDocumentKeyUpHandler]: basic behavior', () => {
+describe('[useHoneyDocumentKeyUp]: basic behavior', () => {
   it('should call the handler when the specified key is released', () => {
     const keyUpSpy = jest.fn();
 
-    renderHook(() => useHoneyDocumentKeyUpHandler(keyUpSpy, ['Escape']));
+    renderHook(() => useHoneyDocumentKeyUp(keyUpSpy, ['Escape']));
 
     dispatchDocumentKeyboardEvent('keyup', {
       code: 'Escape',
@@ -23,7 +23,7 @@ describe('[useHoneyDocumentKeyUpHandler]: basic behavior', () => {
     const keyUpSpy = jest.fn();
 
     renderHook(() =>
-      useHoneyDocumentKeyUpHandler(keyUpSpy, ['Tab'], {
+      useHoneyDocumentKeyUp(keyUpSpy, ['Tab'], {
         enabled: false,
       }),
     );

@@ -3,11 +3,11 @@ import { noop } from '@react-hive/honey-utils';
 import { render } from '@testing-library/react';
 import type { ReactElement } from 'react';
 
-import { themeMock } from '../../__mocks__';
-import { useHoneyOverlay } from '../use-honey-overlay';
-import { HoneyLayoutProvider } from '../../providers';
-import { HoneyOverlay } from '../../components';
-import type { HoneyKeyboardEventCode } from '../../types';
+import { themeMock } from '~/__mocks__';
+import { useHoneyOverlay } from '~/hooks';
+import { HoneyLayoutProvider } from '~/providers';
+import { HoneyOverlay } from '~/components';
+import type { HoneyKeyboardEventCode } from '~/types';
 
 export const dispatchDocumentKeyboardEvent = (eventName: string, eventData?: KeyboardEventInit) => {
   document.dispatchEvent(new KeyboardEvent(eventName, eventData));
