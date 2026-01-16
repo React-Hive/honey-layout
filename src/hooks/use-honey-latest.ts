@@ -1,36 +1,27 @@
+import type { RefObject } from 'react';
 import { useRef } from 'react';
+
+type UseHoneyLatest = {
+  <T>(value: T): RefObject<T>;
+  <T>(value: T | undefined): RefObject<T | undefined>;
+};
 
 /**
  * Stores the latest value in a stable ref.
  *
- * This hook guarantees that:
- * - `ref.current` is always the latest value
- * - the returned ref object identity never changes
+ * Guarantees that:
+ * - `ref.current` always points to the latest value
+ * - the ref object identity never changes
  *
- * It is especially useful for:
- * - callbacks used inside `requestAnimationFrame`
- * - event listeners
- * - timers and intervals
- * - observers and imperative APIs
- *
- * @template T - The type of the stored value.
- *
- * @param value - The value to keep up to date.
- *
- * @returns A ref object whose `.current` always points to the latest value.
- *
- * @example
- * ```ts
- * const onStopRef = useHoneyLatest(onStop);
- *
- * // later, inside RAF / event / async code
- * onStopRef.current?.();
- * ```
+ * Overload behavior:
+ * - If a non-optional value is provided, `.current` is non-optional
+ * - If an optional value is provided, `.current` is optional
  */
-export const useHoneyLatest = <T>(value: T) => {
-  const ref = useRef(value);
+export const useHoneyLatest: UseHoneyLatest = <T>(
+  value: T | undefined,
+): RefObject<T | undefined> => {
+  const ref = useRef<T | undefined>(value);
 
-  // Always keep the latest value without changing ref identity
   ref.current = value;
 
   return ref;

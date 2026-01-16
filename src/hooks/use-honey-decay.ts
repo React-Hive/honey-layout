@@ -64,9 +64,30 @@ export interface UseHoneyDecayApi {
   /**
    * Updates the hard bounds used by the decay simulation.
    *
-   * The current value is clamped implicitly on the next frame if it lies outside the new bounds.
+   * This method is safe to call **at any time**, including while inertia is actively running.
    *
-   * This is intended for dynamic layouts where overflow can change (e.g. resize, content updates).
+   * ### Behavior
+   * - If the current value lies **within** the new bounds:
+   *   - bounds are updated
+   *   - inertia (if running) continues uninterrupted
+   *
+   * - If the current value lies **outside** the new bounds:
+   *   - the value is immediately clamped to the nearest boundary
+   *   - internal velocity is reset to `0`
+   *   - any active inertia is **terminated immediately**
+   *   - `onStop` is invoked exactly once (if inertia was active)
+   *
+   * This deterministic behavior mirrors native scroll engines and ensures:
+   * - no overshoot
+   * - no extra inertia frames
+   * - consistent `onStop` semantics
+   *
+   * ### Intended usage
+   * - Responding to layout or content changes
+   * - Handling resize / orientation changes
+   * - Updating overscroll or overflow limits dynamically
+   *
+   * ⚠️ This method should **not** be called from inside the RAF frame handler.
    *
    * @param min - New lower bound (inclusive)
    * @param max - New upper bound (inclusive)
@@ -229,20 +250,32 @@ export const useHoneyDecay = ({
 
   const rafLoop = useHoneyRafLoop(frameHandler);
 
-  const setBounds = useCallback((nextMin: number, nextMax: number) => {
-    minRef.current = nextMin;
-    maxRef.current = nextMax;
+  const setBounds = useCallback(
+    (nextMin: number, nextMax: number) => {
+      minRef.current = nextMin;
+      maxRef.current = nextMax;
 
-    if (valueRef.current < nextMin) {
-      valueRef.current = nextMin;
+      const currentValue = valueRef.current;
 
-      setValue(nextMin);
-    } else if (valueRef.current > nextMax) {
-      valueRef.current = nextMax;
+      if (currentValue < nextMin || currentValue > nextMax) {
+        const nextValue = Math.min(Math.max(currentValue, nextMin), nextMax);
 
-      setValue(nextMax);
-    }
-  }, []);
+        valueRef.current = nextValue;
+        velocityPxMsRef.current = 0;
+
+        setValue(nextValue);
+
+        if (hasActiveInertiaRef.current) {
+          hasActiveInertiaRef.current = false;
+
+          onStopRef.current?.();
+        }
+
+        rafLoop.stop();
+      }
+    },
+    [rafLoop.stop],
+  );
 
   const start = useCallback(
     (velocityPxMs: number) => {

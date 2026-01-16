@@ -123,8 +123,7 @@ export const useHoneyTimer = ({
   const [timeMs, setTimeMs] = useState(initialTimeMs);
   const timeRef = useHoneyLatest(timeMs);
 
-  const onEndRef = useRef<Nullable<UseHoneyTimerEndHandler>>(onEnd);
-  onEndRef.current = onEnd;
+  const onEndRef = useHoneyLatest<Nullable<UseHoneyTimerEndHandler>>(onEnd);
 
   /**
    * RAF frame handler responsible for advancing the timer.
