@@ -6,7 +6,7 @@ import type {
   HoneyScreenState,
   HoneyOverlayId,
   HoneyActiveOverlay,
-} from '../types';
+} from '~/types';
 
 /**
  * Function to unregister a previously registered overlay.

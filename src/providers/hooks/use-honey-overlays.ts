@@ -6,9 +6,9 @@ import type {
   HoneyActiveOverlay,
   HoneyOverlayEventListener,
   Nullable,
-} from '../../types';
-import type { HoneyRegisterOverlay, HoneyUnregisterOverlay } from '../../contexts';
-import { generateUniqueId } from '../../helpers';
+} from '~/types';
+import type { HoneyRegisterOverlay, HoneyUnregisterOverlay } from '~/contexts';
+import { generateUniqueId } from '~/helpers';
 
 /**
  * Hook to manage a stack of overlays, allowing registration and unregistration of overlays,

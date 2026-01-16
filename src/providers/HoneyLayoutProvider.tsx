@@ -3,11 +3,11 @@ import { HoneyStyleProvider } from '@react-hive/honey-style';
 import type { PropsWithChildren } from 'react';
 import type { HoneyStyleProviderProps } from '@react-hive/honey-style';
 
-import { useHoneyMediaQuery } from '../hooks';
-import { HoneyLayoutContext } from '../contexts';
+import { useHoneyMediaQuery } from '~/hooks';
+import { HoneyLayoutContext } from '~/contexts';
 import { useHoneyOverlays } from './hooks';
-import type { HoneyLayoutContextValue } from '../contexts';
-import type { UseHoneyMediaQueryOptions } from '../hooks';
+import type { HoneyLayoutContextValue } from '~/contexts';
+import type { UseHoneyMediaQueryOptions } from '~/hooks';
 
 interface HoneyLayoutProviderProps extends HoneyStyleProviderProps {
   mediaQueryOptions?: UseHoneyMediaQueryOptions;

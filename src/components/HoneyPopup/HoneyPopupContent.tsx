@@ -10,16 +10,14 @@ import type {
 } from '@floating-ui/react';
 import type { FastOmit } from '@react-hive/honey-style';
 
-import { HoneyOverlay } from '../HoneyOverlay';
-import { HoneyPopupContext } from './HoneyPopupContext';
+import { HoneyPopupContext, HoneyOverlay } from '~/components';
 import { HoneyPopupStyled } from './HoneyPopupStyled';
 import { HoneyPopupPortal } from './HoneyPopupPortal';
 import { useHoneyPopup } from './hooks';
+import type { HoneyPopupContextValue, HoneyOverlayProps } from '~/components';
 import type { HoneyPopupPortalProps } from './HoneyPopupPortal';
 import type { HoneyPopupStyledProps } from './HoneyPopupStyled';
-import type { HoneyPopupContextValue } from './HoneyPopupContext';
 import type { UseHoneyPopupOptions } from './hooks';
-import type { HoneyOverlayProps } from '../HoneyOverlay';
 
 type InheritedHoneyOverlayProps = FastOmit<
   HoneyOverlayProps,

@@ -4,7 +4,7 @@ import { HoneyStyleProvider } from '@react-hive/honey-style';
 import type { PropsWithChildren } from 'react';
 import type { HoneyTheme } from '@react-hive/honey-style';
 
-import { HoneyLayoutContext } from '../contexts';
+import { HoneyLayoutContext } from '~/contexts';
 
 interface HoneyLayoutThemeOverrideProps {
   theme: HoneyTheme;

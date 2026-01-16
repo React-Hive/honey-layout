@@ -1,7 +1,7 @@
 import type { RefObject, Ref, RefCallback } from 'react';
 import { isFunction, isObject } from '@react-hive/honey-utils';
 
-import type { Nullable } from '../types';
+import type { Nullable } from '~/types';
 
 /**
  * Merges multiple refs into a single ref callback.
