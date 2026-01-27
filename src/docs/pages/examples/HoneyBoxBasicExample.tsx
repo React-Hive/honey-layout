@@ -1,7 +1,7 @@
 import React from 'react';
 import { useHoneyStyle } from '@react-hive/honey-style';
 
-import { HoneyBox } from '../../../components';
+import { HoneyBox } from '~/components';
 
 export const HoneyBoxBasicExample = () => {
   const {

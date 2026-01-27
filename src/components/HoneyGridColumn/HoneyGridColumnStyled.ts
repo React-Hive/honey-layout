@@ -2,8 +2,9 @@ import { css, styled, resolveSpacing } from '@react-hive/honey-style';
 import type { ElementType } from 'react';
 import type { HoneyBreakpointName } from '@react-hive/honey-style';
 
-import { bpMedia } from '../../helpers';
+import { bpMedia } from '~/helpers';
 import { HoneyFlex } from '../HoneyFlex';
+import type { Nullable } from '~/types';
 import type { HoneyFlexProps } from '../HoneyFlex';
 
 export type HoneyGridColumnStyledProps<Element extends ElementType = 'div'> =
@@ -25,10 +26,19 @@ export type HoneyGridColumnStyledProps<Element extends ElementType = 'div'> =
      */
     takeColumns?: number;
     /**
-     * Specifies the breakpoint at which the max-width should be applied or disables it if set to `false`.
-     * Can be a breakpoint name.
+     * Specifies the breakpoint at which the max-width should be applied
+     * or disables it if set to `false`. Can be a breakpoint name.
      */
     applyMaxWidth?: HoneyBreakpointName | false;
+    /**
+     * Whether to apply calculated `flex-basis`.
+     *
+     * Useful when the column should size itself naturally
+     * (e.g. content-driven or flex-grow scenarios).
+     *
+     * @default true
+     */
+    applyBasis?: boolean;
   };
 
 /**
@@ -37,14 +47,18 @@ export type HoneyGridColumnStyledProps<Element extends ElementType = 'div'> =
  * and the spacing between columns.
  */
 export const HoneyGridColumnStyled = styled<HoneyGridColumnStyledProps>(HoneyFlex)`
-  ${({ columns, takeColumns = 1, spacing = 0, applyMaxWidth, theme }) => {
-    const fractionalWidth = 100 / columns;
+  ${({ columns, takeColumns = 1, spacing = 0, applyMaxWidth, applyBasis = true, theme }) => {
+    let columnWidth: Nullable<string> = null;
 
-    const columnSpacing = resolveSpacing(spacing, null)({ theme });
-    const columnWidthPercent = takeColumns * fractionalWidth;
-    const columnGap = (columns - takeColumns) * (columnSpacing / columns);
+    if (applyBasis) {
+      const fractionalWidth = 100 / columns;
 
-    const columnWidth = `calc(${columnWidthPercent}% - ${columnGap}px)`;
+      const columnSpacing = resolveSpacing(spacing, null)({ theme });
+      const columnWidthPercent = takeColumns * fractionalWidth;
+      const columnGap = (columns - takeColumns) * (columnSpacing / columns);
+
+      columnWidth = `calc(${columnWidthPercent}% - ${columnGap}px)`;
+    }
 
     return css`
       flex-basis: ${columnWidth};

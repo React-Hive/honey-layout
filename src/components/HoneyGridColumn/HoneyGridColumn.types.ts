@@ -5,5 +5,5 @@ import type { HoneyGridColumnStyledProps } from './HoneyGridColumnStyled';
 
 export type HoneyGridColumnProps<Element extends ElementType = 'div'> = FastOmit<
   HoneyGridColumnStyledProps<Element>,
-  'columns' | 'spacing' | 'totalColumns' | 'totalTakeColumns' | 'applyMaxWidth'
+  'columns' | 'spacing' | 'totalColumns' | 'totalTakeColumns' | 'applyMaxWidth' | '$flexBasis'
 >;
