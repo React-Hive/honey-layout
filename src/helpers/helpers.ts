@@ -211,7 +211,10 @@ export const bpMedia = (
 ) => {
   const resolveBpValue = (theme: HoneyTheme) => {
     const value = theme.breakpoints[breakpoint];
-    assert(value, `[honey-layout]: Setup for breakpoint "${breakpoint}" was not found.`);
+    assert(
+      value,
+      `[@react-hive/honey-layout]: Setup for breakpoint "${breakpoint}" was not found.`,
+    );
 
     return value;
   };

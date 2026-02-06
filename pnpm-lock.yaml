@@ -18,8 +18,8 @@ importers:
         specifier: ^2.0.0
         version: 2.13.0(@types/react@19.2.7)(react@19.2.3)(styled-components@6.1.19(react-dom@19.2.3(react@19.2.3))(react@19.2.3))
       '@react-hive/honey-utils':
-        specifier: 3.21.0
-        version: 3.21.0
+        specifier: 3.22.0
+        version: 3.22.0
       csstype:
         specifier: 3.2.3
         version: 3.2.3
@@ -722,8 +722,8 @@ packages:
       react: ^19.0.0
       styled-components: ^6.1.0
 
-  '@react-hive/honey-utils@3.21.0':
-    resolution: {integrity: sha512-EP6memhN9holHh0CJO1tHy7WP7a0lSllSOeKm/SP8Md/LFyP3P8hT+e8EFL0c5+kpG2Of5FOUg121yhND0Wq7w==}
+  '@react-hive/honey-utils@3.22.0':
+    resolution: {integrity: sha512-jnlBiEifbFHyOXiJU4sPAUN8JJoRqPrQPyU4TE1diraGy2OZRVyQ9uVdz/G8IsdiKY1y5GRPPpTzs7XPd23nYQ==}
 
   '@react-hive/honey-utils@3.7.0':
     resolution: {integrity: sha512-n6fnWcZ79vvfVz8f82PbqKLwUJu5t6gRMV1ah1zyWxwbehFT5XrUvniwh0g0CnOsw06vr+GGrvSXo9TpmGqzgg==}
@@ -4772,7 +4772,7 @@ snapshots:
     transitivePeerDependencies:
       - '@types/react'
 
-  '@react-hive/honey-utils@3.21.0': {}
+  '@react-hive/honey-utils@3.22.0': {}
 
   '@react-hive/honey-utils@3.7.0': {}
 

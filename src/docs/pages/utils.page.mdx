@@ -1,8 +1,6 @@
 import { styled, css, resolveColor } from '@react-hive/honey-style';
 
 import { bpMedia } from '../../helpers';
-import { flattenNestedList } from '../../utils';
-import { useHoneyLayout } from '../../hooks';
 
 export const ColoredBox = styled('div')`
   ${() => css`
@@ -39,44 +37,6 @@ export const ResponsiveBox = styled('div')`
   `}
 `;
 
-export const FlattenedList = () => {
-  const { theme } = useHoneyLayout()
-
-  const nestedList = [
-    {
-      id: 1,
-      name: 'Item 1',
-      children: [
-        {
-          id: 2,
-          name: 'Item 1.1',
-          children: [
-            { id: 3, name: 'Item 1.1.1', children: [] },
-            { id: 4, name: 'Item 1.1.2', children: [] }
-          ]
-        },
-        { id: 5, name: 'Item 1.2', children: [] }
-      ]
-    },
-    {
-      id: 6,
-      name: 'Item 2',
-      children: []
-    }
-  ];
-
-  const flatList = flattenNestedList(nestedList, 'id', 'children');
-
-  return (
-    <ul>
-      {flatList.map(item => (
-        <li key={item.id} style={{ marginLeft: item.depthLevel * theme.spacings.base * 2 }}>
-          {item.name} (Parent ID: {item.parentId ?? 'undefined'}, Total nested items: {item.totalNestedItems})
-        </li>
-      ))}
-    </ul>
-  )
-};
 
 # Utils
 
@@ -354,69 +314,4 @@ const ResponsiveBox = styled('div')`
     }
   `}
 `;
-```
-
-
-## flattenNestedList
----
-
-The `flattenNestedList` function converts a nested list structure into a flat list, excluding the nested list key from the result and adding `depthLevel`, `parentIndex`, and `totalNestedItems` properties to each item. This is useful for displaying hierarchical data in a flat structure while maintaining information about the hierarchy.
-
-### Parameters
-
-- `items`: The array of items to be flattened. This array can be undefined.
-- `itemIdKey`: The key in each item that uniquely identifies it.
-- `nestedItemsKey`: The key in each item that contains the nested list.
-
-### Returns
-
-A flat array of items, excluding the nested list key and including `depthLevel`, `parentIndex`, and `totalNestedItems` properties.
-
-### Usage
-
-Flattens a nested list structure to create a flat list with depth levels, parent indices, and total nested items, making it easier to display hierarchical data in components like lists or trees.
-
-<FlattenedList/>
-
-```tsx
-import { flattenNestedList, useHoneyLayout } from '@react-hive/honey-layout';
-
-export const FlattenedList = () => {
-  const { theme } = useHoneyLayout()
-
-  const nestedList = [
-    {
-      id: 1,
-      name: 'Item 1',
-      children: [
-        {
-          id: 2,
-          name: 'Item 1.1',
-          children: [
-            { id: 3, name: 'Item 1.1.1', children: [] },
-            { id: 4, name: 'Item 1.1.2', children: [] }
-          ]
-        },
-        { id: 5, name: 'Item 1.2', children: [] }
-      ]
-    },
-    {
-      id: 6,
-      name: 'Item 2',
-      children: []
-    }
-  ];
-
-  const flatList = flattenNestedList(nestedList, 'id', 'children');
-
-  return (
-    <ul>
-      {flatList.map(item => (
-        <li key={item.id} style={{ marginLeft: item.depthLevel * theme.spacings.base * 2 }}>
-          {item.name} (Parent ID: {item.parentId ?? 'undefined'}, Total nested items: {item.totalNestedItems})
-        </li>
-      ))}
-    </ul>
-  )
-};
 ```
