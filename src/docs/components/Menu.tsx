@@ -2,10 +2,9 @@ import React from 'react';
 import { NavLink } from 'react-router-dom';
 import { styled, css, resolveSpacing } from '@react-hive/honey-style';
 
+import { useHoneyLayout } from '~/hooks';
 import { PAGES } from '../constants';
-import { useHoneyLayout } from '../../hooks';
 import { useCurrentApp } from '../providers';
-import { bpMedia } from '../../helpers';
 
 interface MenuStyledProps {
   open: boolean;
@@ -32,17 +31,17 @@ const MenuStyled = styled<MenuStyledProps>('div')`
       : css`
           width: 0;
           padding: 0;
-        `}
+        `};
 
-    ${bpMedia('xs').down} {
+    @honey-media (xs:down) {
       width: ${open && '100%'};
     }
 
-    ${bpMedia('xs').up} {
+    @honey-media (xs:up) {
       border-right: 1px solid ${theme.colors.neutral.charcoalDark};
     }
 
-    ${bpMedia('sm').down} {
+    @honey-media (sm:down) {
       position: absolute;
       z-index: 999;
     }

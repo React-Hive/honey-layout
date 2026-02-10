@@ -1,7 +1,5 @@
 import { styled, css, resolveColor } from '@react-hive/honey-style';
 
-import { bpMedia } from '../../helpers';
-
 export const ColoredBox = styled('div')`
   ${() => css`
     width: 100px;
@@ -12,27 +10,6 @@ export const ColoredBox = styled('div')`
 
     &:hover {
         background-color: ${resolveColor('neutral.crimsonRed', 0.9)};
-    }
-  `}
-`;
-
-export const ResponsiveBox = styled('div')`
-  ${({ theme: { colors } }) => css`
-    width: 100px;
-    height: 100px;
-    margin: 0 auto;
-    background-color: ${colors.neutral.royalBlue};
-
-    ${bpMedia('sm').down} {
-        background-color: ${colors.neutral.mauve};
-    }
-
-    ${bpMedia('md').up} {
-        background-color: ${colors.neutral.coralRed};
-    }
-
-    ${bpMedia('lg').up} {
-        background-color: ${colors.neutral.forestGreen};
     }
   `}
 `;
@@ -248,70 +225,5 @@ import { styled, resolveDimension } from '@react-hive/honey-style';
 const Box = styled('div')`
   width: ${resolveDimension('width')}; /* Retrieves the 'width' dimension value from the theme */
   height: ${resolveDimension('height')};
-`;
-```
-
-## bpMedia
----
-
-The `bpMedia` utility function that returns functions for generating media queries for the specified breakpoint. The `down` function creates a media query for screen sizes smaller than the breakpoint, while the `up` function creates a media query for screen sizes larger than the breakpoint.
-
-### Parameters
-
-- `breakpoint`: The name of the breakpoint.
-- `ruleOptions`: Additional options for the media rule.
-
-### HoneyCSSMediaRule
-
-- `operator`: Operator for the media rule.
-- `mediaType`: Media type for the media rule.
-- `width`: Width for the media rule.
-- `minWidth`: Minimum width for the media rule.
-- `maxWidth`: Maximum width for the media rule.
-- `height`: Height for the media rule.
-- `minHeight`: Minimum height for the media rule.
-- `maxHeight`: Maximum height for the media rule.
-- `orientation`: Orientation for the media rule.
-- `resolution`: Resolution for the media rule.
-- `minResolution`: Minimum resolution for the media rule.
-- `maxResolution`: Maximum resolution for the media rule.
-- `update`: Update for the media rule.
-
-### Returns
-
-Functions for generating media queries:
-
-- `down`: Function that creates a media query for screen sizes smaller than the breakpoint.
-- `up`: Function that creates a media query for screen sizes larger than the breakpoint.
-
-### Usage
-
-Changes the background color of the box element responsively according to the screen size, adapting to small, medium, and large screens for a seamless user experience.
-
-<ResponsiveBox/>
-
-```tsx
-import { styled, css } from '@react-hive/honey-style';
-import { bpMedia } from '@react-hive/honey-layout';
-
-const ResponsiveBox = styled('div')`
-  ${({ theme: { colors } }) => css`
-    width: 100px;
-    height: 100px;
-    margin: 0 auto;
-    background-color: ${colors.neutral.royalBlue};
-
-    ${bpMedia('sm').down} {
-        background-color: ${colors.neutral.mauve};
-    }
-
-    ${bpMedia('md').up} {
-        background-color: ${colors.neutral.coralRed};
-    }
-
-    ${bpMedia('lg').up} {
-        background-color: ${colors.neutral.forestGreen};
-    }
-  `}
 `;
 ```

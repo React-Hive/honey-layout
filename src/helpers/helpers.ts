@@ -25,7 +25,7 @@ import type {
   HoneyCSSPropertyValue,
   Honey$PrefixedCSSProperty,
   Honey$PrefixedCSSProperties,
-} from '../types';
+} from '~/types';
 
 export const generateUniqueId = () => {
   const timestamp = Date.now().toString();
@@ -196,52 +196,6 @@ const hasBreakpointStyles = (
   );
 
 /**
- * Utility function that returns functions for generating media queries for the specified breakpoint.
- * The down function creates a media query for screen sizes smaller than the breakpoint,
- * while the up function creates a media query for screen sizes larger than the breakpoint.
- *
- * @param breakpoint - The name of the breakpoint.
- * @param [ruleOptions={}] - Additional options for the media rule.
- *
- * @returns Styled functions for generating media queries.
- */
-export const bpMedia = (
-  breakpoint: HoneyBreakpointName,
-  ruleOptions: FastOmit<HoneyMediaQueryRule, 'width' | 'minWidth' | 'maxWidth'> = {},
-) => {
-  const resolveBpValue = (theme: HoneyTheme) => {
-    const value = theme.breakpoints[breakpoint];
-    assert(
-      value,
-      `[@react-hive/honey-layout]: Setup for breakpoint "${breakpoint}" was not found.`,
-    );
-
-    return value;
-  };
-
-  const down: HoneyStyledFunction<object> = ({ theme }) =>
-    mediaQuery([
-      {
-        maxWidth: `${resolveBpValue(theme)}px`,
-        ...ruleOptions,
-      },
-    ]);
-
-  const up: HoneyStyledFunction<object> = ({ theme }) =>
-    mediaQuery([
-      {
-        minWidth: `${resolveBpValue(theme)}px`,
-        ...ruleOptions,
-      },
-    ]);
-
-  return {
-    down,
-    up,
-  };
-};
-
-/**
  * Applies CSS styles wrapped in a media query for the specified breakpoint based on the provided properties.
  * If no styles are found for the specified breakpoint or if the breakpoint configuration is missing,
  * it returns `null`. Otherwise, it generates media query styles using the `createStyles` function.
@@ -263,7 +217,7 @@ export const applyBreakpointStyles =
     }
 
     return css`
-      ${bpMedia(breakpoint).up} {
+      @honey-media (${breakpoint}:up) {
         ${createStyles(breakpoint)};
       }
     `;

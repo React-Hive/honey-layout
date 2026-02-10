@@ -2,7 +2,6 @@ import { css, styled, resolveSpacing } from '@react-hive/honey-style';
 import type { ElementType } from 'react';
 import type { HoneyBreakpointName } from '@react-hive/honey-style';
 
-import { bpMedia } from '~/helpers';
 import { HoneyFlex } from '../HoneyFlex';
 import type { Nullable } from '~/types';
 import type { HoneyFlexProps } from '../HoneyFlex';
@@ -65,7 +64,7 @@ export const HoneyGridColumnStyled = styled<HoneyGridColumnStyledProps>(HoneyFle
 
       ${applyMaxWidth &&
       css`
-        ${bpMedia(applyMaxWidth).up} {
+        @honey-media (${applyMaxWidth}:up) {
           max-width: ${columnWidth};
         }
       `}
