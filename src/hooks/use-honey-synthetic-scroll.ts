@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useRef } from 'react';
 import type { RefObject } from 'react';
-
-import { Axis } from '@react-hive/honey-utils';
+import type { Axis } from '@react-hive/honey-utils';
 import {
   resolveBoundedDelta,
   getXOverflowWidth,
@@ -9,6 +8,7 @@ import {
   parse2DMatrix,
   resolveAxisDelta,
 } from '@react-hive/honey-utils';
+import * as CSS from 'csstype';
 
 import type { Nullable } from '~/types';
 import type {
@@ -150,6 +150,33 @@ export interface UseHoneySyntheticScrollOptions<Element extends HTMLElement> ext
    */
   overscrollPct?: number;
   /**
+   * Controls how the hook applies scroll-related interaction styles
+   * (`touch-action` and `overscroll-behavior`) to the container.
+   *
+   * Synthetic scrolling often requires restricting native browser scrolling
+   * behavior to ensure consistent drag and wheel handling.
+   *
+   * However, in some embedded layouts (such as carousels placed inside a
+   * vertically scrollable page), applying these styles can unintentionally
+   * block natural page scrolling.
+   *
+   * ### Modes
+   * - `'default'` — Applies restrictive interaction styles:
+   *   - `overscroll-behavior: contain`
+   *   - Axis-aware `touch-action` (`pan-y`, `pan-x`, or `none`)
+   *
+   *   Recommended for standalone synthetic scroll containers.
+   *
+   * - `'embedded'` — Does not apply any interaction-blocking styles.
+   *
+   *   Recommended when the container is integrated into another scrollable
+   *   context (e.g. horizontal carousel inside a page), where native scroll
+   *   chaining must remain intact.
+   *
+   * @default 'default'
+   */
+  scrollMode?: 'default' | 'embedded';
+  /**
    * Whether to clear any applied translation transforms when the window resizes.
    *
    * Useful to keep the layout state consistent after dimension changes.
@@ -170,6 +197,26 @@ export interface UseHoneySyntheticScrollOptions<Element extends HTMLElement> ext
    * @default true
    */
   enablePointerScroll?: boolean;
+  /**
+   * Master toggle for the synthetic scroll behavior.
+   *
+   * When `true`, the hook:
+   * - Enables drag-based translation via {@link useHoneyDrag}.
+   * - Optionally resets transforms on resize via {@link useHoneyResize}.
+   * - Applies overscroll and touch-action styles.
+   * - Intercepts wheel / trackpad scroll input if {@link enablePointerScroll} is enabled.
+   *
+   * When `false`, the hook becomes completely inert:
+   * - No drag or wheel listeners are attached.
+   * - No transforms are applied.
+   * - Native scrolling behavior is preserved.
+   *
+   * Useful for conditionally disabling synthetic scrolling
+   * (e.g. mobile layouts, reduced motion, or feature flags).
+   *
+   * @default true
+   */
+  enabled?: boolean;
 }
 
 /**
@@ -199,8 +246,10 @@ export const useHoneySyntheticScroll = <Element extends HTMLElement>({
   overscrollPct = 0,
   onStartDrag,
   onEndDrag,
+  scrollMode = 'default',
   resetOnResize = true,
   enablePointerScroll = true,
+  enabled = true,
 }: UseHoneySyntheticScrollOptions<Element> = {}): RefObject<Nullable<Element>> => {
   const containerRef = useRef<Nullable<Element>>(null);
 
@@ -241,6 +290,7 @@ export const useHoneySyntheticScroll = <Element extends HTMLElement>({
   );
 
   useHoneyDrag(containerRef, {
+    enabled,
     onStartDrag: handleOnStartDrag,
     onMoveDrag: handleOnMoveDrag,
     onEndDrag: handleOnEndDrag,
@@ -254,17 +304,22 @@ export const useHoneySyntheticScroll = <Element extends HTMLElement>({
   }, []);
 
   useHoneyResize(resizeHandler, {
-    enabled: resetOnResize,
+    enabled: enabled && resetOnResize,
   });
 
   useEffect(() => {
     const container = containerRef.current;
-    if (!container) {
+    if (!enabled || !container) {
       return;
     }
 
-    container.style.overscrollBehavior = 'contain';
-    container.style.touchAction = 'none';
+    if (scrollMode === 'default') {
+      const touchAction: CSS.Properties['touchAction'] =
+        axis === 'x' ? 'pan-y' : axis === 'y' ? 'pan-x' : 'none';
+
+      container.style.overscrollBehavior = 'contain';
+      container.style.touchAction = touchAction;
+    }
 
     const handleOnWheel = (event: WheelEvent) => {
       const { deltaX, deltaY } = resolveAxisDelta(
@@ -293,14 +348,16 @@ export const useHoneySyntheticScroll = <Element extends HTMLElement>({
     }
 
     return () => {
-      container.style.removeProperty('overscroll-behavior');
-      container.style.removeProperty('touch-action');
+      if (scrollMode === 'default') {
+        container.style.removeProperty('overscroll-behavior');
+        container.style.removeProperty('touch-action');
+      }
 
       if (enablePointerScroll) {
         container.removeEventListener('wheel', handleOnWheel);
       }
     };
-  }, [enablePointerScroll]);
+  }, [scrollMode, enabled, enablePointerScroll]);
 
   return containerRef;
 };
