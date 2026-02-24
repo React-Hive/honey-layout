@@ -2,8 +2,8 @@ import { useContext } from 'react';
 import { assert } from '@react-hive/honey-utils';
 import type { ReferenceType } from '@floating-ui/react';
 
-import { HoneyPopupContext } from '~/components';
-import type { HoneyPopupContextValue } from '~/components';
+import { HoneyPopupContext } from '../../../components';
+import type { HoneyPopupContextValue } from '../../../components';
 
 export const useHoneyPopupContext = <
   Context,

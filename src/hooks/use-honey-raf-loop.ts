@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 
-import { __DEV__ } from '~/constants';
-import { useHoneyLatest } from '~/hooks';
-import type { Nullable } from '~/types';
+import { __DEV__ } from '../constants';
+import { useHoneyLatest } from '../hooks';
+import type { Nullable } from '../types';
 
 interface UseHoneyRafFrameContext {
   /**

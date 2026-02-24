@@ -1,6 +1,6 @@
 import { renderHook } from '@testing-library/react';
 
-import { useHoneyDocumentKeyUp } from '~/hooks';
+import { useHoneyDocumentKeyUp } from '../../hooks';
 
 export const dispatchDocumentKeyboardEvent = (eventName: string, eventData?: KeyboardEventInit) => {
   document.dispatchEvent(new KeyboardEvent(eventName, eventData));

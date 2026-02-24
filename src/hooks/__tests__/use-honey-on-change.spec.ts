@@ -1,6 +1,6 @@
 import { renderHook } from '@testing-library/react';
 
-import { useHoneyOnChange } from '~/hooks';
+import { useHoneyOnChange } from '../../hooks';
 
 describe('[useHoneyOnChange]: basic behavior', () => {
   it('should not call `onChange` on initial render', () => {

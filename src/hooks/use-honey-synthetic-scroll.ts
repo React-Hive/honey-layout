@@ -10,7 +10,7 @@ import {
 } from '@react-hive/honey-utils';
 import * as CSS from 'csstype';
 
-import type { Nullable } from '~/types';
+import type { Nullable } from '../types';
 import type {
   UseHoneyDragHandlers,
   UseHoneyDragOnEndHandler,

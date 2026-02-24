@@ -1,7 +1,7 @@
 import { act, renderHook } from '@testing-library/react';
 
-import type { UseHoneyDragOnMoveContext } from '~/hooks';
-import { useHoneyDrag } from '~/hooks';
+import type { UseHoneyDragOnMoveContext } from '../../hooks';
+import { useHoneyDrag } from '../../hooks';
 import {
   createTouch,
   dispatchWindowMouseEvent,

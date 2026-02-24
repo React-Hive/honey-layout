@@ -2,7 +2,7 @@ import React, { useContext, useMemo, useState } from 'react';
 import type { PropsWithChildren } from 'react';
 import { generateEphemeralId } from '@react-hive/honey-utils';
 
-import type { HoneyLayerEntry } from '~/components';
+import type { HoneyLayerEntry } from '../../components';
 import type { HoneyLayerRegistryContextValue } from './HoneyLayerRegistryContext';
 import { HoneyLayerRegistryContext } from './HoneyLayerRegistryContext';
 

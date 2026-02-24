@@ -25,7 +25,7 @@ import type {
   HoneyCSSPropertyValue,
   Honey$PrefixedCSSProperty,
   Honey$PrefixedCSSProperties,
-} from '~/types';
+} from '../types';
 
 export const generateUniqueId = () => {
   const timestamp = Date.now().toString();

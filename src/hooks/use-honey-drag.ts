@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import type { RefObject } from 'react';
 
-import type { Nullable } from '~/types';
+import type { Nullable } from '../types';
 
 /**
  * Invoked when a drag gesture is about to start.

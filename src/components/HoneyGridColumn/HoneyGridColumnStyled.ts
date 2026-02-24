@@ -3,7 +3,7 @@ import type { ElementType } from 'react';
 import type { HoneyBreakpointName } from '@react-hive/honey-style';
 
 import { HoneyFlex } from '../HoneyFlex';
-import type { Nullable } from '~/types';
+import type { Nullable } from '../../types';
 import type { HoneyFlexProps } from '../HoneyFlex';
 
 export type HoneyGridColumnStyledProps<Element extends ElementType = 'div'> =

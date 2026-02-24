@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useState } from 'react';
 
-import { useHoneyLatest, useHoneyRafLoop } from '~/hooks';
-import type { Nullable } from '~/types';
-import type { UseHoneyRafOnFrameHandler } from '~/hooks';
+import { useHoneyLatest, useHoneyRafLoop } from '../hooks';
+import type { Nullable } from '../types';
+import type { UseHoneyRafOnFrameHandler } from '../hooks';
 
 /**
  * Timer operating mode.

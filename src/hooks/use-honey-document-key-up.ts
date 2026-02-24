@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 
-import type { HoneyKeyboardEventCode } from '~/types';
+import type { HoneyKeyboardEventCode } from '../types';
 
 export type UseHoneyDocumentOnKeyUpHandler = (
   keyCode: HoneyKeyboardEventCode,

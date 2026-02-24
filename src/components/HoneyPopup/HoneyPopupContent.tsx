@@ -10,11 +10,11 @@ import type {
 } from '@floating-ui/react';
 import type { FastOmit } from '@react-hive/honey-style';
 
-import { HoneyPopupContext, HoneyOverlay } from '~/components';
+import { HoneyPopupContext, HoneyOverlay } from '../../components';
 import { HoneyPopupStyled } from './HoneyPopupStyled';
 import { HoneyPopupPortal } from './HoneyPopupPortal';
 import { useHoneyPopup } from './hooks';
-import type { HoneyPopupContextValue, HoneyOverlayProps } from '~/components';
+import type { HoneyPopupContextValue, HoneyOverlayProps } from '../../components';
 import type { HoneyPopupPortalProps } from './HoneyPopupPortal';
 import type { HoneyPopupStyledProps } from './HoneyPopupStyled';
 import type { UseHoneyPopupOptions } from './hooks';

@@ -1,6 +1,6 @@
 import { createContext } from 'react';
 
-import type { HoneyLayerId, HoneyLayerEntry } from '~/components';
+import type { HoneyLayerId, HoneyLayerEntry } from '../../components';
 
 /**
  * Context value exposed by {@link HoneyLayerRegistry}.

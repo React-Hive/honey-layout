@@ -2,7 +2,7 @@ import React from 'react';
 import { NavLink } from 'react-router-dom';
 import { styled, css, resolveSpacing } from '@react-hive/honey-style';
 
-import { useHoneyLayout } from '~/hooks';
+import { useHoneyLayout } from '../hooks';
 import { PAGES } from '../constants';
 import { useCurrentApp } from '../providers';
 

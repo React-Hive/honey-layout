@@ -2,8 +2,8 @@ import { useCallback, useRef, useState } from 'react';
 import type { InertiaOptions } from '@react-hive/honey-utils';
 import { applyInertiaStep } from '@react-hive/honey-utils';
 
-import type { UseHoneyRafOnFrameHandler } from '~/hooks';
-import { useHoneyLatest, useHoneyRafLoop } from '~/hooks';
+import type { UseHoneyRafOnFrameHandler } from '../hooks';
+import { useHoneyLatest, useHoneyRafLoop } from '../hooks';
 
 /**
  * Configuration options for {@link useHoneyDecay}.
