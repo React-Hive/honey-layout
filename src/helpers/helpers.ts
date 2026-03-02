@@ -1,21 +1,12 @@
 import * as CSS from 'csstype';
 import { CSS_COLOR_PROPERTIES, CSS_SPACING_PROPERTIES } from '@react-hive/honey-style';
-import { assert, camelToDashCase } from '@react-hive/honey-utils';
-import {
-  css,
-  checkIsThemeColorValue,
-  resolveColor,
-  mediaQuery,
-  resolveSpacing,
-} from '@react-hive/honey-style';
+import { camelToDashCase } from '@react-hive/honey-utils';
+import { css, checkIsThemeColorValue, resolveColor, resolveSpacing } from '@react-hive/honey-style';
 import type { HTMLAttributes } from 'react';
 import type {
-  FastOmit,
-  HoneyTheme,
   HoneyStyledFunction,
   HoneyBreakpointName,
   HoneyBreakpoints,
-  HoneyMediaQueryRule,
   HoneyCSSSpacingProperty,
   HoneyCSSColorProperty,
 } from '@react-hive/honey-style';
@@ -72,9 +63,8 @@ const checkIsColorCSSProperty = (
  *
  * @returns Returns true if the property is a valid prefixed CSS property, otherwise false.
  */
-const checkIs$PrefixedCSSProperty = (
-  propertyName: string,
-): propertyName is Honey$PrefixedCSSProperty => propertyName[0] === '$';
+const is$PrefixedCSSProperty = (propertyName: string): propertyName is Honey$PrefixedCSSProperty =>
+  propertyName[0] === '$';
 
 /**
  * Retrieves the CSS property value for a specific breakpoint, potentially resolving it to include units.
@@ -140,11 +130,14 @@ const matchCSSProperties = <Props extends HoneyStyledBoxProps>(
   props: Props,
   breakpoint: HoneyBreakpointName,
 ) =>
-  Object.entries(props).filter(
-    ([propertyName, propertyValue]) =>
-      (checkIs$PrefixedCSSProperty(propertyName) && breakpoint === 'xs') ||
-      (propertyValue && typeof propertyValue === 'object' && breakpoint in propertyValue),
-  ) as [Honey$PrefixedCSSProperty, CSS.Properties[keyof CSS.Properties]][];
+  Object.entries(props).filter(([propertyName, propertyValue]) => {
+    const isMatchingXsBreakpoint = breakpoint === 'xs' && is$PrefixedCSSProperty(propertyName);
+
+    return (
+      isMatchingXsBreakpoint ||
+      (propertyValue && typeof propertyValue === 'object' && breakpoint in propertyValue)
+    );
+  }) as [Honey$PrefixedCSSProperty, CSS.Properties[keyof CSS.Properties]][];
 
 /**
  * Generates CSS styles based on the provided breakpoint and properties.
@@ -190,7 +183,7 @@ const hasBreakpointStyles = (
 ): boolean =>
   Object.entries(props).some(
     ([propertyName, propertyValue]) =>
-      checkIs$PrefixedCSSProperty(propertyName) &&
+      is$PrefixedCSSProperty(propertyName) &&
       typeof propertyValue === 'object' &&
       breakpoint in propertyValue,
   );
