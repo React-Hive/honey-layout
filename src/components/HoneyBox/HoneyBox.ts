@@ -1,16 +1,16 @@
-import { HONEY_BREAKPOINTS, styled, css } from '@react-hive/honey-style';
-import type { ElementType } from 'react';
 import type { HoneyBreakpointName, HoneyStyledProps } from '@react-hive/honey-style';
+import { css, HONEY_BREAKPOINTS, styled } from '@react-hive/honey-style';
+import type { ElementType } from 'react';
 
 import { applyBreakpointStyles, createStyles } from '../../helpers';
-import type { Honey$PrefixedCSSProperties, HoneyEffectResultFn } from '../../types';
+import type { Honey$PrefixedCssProperties, HoneyEffectResultFn } from '../../types';
 
 const applyResponsiveStyles = (breakpoint: HoneyBreakpointName) =>
   breakpoint === 'xs' ? createStyles(breakpoint) : applyBreakpointStyles(breakpoint);
 
 export type HoneyBoxProps<Element extends ElementType = 'div'> = HoneyStyledProps<
   Element,
-  Honey$PrefixedCSSProperties & {
+  Honey$PrefixedCssProperties & {
     effects?: HoneyEffectResultFn<object>[];
   }
 >;

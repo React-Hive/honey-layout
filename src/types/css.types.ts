@@ -4,19 +4,19 @@
 import * as CSS from 'csstype';
 import type {
   HoneyBreakpointName,
-  HoneyStyledContext,
   HoneyColor,
-  HoneyCSSSpacingValue,
-  HoneyCSSColorProperty,
-  HoneyCSSSpacingProperty,
-  HoneyCSSShorthandSpacingProperty,
-  HoneyRawCSSSpacingValue,
+  HoneyCssColorProperty,
+  HoneyCssShorthandSpacingProperty,
+  HoneyCssSpacingProperty,
+  HoneyCssSpacingValue,
+  HoneyRawCssSpacingValue,
+  HoneyStyledContext,
 } from '@react-hive/honey-style';
 
 /**
  * @see https://developer.mozilla.org/en-US/docs/Web/CSS/easing-function/steps#step-position
  */
-type HoneyCSSStepFunctionPosition =
+type HoneyCssStepFunctionPosition =
   | 'jump-start'
   | 'jump-end'
   | 'jump-none'
@@ -27,7 +27,7 @@ type HoneyCSSStepFunctionPosition =
 /**
  * Defining the allowed timing functions for the transition
  */
-export type HoneyCSSTimingFunction =
+export type HoneyCssTimingFunction =
   // https://developer.mozilla.org/en-US/docs/Web/CSS/easing-function
   | 'ease'
   // https://developer.mozilla.org/en-US/docs/Web/CSS/easing-function/linear
@@ -42,14 +42,14 @@ export type HoneyCSSTimingFunction =
   | 'step-end'
   // https://developer.mozilla.org/en-US/docs/Web/CSS/easing-function/steps
   | `steps(${number})`
-  | `steps(${number}, ${HoneyCSSStepFunctionPosition})`;
+  | `steps(${number}, ${HoneyCssStepFunctionPosition})`;
 
 /**
  * A type representing a function that returns a value for a specific CSS property based on the provided theme.
  *
  * @template CSSProperty - The CSS property this function will generate a value for.
  */
-type HoneyCSSPropertyValueFn<CSSProperty extends keyof CSS.Properties> = (
+type HoneyCssPropertyValueFn<CSSProperty extends keyof CSS.Properties> = (
   context: HoneyStyledContext<object>,
 ) => CSS.Properties[CSSProperty];
 
@@ -65,13 +65,13 @@ type HoneyCSSPropertyValueFn<CSSProperty extends keyof CSS.Properties> = (
  *
  * @template CSSProperty - The name of the CSS property.
  */
-type HoneyRawCSSPropertyValue<CSSProperty extends keyof CSS.Properties> =
-  CSSProperty extends HoneyCSSColorProperty
+type HoneyRawCssPropertyValue<CSSProperty extends keyof CSS.Properties> =
+  CSSProperty extends HoneyCssColorProperty
     ? HoneyColor
-    : CSSProperty extends HoneyCSSShorthandSpacingProperty
-      ? HoneyCSSSpacingValue
-      : CSSProperty extends HoneyCSSSpacingProperty
-        ? HoneyRawCSSSpacingValue
+    : CSSProperty extends HoneyCssShorthandSpacingProperty
+      ? HoneyCssSpacingValue
+      : CSSProperty extends HoneyCssSpacingProperty
+        ? HoneyRawCssSpacingValue
         : CSS.Properties[CSSProperty];
 
 /**
@@ -85,10 +85,10 @@ type HoneyRawCSSPropertyValue<CSSProperty extends keyof CSS.Properties> =
  *
  * @template CSSProperty - The key of a CSS property for which values are defined.
  */
-type HoneyResponsiveCSSPropertyValue<CSSProperty extends keyof CSS.Properties> = {
+type HoneyResponsiveCssPropertyValue<CSSProperty extends keyof CSS.Properties> = {
   [K in HoneyBreakpointName]?:
-    | HoneyRawCSSPropertyValue<CSSProperty>
-    | HoneyCSSPropertyValueFn<CSSProperty>;
+    | HoneyRawCssPropertyValue<CSSProperty>
+    | HoneyCssPropertyValueFn<CSSProperty>;
 };
 
 /**
@@ -102,17 +102,17 @@ type HoneyResponsiveCSSPropertyValue<CSSProperty extends keyof CSS.Properties> =
  *
  * @template CSSProperty - The key of a CSS property to check.
  */
-export type HoneyCSSPropertyValue<CSSProperty extends keyof CSS.Properties> =
-  | HoneyRawCSSPropertyValue<CSSProperty>
-  | HoneyCSSPropertyValueFn<CSSProperty>
-  | HoneyResponsiveCSSPropertyValue<CSSProperty>;
+export type HoneyCssPropertyValue<CSSProperty extends keyof CSS.Properties> =
+  | HoneyRawCssPropertyValue<CSSProperty>
+  | HoneyCssPropertyValueFn<CSSProperty>
+  | HoneyResponsiveCssPropertyValue<CSSProperty>;
 
 /**
  * A utility type to add a `$` prefix to a given CSS property name.
  *
  * @template CSSProperty - The string type representing a CSS property name.
  */
-export type Honey$PrefixedCSSProperty<
+export type Honey$PrefixedCssProperty<
   CSSProperty extends keyof CSS.Properties = keyof CSS.Properties,
 > = `$${CSSProperty}`;
 
@@ -127,6 +127,6 @@ export type Honey$PrefixedCSSProperty<
  * };
  * ```
  */
-export type Honey$PrefixedCSSProperties = {
-  [CSSProperty in keyof CSS.Properties as Honey$PrefixedCSSProperty<CSSProperty>]?: HoneyCSSPropertyValue<CSSProperty>;
+export type Honey$PrefixedCssProperties = {
+  [CSSProperty in keyof CSS.Properties as Honey$PrefixedCssProperty<CSSProperty>]?: HoneyCssPropertyValue<CSSProperty>;
 };

@@ -1,6 +1,6 @@
 import { css } from '@react-hive/honey-style';
 
-import type { HoneyCSSTimingFunction, HoneyEffect } from './types';
+import type { HoneyCssTimingFunction, HoneyEffect } from './types';
 
 /**
  * Configuration object for defining the transition effect on visibility and opacity.
@@ -17,7 +17,7 @@ interface HoneyVisibilityTransitionEffectConfig {
    *
    * @default ease-in-out
    */
-  timingFunction?: HoneyCSSTimingFunction | HoneyCSSTimingFunction[];
+  timingFunction?: HoneyCssTimingFunction | HoneyCssTimingFunction[];
   /**
    * Additional CSS properties to include in the transition.
    * These properties will be animated alongside `opacity` and `visibility`.

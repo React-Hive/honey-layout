@@ -37,7 +37,7 @@ export const NestedThemeProvider = () => {
 To augment any interface, use the following module declaration.
 
 ~~~ts
-import type { HoneyCSSColor, HoneyFont } from '@react-hive/honey-style';
+import type { HoneyCssColor, HoneyFont } from '@react-hive/honey-style';
 
 type NeutralColors = 'charcoalDark' | 'charcoalGray' | 'crimsonRed';
 
@@ -50,7 +50,7 @@ declare module '@react-hive/honey-style' {
   }
 
   interface HoneyColors {
-    neutral: Record<NeutralColors, HoneyCSSColor>;
+    neutral: Record<NeutralColors, HoneyCssColor>;
     // Other colors can be defined in the same way
   }
 }
