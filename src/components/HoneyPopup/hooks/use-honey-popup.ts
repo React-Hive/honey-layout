@@ -1,42 +1,43 @@
-import { useEffect, useRef, useState } from 'react';
-import {
-  arrow,
-  autoUpdate,
-  flip,
-  offset,
-  shift,
-  size,
-  autoPlacement,
-  useFloating,
-  useFloatingNodeId,
-  useTransitionStyles,
-} from '@floating-ui/react';
-import { isFunction } from '@react-hive/honey-utils';
 import type { RefObject } from 'react';
-import type { Derivable } from '@floating-ui/dom';
+import { useEffect, useRef, useState } from 'react';
 import type {
+  ArrowOptions,
+  AutoPlacementOptions,
+  AutoUpdateOptions,
+  FlipOptions,
+  Middleware,
+  OffsetOptions,
+  OpenChangeReason,
   Rect,
   ReferenceType,
-  AutoUpdateOptions,
-  AutoPlacementOptions,
-  ArrowOptions,
-  FlipOptions,
-  OffsetOptions,
   ShiftOptions,
   SizeOptions,
-  Middleware,
-  OpenChangeReason,
   UseFloatingOptions,
   UseFloatingReturn,
   UseInteractionsReturn,
   UseTransitionStylesProps,
 } from '@floating-ui/react';
+import {
+  arrow,
+  autoPlacement,
+  autoUpdate,
+  flip,
+  offset,
+  shift,
+  size,
+  useFloating,
+  useFloatingNodeId,
+  useTransitionStyles,
+} from '@floating-ui/react';
+import { isFunction } from '@react-hive/honey-utils';
+import { useHoneyOnChange } from '@react-hive/honey-hooks';
+import type { Derivable } from '@floating-ui/dom';
 import type { FastOmit } from '@react-hive/honey-style';
 
-import { useHoneyLayout, useHoneyOnChange } from '../../../hooks';
+import { useHoneyLayout } from '../../../hooks';
+import type { UseHoneyPopupInteractionsOptions } from './use-honey-popup-interactions';
 import { useHoneyPopupInteractions } from './use-honey-popup-interactions';
 import type { Nullable } from '../../../types';
-import type { UseHoneyPopupInteractionsOptions } from './use-honey-popup-interactions';
 
 export interface UseHoneyPopupOptions<
   Reference extends ReferenceType,

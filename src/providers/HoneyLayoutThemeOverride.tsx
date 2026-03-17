@@ -1,8 +1,8 @@
+import type { PropsWithChildren } from 'react';
 import React, { useContext, useMemo } from 'react';
 import merge from 'lodash.merge';
-import { HoneyStyleProvider } from '@react-hive/honey-style';
-import type { PropsWithChildren } from 'react';
 import type { HoneyTheme } from '@react-hive/honey-style';
+import { HoneyStyleProvider } from '@react-hive/honey-style';
 
 import { HoneyLayoutContext } from '../contexts';
 
