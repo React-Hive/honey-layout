@@ -24,15 +24,6 @@ import type {
   HoneyScreenState,
 } from '../types';
 
-export const generateUniqueId = () => {
-  const timestamp = Date.now().toString();
-  const randomNum = Math.floor(Math.random() * 10000)
-    .toString()
-    .padStart(4, '0');
-
-  return `${timestamp}${randomNum}`;
-};
-
 /**
  * Type guard function that checks whether a given CSS property name
  * is classified as a spacing-related property.

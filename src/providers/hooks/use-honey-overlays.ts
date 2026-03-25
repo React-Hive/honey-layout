@@ -1,14 +1,14 @@
 import type { RefObject } from 'react';
 import { useCallback, useEffect, useRef } from 'react';
+import { generateEphemeralId } from '@react-hive/honey-utils';
 
 import type {
-  HoneyKeyboardEventCode,
   HoneyActiveOverlay,
+  HoneyKeyboardEventCode,
   HoneyOverlayEventListener,
   Nullable,
 } from '../../types';
 import type { HoneyRegisterOverlay, HoneyUnregisterOverlay } from '../../contexts';
-import { generateUniqueId } from '../../helpers';
 
 /**
  * Hook to manage a stack of overlays, allowing registration and unregistration of overlays,
@@ -45,7 +45,7 @@ export const useHoneyOverlays = () => {
    * @returns The registered overlay object.
    */
   const registerOverlay = useCallback<HoneyRegisterOverlay>(overlayConfig => {
-    const overlayId = overlayConfig.id ?? generateUniqueId();
+    const overlayId = overlayConfig.id ?? generateEphemeralId();
 
     const listeners: HoneyOverlayEventListener[] = [['keyup', overlayConfig.onKeyUp]];
     const containerRef: RefObject<Nullable<HTMLDivElement>> = {
