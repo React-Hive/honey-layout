@@ -1,7 +1,7 @@
+import type { ReactElement } from 'react';
 import React from 'react';
 import { noop } from '@react-hive/honey-utils';
 import { render } from '@testing-library/react';
-import type { ReactElement } from 'react';
 
 import { themeMock } from '../../__mocks__';
 import { useHoneyOverlay } from '../../hooks';
@@ -50,7 +50,7 @@ describe('[useHoneyOverlay]: basic behavior', () => {
   });
 
   it('should call `onKeyUp` handler with "Space" key code when the key is pressed', () => {
-    const keyUpSpy = jest.fn((keyCode: HoneyKeyboardEventCode) => {});
+    const keyUpSpy = vitest.fn((keyCode: HoneyKeyboardEventCode) => {});
 
     const OverlayConsumer = () => {
       useHoneyOverlay('test-overlay-id', {
@@ -74,7 +74,7 @@ describe('[useHoneyOverlay]: basic behavior', () => {
   });
 
   it('should call `onDeactivate` handler when the "Escape" key is pressed', () => {
-    const deactivateSpy = jest.fn();
+    const deactivateSpy = vitest.fn();
 
     customRender(
       <HoneyOverlay active={true} onDeactivate={deactivateSpy} overlayId="test-overlay-id">

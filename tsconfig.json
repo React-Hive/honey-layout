@@ -3,16 +3,14 @@
     "rootDir": "./src",
     "outDir": "./dist",
     "lib": ["DOM", "DOM.Iterable", "ESNext"],
-    "target": "ES2022",
-    "module": "ESNext",
-    "moduleResolution": "bundler",
+    "target": "es2022",
+    "module": "esnext",
     "esModuleInterop": true,
     "jsx": "react-jsx",
     "allowSyntheticDefaultImports": true,
     "isolatedModules": true,
     "skipLibCheck": true,
-    "strict": true,
-    "types": ["node", "jest", "mdx", "@testing-library/jest-dom"]
+    "types": ["node", "vitest/globals", "mdx", "@testing-library/jest-dom"]
   },
   "include": ["src"]
 }

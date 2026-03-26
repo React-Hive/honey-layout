@@ -57,7 +57,7 @@ describe('[HoneyLazyContent]: basic behavior', () => {
   });
 
   it('should keep content when `keepAfterMount` is true', () => {
-    jest.useFakeTimers();
+    vitest.useFakeTimers();
 
     const { queryByTestId, rerender } = render(
       <HoneyLazyContent mount={true} keepAfterMount={true} unmountDelay={0}>
@@ -71,10 +71,10 @@ describe('[HoneyLazyContent]: basic behavior', () => {
       </HoneyLazyContent>,
     );
 
-    act(() => jest.advanceTimersByTime(100));
+    act(() => vitest.advanceTimersByTime(100));
 
     expect(queryByTestId('content')).toHaveTextContent('Any content');
 
-    jest.useRealTimers();
+    vitest.useRealTimers();
   });
 });

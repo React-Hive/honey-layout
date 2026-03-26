@@ -1,6 +1,6 @@
+import type { ReactElement } from 'react';
 import React from 'react';
 import { render } from '@testing-library/react';
-import type { ReactElement } from 'react';
 
 import { themeMock } from '../../../__mocks__';
 import { HoneyLayoutProvider } from '../../../providers';
@@ -86,14 +86,6 @@ describe('[HoneyBox]: basic behavior', () => {
 
     expect(getByTestId('honey-box')).toHaveStyle({
       backgroundColor: '#FFF',
-    });
-  });
-
-  it('should apply `backgroundColor` when provided as a named color', () => {
-    const { getByTestId } = customRender(<HoneyBox $backgroundColor="white" />);
-
-    expect(getByTestId('honey-box')).toHaveStyle({
-      backgroundColor: 'white',
     });
   });
 

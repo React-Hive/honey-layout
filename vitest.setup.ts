@@ -4,8 +4,8 @@ class MockOrientation extends EventTarget {
   type: string = 'portrait-primary';
   angle: number = 0;
 
-  lock = jest.fn();
-  unlock = jest.fn();
+  lock = vitest.fn();
+  unlock = vitest.fn();
 }
 
 Object.defineProperty(window.screen, 'orientation', {
