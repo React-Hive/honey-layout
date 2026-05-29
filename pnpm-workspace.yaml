@@ -1,0 +1,4 @@
+allowBuilds:
+  esbuild: false
+minimumReleaseAgeExclude:
+  - '@react-hive/honey-style@6.0.0'
