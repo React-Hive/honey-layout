@@ -1,6 +1,6 @@
 {
   "name": "@react-hive/honey-layout",
-  "version": "17.0.0",
+  "version": "17.1.0",
   "description": "",
   "keywords": [
     "react",
@@ -44,7 +44,7 @@
     "!dist/**/__tests__"
   ],
   "peerDependencies": {
-    "@react-hive/honey-style": "^6.0.0",
+    "@react-hive/honey-style": "^6.1.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0"
   },
@@ -80,12 +80,12 @@
     "jsdom": "29.1.1",
     "prettier": "3.8.3",
     "style-loader": "4.0.0",
-    "ts-loader": "9.5.4",
+    "ts-loader": "9.6.0",
     "ts-node": "10.9.2",
-    "tsx": "4.22.3",
+    "tsx": "4.22.4",
     "typescript": "6.0.3",
     "typescript-eslint": "8.60.0",
-    "vitest": "4.1.7",
+    "vitest": "4.1.8",
     "webpack": "5.107.2",
     "webpack-cli": "7.0.3",
     "webpack-dev-server": "5.2.4"
