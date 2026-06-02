@@ -14,7 +14,7 @@ export const useHoneyLayout = () => {
   const context = useContext(HoneyLayoutContext);
   assert(
     context,
-    'The `useHoneyLayout()` hook must be used inside <HoneyLayoutProvider/> component!',
+    '[@react-hive/honey-layout]: The `useHoneyLayout()` hook must be used inside <HoneyLayoutProvider/> component.',
   );
 
   return context;

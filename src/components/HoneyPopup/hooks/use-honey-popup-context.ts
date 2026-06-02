@@ -15,7 +15,7 @@ export const useHoneyPopupContext = <
 
   assert(
     context,
-    'The `useHoneyPopupContext()` hook can only be used inside <HoneyPopup/> component!',
+    '[@react-hive/honey-layout]: The `useHoneyPopupContext()` hook can only be used inside <HoneyPopup/> component.',
   );
 
   return context;

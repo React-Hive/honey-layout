@@ -13,6 +13,8 @@ import type {
   HoneyStyledContext,
 } from '@react-hive/honey-style';
 
+import { HONEY_LAYOUT_CSS_PROPERTY_PREFIX } from '../constants';
+
 /**
  * @see https://developer.mozilla.org/en-US/docs/Web/CSS/easing-function/steps#step-position
  */
@@ -108,25 +110,29 @@ export type HoneyCssPropertyValue<CSSProperty extends keyof CSS.Properties> =
   | HoneyResponsiveCssPropertyValue<CSSProperty>;
 
 /**
- * A utility type to add a `$` prefix to a given CSS property name.
+ * A utility type that adds the configured CSS property prefix to a given CSS property name.
+ *
+ * The actual prefix is defined by `HONEY_LAYOUT_CSS_PROPERTY_PREFIX`.
  *
  * @template CSSProperty - The string type representing a CSS property name.
  */
-export type Honey$PrefixedCssProperty<
+export type HoneyPrefixedCssProperty<
   CSSProperty extends keyof CSS.Properties = keyof CSS.Properties,
-> = `$${CSSProperty}`;
+> = `${typeof HONEY_LAYOUT_CSS_PROPERTY_PREFIX}${CSSProperty}`;
 
 /**
- * Represents an object where each key is a prefixed CSS property (with a `$` prefix).
+ * Represents an object where each key is a CSS property name with the configured prefix.
+ *
+ * The actual prefix is defined by `HONEY_LAYOUT_CSS_PROPERTY_PREFIX`.
  *
  * Example:
- * ```
- * const styles: HoneyPrefixedCSSProperties = {
+ * ```ts
+ * const styles: HoneyPrefixedCssProperties = {
  *   $color: 'red',
- *   $fontSize: '12px'
+ *   $fontSize: '12px',
  * };
  * ```
  */
-export type Honey$PrefixedCssProperties = {
-  [CSSProperty in keyof CSS.Properties as Honey$PrefixedCssProperty<CSSProperty>]?: HoneyCssPropertyValue<CSSProperty>;
+export type HoneyPrefixedCssProperties = {
+  [CSSProperty in keyof CSS.Properties as HoneyPrefixedCssProperty<CSSProperty>]?: HoneyCssPropertyValue<CSSProperty>;
 };

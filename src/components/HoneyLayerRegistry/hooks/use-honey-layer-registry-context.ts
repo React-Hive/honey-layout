@@ -18,7 +18,7 @@ export const useHoneyLayerRegistryContext = <TPayload>() => {
 
   assert(
     context,
-    'The `useHoneyLayerRegistryContext()` hook can only be used inside <HoneyLayerRegistry/> component!',
+    '[@react-hive/honey-layout]: The `useHoneyLayerRegistryContext()` hook can only be used inside <HoneyLayerRegistry/> component.',
   );
 
   return context;

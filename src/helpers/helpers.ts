@@ -1,67 +1,40 @@
 import * as CSS from 'csstype';
-import type {
-  HoneyBreakpointName,
-  HoneyBreakpoints,
-  HoneyCssColorProperty,
-  HoneyCssSpacingProperty,
-  HoneyStyledFunction,
-} from '@react-hive/honey-style';
 import {
   css,
-  CSS_COLOR_PROPERTIES,
-  CSS_SPACING_PROPERTIES,
   isThemeColorValue,
   resolveColor,
   resolveSpacing,
+  isCssColorProperty,
+  isCssSpacingProperty,
 } from '@react-hive/honey-style';
-import { camelToDashCase } from '@react-hive/honey-utils';
+import { assert, camelToDashCase } from '@react-hive/honey-utils';
 import type { HTMLAttributes } from 'react';
-
 import type {
-  Honey$PrefixedCssProperties,
-  Honey$PrefixedCssProperty,
+  HoneyBreakpointName,
+  HoneyBreakpoints,
+  HoneyStyledFunction,
+} from '@react-hive/honey-style';
+
+import { HONEY_LAYOUT_CSS_PROPERTY_PREFIX } from '../constants';
+import type {
+  HoneyPrefixedCssProperties,
+  HoneyPrefixedCssProperty,
   HoneyCssPropertyValue,
   HoneyScreenState,
 } from '../types';
 
 /**
- * Type guard function that checks whether a given CSS property name
- * is classified as a spacing-related property.
+ * Determines whether a property name uses the configured CSS property prefix.
  *
- * Spacing properties include margin, padding, positional offsets,
- * and layout gaps (e.g., `gap`, `top`, `marginLeft`, etc.).
+ * This helper is prefix-agnostic by design. The actual prefix is defined by
+ * `HONEY_LAYOUT_CSS_PROPERTY_PREFIX`, which currently uses `$` for honey-layout CSS props.
  *
- * @param propertyName - The name of the CSS property to check.
+ * @param propertyName - The property name to check.
  *
- * @returns `true` if the property is a spacing property, otherwise `false`.
+ * @returns Returns true if the property name starts with the configured CSS property prefix.
  */
-const isSpacingCssProperty = (
-  propertyName: keyof CSS.Properties,
-): propertyName is HoneyCssSpacingProperty =>
-  (CSS_SPACING_PROPERTIES as string[]).includes(propertyName as string);
-
-/**
- * Type guard function to check if a property name is a color property.
- *
- * @param propertyName - The name of the CSS property.
- *
- * @returns True if the property name is a color property, false otherwise.
- */
-const isColorCssProperty = (
-  propertyName: keyof CSS.Properties,
-): propertyName is HoneyCssColorProperty =>
-  (CSS_COLOR_PROPERTIES as string[]).includes(propertyName as string);
-
-/**
- * Determines if a given HTML property is a CSS property that is prefixed with a '$'.
- * This convention is typically used for applying dynamic or responsive styles.
- *
- * @param propertyName - The HTML property or key to check.
- *
- * @returns Returns true if the property is a valid prefixed CSS property, otherwise false.
- */
-const is$PrefixedCssProperty = (propertyName: string): propertyName is Honey$PrefixedCssProperty =>
-  propertyName[0] === '$';
+const isPrefixedCssProperty = (propertyName: string): propertyName is HoneyPrefixedCssProperty =>
+  propertyName[0] === HONEY_LAYOUT_CSS_PROPERTY_PREFIX;
 
 /**
  * Retrieves the CSS property value for a specific breakpoint, potentially resolving it to include units.
@@ -98,11 +71,11 @@ const getCssPropertyValue = <CSSProperty extends keyof CSS.Properties>(
     return undefined;
   }
 
-  if (isSpacingCssProperty(propertyName)) {
+  if (isCssSpacingProperty(propertyName)) {
     if (typeof resolvedValue === 'number' || Array.isArray(resolvedValue)) {
       return resolveSpacing(resolvedValue, 'px');
     }
-  } else if (isColorCssProperty(propertyName)) {
+  } else if (isCssColorProperty(propertyName)) {
     if (typeof resolvedValue === 'string' && isThemeColorValue(resolvedValue)) {
       return resolveColor(resolvedValue);
     }
@@ -111,7 +84,7 @@ const getCssPropertyValue = <CSSProperty extends keyof CSS.Properties>(
   return resolvedValue;
 };
 
-export type HoneyStyledBoxProps = HTMLAttributes<HTMLElement> & Honey$PrefixedCssProperties;
+export type HoneyStyledBoxProps = HTMLAttributes<HTMLElement> & HoneyPrefixedCssProperties;
 
 /**
  * Filters and matches CSS properties from the provided props object based on the specified breakpoint.
@@ -128,13 +101,13 @@ const matchCssProperties = <Props extends HoneyStyledBoxProps>(
   breakpoint: HoneyBreakpointName,
 ) =>
   Object.entries(props).filter(([propertyName, propertyValue]) => {
-    const isMatchingXsBreakpoint = breakpoint === 'xs' && is$PrefixedCssProperty(propertyName);
+    const isMatchingXsBreakpoint = breakpoint === 'xs' && isPrefixedCssProperty(propertyName);
 
     return (
       isMatchingXsBreakpoint ||
       (propertyValue && typeof propertyValue === 'object' && breakpoint in propertyValue)
     );
-  }) as [Honey$PrefixedCssProperty, CSS.Properties[keyof CSS.Properties]][];
+  }) as [HoneyPrefixedCssProperty, CSS.Properties[keyof CSS.Properties]][];
 
 /**
  * Generates CSS styles based on the provided breakpoint and properties.
@@ -152,7 +125,9 @@ export const createStyles =
   (breakpoint: HoneyBreakpointName): HoneyStyledFunction<HoneyStyledBoxProps> =>
   ({ theme, ...props }) => css`
     ${matchCssProperties(props, breakpoint).map(([prefixedPropertyName, propertyValue]) => {
-      const propertyName = prefixedPropertyName.slice(1) as keyof CSS.Properties;
+      const propertyName = prefixedPropertyName.slice(
+        HONEY_LAYOUT_CSS_PROPERTY_PREFIX.length,
+      ) as keyof CSS.Properties;
 
       return css`
         ${camelToDashCase(propertyName)}: ${getCssPropertyValue(
@@ -180,7 +155,7 @@ const hasBreakpointStyles = (
 ): boolean =>
   Object.entries(props).some(
     ([propertyName, propertyValue]) =>
-      is$PrefixedCssProperty(propertyName) &&
+      isPrefixedCssProperty(propertyName) &&
       typeof propertyValue === 'object' &&
       breakpoint in propertyValue,
   );
@@ -202,7 +177,13 @@ export const applyBreakpointStyles =
   ({ theme, ...props }) => {
     const breakpointConfig = theme.breakpoints[breakpoint];
 
-    if (!breakpointConfig || !hasBreakpointStyles(breakpoint, props)) {
+    assert(
+      breakpointConfig,
+      `[@react-hive/honey-layout]: Missing breakpoint configuration for "${breakpoint}". ` +
+        `Expected theme.breakpoints.${breakpoint} to be defined.`,
+    );
+
+    if (!hasBreakpointStyles(breakpoint, props)) {
       return null;
     }
 
