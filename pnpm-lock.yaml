@@ -14,12 +14,15 @@ importers:
       '@floating-ui/react':
         specifier: 0.27.19
         version: 0.27.19(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
+      '@react-hive/honey-css':
+        specifier: ^1.19.0
+        version: 1.19.0
       '@react-hive/honey-hooks':
         specifier: 3.1.0
         version: 3.1.0(react@19.2.6)
       '@react-hive/honey-style':
-        specifier: ^7.0.0
-        version: 7.0.0(react-dom@19.2.6(react@19.2.6))(react@19.2.6)(styled-components@6.4.2(react-dom@19.2.6(react@19.2.6))(react@19.2.6))
+        specifier: ^8.0.0
+        version: 8.0.0(react-dom@19.2.6(react@19.2.6))(react@19.2.6)(styled-components@6.4.2(react-dom@19.2.6(react@19.2.6))(react@19.2.6))
       '@react-hive/honey-utils':
         specifier: 4.0.0
         version: 4.0.0
@@ -682,24 +685,21 @@ packages:
     resolution: {integrity: sha512-C2Xj8FZ0uHWeCXXqX5B4/gVFQmtSkiuOolzAgutjTfseNOHT3pUjljDZsTSxXFGgio54bCzVFqmEOUrIVk8RDA==}
     engines: {node: '>=20.0.0'}
 
-  '@react-hive/honey-css@1.17.1':
-    resolution: {integrity: sha512-bQ9SwCvwvtnrZzRtYESzxt9n30PQAP18I565bFK69MUC8w48HvbK+vY0DIvdemQWc3NgfZEuAdClBLv4Iof/Fg==}
-    engines: {node: '>=18'}
+  '@react-hive/honey-css@1.19.0':
+    resolution: {integrity: sha512-5nsFnq6Kh9Aok180MXD6L/rmRuGADhhBeiUGYfDtOg7vKkzeBfbX9bb8C39BULnH33XMlD1fBlKBlSMAnyOepQ==}
+    engines: {node: '>=24'}
 
   '@react-hive/honey-hooks@3.1.0':
     resolution: {integrity: sha512-hATvgiTCTdGuzMhkqW+bYpL4YA03prux606Xy8YMJy7CE5xD4E2wQ7Htmd/ExsC1tpkImr+CdmlD2HZ7KmGECg==}
     peerDependencies:
       react: ^19.0.0
 
-  '@react-hive/honey-style@7.0.0':
-    resolution: {integrity: sha512-Cz7LWBXDsIWMz43/TJjyOMog/37cRZuRyJuWqFCI4vt/mUjhgnX/8ggaBnRE2gOyq6q0D0xJUSrcDifAQuTEyQ==}
+  '@react-hive/honey-style@8.0.0':
+    resolution: {integrity: sha512-Ts2zGHOcrSTjP2zwBU8W+ZGnDDH4B+kMXIYuVLTwvqa9JRNWtDAuk9ZCzMao6PaTaH7xs8GFqURRQcmIeT89lw==}
     peerDependencies:
       react: ^19.0.0
       react-dom: ^19.0.0
       styled-components: ^6.1.0
-
-  '@react-hive/honey-utils@3.28.0':
-    resolution: {integrity: sha512-AJ+HNwDIk2Zivqq9Ol/6uj77YW7AYV/0ws3w5nXd3Uui5Bw2UTim/V/Vu/4elTsongMMCWE2X1L3EpMCgjtjfA==}
 
   '@react-hive/honey-utils@3.31.0':
     resolution: {integrity: sha512-ZEfHtsQNjOX+SRK+myOaig0Veykm2U2YX0Mb8QYI64PUdLLWrVJZUs4PsUyUL9H9tlG5qBfhZqnEKiuc1wzywg==}
@@ -4282,9 +4282,10 @@ snapshots:
       tslib: 2.8.1
       tsyringe: 4.10.0
 
-  '@react-hive/honey-css@1.17.1':
+  '@react-hive/honey-css@1.19.0':
     dependencies:
-      '@react-hive/honey-utils': 3.28.0
+      '@react-hive/honey-utils': 4.0.0
+      csstype: 3.2.3
 
   '@react-hive/honey-hooks@3.1.0(react@19.2.6)':
     dependencies:
@@ -4293,16 +4294,14 @@ snapshots:
       lodash.throttle: 4.1.1
       react: 19.2.6
 
-  '@react-hive/honey-style@7.0.0(react-dom@19.2.6(react@19.2.6))(react@19.2.6)(styled-components@6.4.2(react-dom@19.2.6(react@19.2.6))(react@19.2.6))':
+  '@react-hive/honey-style@8.0.0(react-dom@19.2.6(react@19.2.6))(react@19.2.6)(styled-components@6.4.2(react-dom@19.2.6(react@19.2.6))(react@19.2.6))':
     dependencies:
-      '@react-hive/honey-css': 1.17.1
+      '@react-hive/honey-css': 1.19.0
       '@react-hive/honey-utils': 4.0.0
       csstype: 3.2.3
       react: 19.2.6
       react-dom: 19.2.6(react@19.2.6)
       styled-components: 6.4.2(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
-
-  '@react-hive/honey-utils@3.28.0': {}
 
   '@react-hive/honey-utils@3.31.0': {}
 

@@ -3,11 +3,13 @@
  */
 import * as CSS from 'csstype';
 import type {
-  HoneyBreakpointName,
-  HoneyColor,
   HoneyCssColorProperty,
   HoneyCssShorthandSpacingProperty,
   HoneyCssSpacingProperty,
+} from '@react-hive/honey-css';
+import type {
+  HoneyBreakpointName,
+  HoneyColor,
   HoneyCssSpacingValue,
   HoneyRawCssSpacingValue,
   HoneyStyledContext,

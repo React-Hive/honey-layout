@@ -1,17 +1,17 @@
 import { css, HONEY_BREAKPOINTS, styled } from '@react-hive/honey-style';
 import type { ComponentPropsWithRef, ElementType } from 'react';
-import type {
-  HoneyHtmlDataAttributes,
-  HoneyStyledPropsWithAs,
-  HoneyBreakpointName,
-} from '@react-hive/honey-style';
+import type { HoneyStyledPropsWithAs, HoneyBreakpointName } from '@react-hive/honey-style';
 
 import { applyBreakpointStyles, createStyles } from '../../helpers';
 import type { HoneyPrefixedCssProperties, HoneyEffectResultFn } from '../../types';
 
+type HtmlDataAttributes = {
+  [key: `data-${string}`]: string | number;
+};
+
 type HoneyStyledProps<Element extends ElementType, Props extends object> = HoneyStyledPropsWithAs<
   Element,
-  HoneyHtmlDataAttributes & ComponentPropsWithRef<Element> & Props
+  HtmlDataAttributes & ComponentPropsWithRef<Element> & Props
 >;
 
 const applyResponsiveStyles = (breakpoint: HoneyBreakpointName) =>
