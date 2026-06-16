@@ -3,3 +3,4 @@ allowBuilds:
 minimumReleaseAgeExclude:
   - '@react-hive/honey-css@1.19.0'
   - '@react-hive/honey-style@8.0.0'
+  - ts-loader@9.6.1

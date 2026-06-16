@@ -1,6 +1,6 @@
 {
   "name": "@react-hive/honey-layout",
-  "version": "17.3.1",
+  "version": "17.3.2",
   "description": "",
   "keywords": [
     "react",
@@ -33,6 +33,7 @@
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
+      "development": "./dist/index.dev.cjs",
       "import": "./dist/index.mjs",
       "require": "./dist/index.cjs",
       "default": "./dist/index.mjs"
@@ -69,8 +70,8 @@
     "@types/lodash.merge": "4.6.9",
     "@types/lodash.throttle": "4.1.9",
     "@types/mdx": "2.0.13",
-    "@types/node": "24.12.4",
-    "@types/react": "^19.2.15",
+    "@types/node": "24.13.2",
+    "@types/react": "^19.2.17",
     "@types/react-dom": "^19.2.3",
     "copy-webpack-plugin": "14.0.0",
     "css-loader": "7.1.4",
@@ -81,15 +82,15 @@
     "jsdom": "29.1.1",
     "prettier": "3.8.3",
     "style-loader": "4.0.0",
-    "ts-loader": "9.6.0",
+    "ts-loader": "9.6.1",
     "ts-node": "10.9.2",
     "tsx": "4.22.4",
     "typescript": "6.0.3",
-    "typescript-eslint": "8.60.0",
-    "vitest": "4.1.8",
+    "typescript-eslint": "8.61.1",
+    "vitest": "4.1.9",
     "webpack": "5.107.2",
     "webpack-cli": "7.0.3",
-    "webpack-dev-server": "5.2.4"
+    "webpack-dev-server": "5.2.5"
   },
   "browserslist": [
     "defaults",
