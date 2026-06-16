@@ -148,16 +148,19 @@ export const HoneyPopupContent = <
                   // Data
                   data-testid="honey-popup-floating-content"
                 >
-                  {useArrow && (
-                    <FloatingArrow
-                      ref={arrowRef}
-                      context={floating.context}
-                      fill="white"
-                      {...arrowProps}
-                    />
-                  )}
+                  {/* Keep popup content wrapped in a single node to avoid React key warnings when content is a Fragment */}
+                  <>
+                    {useArrow && (
+                      <FloatingArrow
+                        ref={arrowRef}
+                        context={floating.context}
+                        fill="white"
+                        {...arrowProps}
+                      />
+                    )}
 
-                  {invokeIfFunction(content, popupContext)}
+                    {invokeIfFunction(content, popupContext)}
+                  </>
                 </HoneyOverlay>
               </FloatingFocusManager>
             </HoneyPopupPortal>
