@@ -15,6 +15,10 @@ export interface HoneyOverlayContext {
    */
   overlay: Nullable<HoneyActiveOverlay>;
   /**
+   * Indicates whether the overlay is currently active.
+   */
+  isActive: boolean;
+  /**
    * Function to deactivate the overlay. Typically, triggers the `onDeactivate` callback.
    */
   deactivateOverlay: () => void;
@@ -89,6 +93,7 @@ export const HoneyOverlay = ({
     <HoneyFlex ref={mergedRef} inert={!active} {...props}>
       {invokeIfFunction(children, {
         overlay,
+        isActive: active,
         deactivateOverlay: onDeactivate,
       })}
     </HoneyFlex>
