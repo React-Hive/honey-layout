@@ -1,14 +1,28 @@
 import { useEffect, useMemo } from 'react';
 
 import { useHoneyLayout } from '../hooks';
-import type { HoneyOverlayId, HoneyOverlayEventListenerHandler } from '../types';
+import type {
+  HoneyOverlayId,
+  HoneyOverlayEventListenerHandler,
+  HoneyActiveOverlay,
+  Nullable,
+} from '../types';
 
 interface UseHoneyOverlayOptions {
   /**
+   * Whether the hook should resolve the overlay and attach event listeners.
+   *
+   * When `false`, the hook returns `null` and does not register any listeners.
+   *
+   * @default true
+   */
+  enabled?: boolean;
+  /**
    * Callback fired when the active target overlay receives a keyup event.
    *
-   * The handler is registered only while the target overlay is active and is automatically
-   * removed when the overlay changes, the handler changes, or the component unmounts.
+   * The handler is registered only while the target overlay is active, the hook is enabled,
+   * and the handler is provided. It is automatically removed when the overlay changes,
+   * the handler changes, the hook is disabled, or the component unmounts.
    */
   onKeyUp?: HoneyOverlayEventListenerHandler;
 }
@@ -20,22 +34,26 @@ interface UseHoneyOverlayOptions {
  * It can also subscribe to overlay-level events, such as `keyup`, for the matched overlay.
  *
  * @param targetOverlayId - The ID of the active overlay to find.
- * @param options - Optional overlay event handlers.
+ * @param options - Optional configuration for resolving the overlay and attaching event handlers.
  *
- * @returns The matching active overlay instance, or `undefined` when the overlay is not registered.
+ * @returns The matching active overlay instance, or `null` when the hook is disabled
+ * or the overlay is not currently registered.
  *
  * @remarks
  * - The hook only works with overlays that are currently active.
- * - If the overlay is inactive, unregistered, or already removed from the stack, `undefined` is returned.
- * - The `onKeyUp` listener is attached only to the matched overlay.
- * - Event listeners are automatically cleaned up when the overlay, handler, or component lifecycle changes.
+ * - If `enabled` is `false`, the hook returns `null` and does not attach listeners.
+ * - If the overlay is inactive, unregistered, or already removed from the stack, `null` is returned.
+ * - The `onKeyUp` listener is attached only to the matched overlay while the hook is enabled.
+ * - Event listeners are automatically cleaned up when the overlay, handler, enabled state,
+ * or component lifecycle changes.
  *
  * @example
  * ```tsx
  * const overlay = useHoneyOverlay('my-overlay-id', {
+ *   enabled: isOpen,
  *   onKeyUp: (keyCode, overlay, e) => {
  *     if (keyCode === 'Escape') {
- *      //
+ *       // Handle Escape key.
  *     }
  *   },
  * });
@@ -43,17 +61,16 @@ interface UseHoneyOverlayOptions {
  */
 export const useHoneyOverlay = (
   targetOverlayId: HoneyOverlayId,
-  { onKeyUp }: UseHoneyOverlayOptions = {},
+  { enabled = true, onKeyUp }: UseHoneyOverlayOptions = {},
 ) => {
   const { overlays } = useHoneyLayout();
 
-  const overlay = useMemo(
-    () => overlays.find(overlay => overlay.id === targetOverlayId),
-    [overlays, targetOverlayId],
+  const overlay = useMemo<Nullable<HoneyActiveOverlay>>(
+    () => (enabled ? (overlays.find(overlay => overlay.id === targetOverlayId) ?? null) : null),
+    [enabled, overlays, targetOverlayId],
   );
 
   useEffect(() => {
-    // If no overlay is found or no `onKeyUp` handler is provided, skip setting up the listener
     if (!overlay || !onKeyUp) {
       return;
     }
