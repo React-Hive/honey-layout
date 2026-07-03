@@ -1,31 +1,41 @@
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 
 import { useHoneyLayout } from '../hooks';
 import type { HoneyOverlayId, HoneyOverlayEventListenerHandler } from '../types';
 
 interface UseHoneyOverlayOptions {
+  /**
+   * Callback fired when the active target overlay receives a keyup event.
+   *
+   * The handler is registered only while the target overlay is active and is automatically
+   * removed when the overlay changes, the handler changes, or the component unmounts.
+   */
   onKeyUp?: HoneyOverlayEventListenerHandler;
 }
 
 /**
- * Hook for interacting with an active overlay managed by `HoneyLayoutProvider`.
+ * Returns an active overlay by ID and optionally attaches overlay event listeners.
  *
- * @param targetOverlayId - The unique ID of the overlay you want to interact with.
- * @param options - Optional configuration such as event handlers (e.g., `onKeyUp`).
+ * This hook looks up an overlay registered in `HoneyLayoutProvider` by its ID.
+ * It can also subscribe to overlay-level events, such as `keyup`, for the matched overlay.
  *
- * @returns The overlay instance matching the provided ID, or `undefined` if not found.
+ * @param targetOverlayId - The ID of the active overlay to find.
+ * @param options - Optional overlay event handlers.
+ *
+ * @returns The matching active overlay instance, or `undefined` when the overlay is not registered.
  *
  * @remarks
- * - This hook only works with overlays that are currently active.
- * - If the overlay is not active or not registered, `undefined` will be returned.
- * - Event handlers like `onKeyUp` are automatically registered and cleaned up for the overlay.
+ * - The hook only works with overlays that are currently active.
+ * - If the overlay is inactive, unregistered, or already removed from the stack, `undefined` is returned.
+ * - The `onKeyUp` listener is attached only to the matched overlay.
+ * - Event listeners are automatically cleaned up when the overlay, handler, or component lifecycle changes.
  *
  * @example
  * ```tsx
  * const overlay = useHoneyOverlay('my-overlay-id', {
- *   onKeyUp: (keyCode, e) => {
+ *   onKeyUp: (keyCode, overlay, e) => {
  *     if (keyCode === 'Escape') {
- *       console.log('Escape key pressed!');
+ *      //
  *     }
  *   },
  * });
@@ -37,7 +47,10 @@ export const useHoneyOverlay = (
 ) => {
   const { overlays } = useHoneyLayout();
 
-  const overlay = overlays.find(overlay => overlay.id === targetOverlayId);
+  const overlay = useMemo(
+    () => overlays.find(overlay => overlay.id === targetOverlayId),
+    [overlays, targetOverlayId],
+  );
 
   useEffect(() => {
     // If no overlay is found or no `onKeyUp` handler is provided, skip setting up the listener
