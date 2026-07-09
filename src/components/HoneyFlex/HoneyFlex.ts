@@ -13,28 +13,31 @@ export type HoneyFlexProps<Element extends ElementType = 'div'> = HoneyBoxProps<
    * When enabled, this prop applies:
    * - `display: inline-flex`
    *
-   * When disabled (default), the layout uses:
-   * - `display: flex`
+   * When disabled, the layout uses:
+   * - `$display`, when explicitly provided
+   * - otherwise `display: flex`
    *
    * This is a semantic convenience prop intended for inline alignment scenarios
    * (e.g. buttons, badges, form controls).
    *
-   * If `$display` is explicitly provided, it always takes precedence over this prop.
+   * `inline` takes precedence over `$display`.
    *
    * @default false
    */
   inline?: boolean;
   /**
-   * Enables horizontal (row-based) layout.
+   * Enables horizontal row-based layout.
    *
    * When enabled, this prop applies:
    * - `flex-direction: row`
    *
-   * When disabled (default), the layout uses:
-   * - `flex-direction: column`
+   * When disabled, the layout uses:
+   * - `$flexDirection`, when explicitly provided
+   * - otherwise `flex-direction: column`
    *
-   * This is a semantic convenience prop. If `$flexDirection` is explicitly provided,
-   * it will always take precedence.
+   * This is a semantic convenience prop.
+   *
+   * `$flexDirection` takes precedence over `row`.
    *
    * @default false
    */
@@ -58,8 +61,8 @@ export type HoneyFlexProps<Element extends ElementType = 'div'> = HoneyBoxProps<
   /**
    * Centers children along the horizontal axis.
    *
-   * - In column layouts: maps to `align-items: center`
-   * - In row layouts: maps to `justify-content: center`
+   * - In column and column-reverse layouts: maps to `align-items: center`
+   * - In row and row-reverse layouts: maps to `justify-content: center`
    *
    * Ignored if `center` is enabled or if the corresponding explicit style prop is provided.
    *
@@ -69,8 +72,8 @@ export type HoneyFlexProps<Element extends ElementType = 'div'> = HoneyBoxProps<
   /**
    * Centers children along the vertical axis.
    *
-   * - In column layouts: maps to `justify-content: center`
-   * - In row layouts: maps to `align-items: center`
+   * - In column and column-reverse layouts: maps to `justify-content: center`
+   * - In row and row-reverse layouts: maps to `align-items: center`
    *
    * Ignored if `center` is enabled or if the corresponding explicit style prop is provided.
    *
@@ -101,7 +104,11 @@ export type HoneyFlexProps<Element extends ElementType = 'div'> = HoneyBoxProps<
  * - `centerX`, `centerY` → axis-aware centering helpers
  *
  * Semantic helpers exist purely for convenience and readability.
- * Any explicitly provided style props **always take precedence**.
+ *
+ * Precedence rules:
+ * - `inline` takes precedence over `$display`
+ * - `$flexDirection` takes precedence over `row`
+ * - `$alignItems` and `$justifyContent` take precedence over centering helpers
  *
  * ---
  *
@@ -122,7 +129,7 @@ export type HoneyFlexProps<Element extends ElementType = 'div'> = HoneyBoxProps<
  *
  * @example Horizontal layout
  * ```tsx
- * <HoneyFlex $gap={2} row/>
+ * <HoneyFlex $gap={2} row />
  * ```
  *
  * @example Column layout
@@ -153,10 +160,15 @@ export const HoneyFlex = styled<HoneyFlexProps>(
   }) => {
     const display = inline ? 'inline-flex' : ($display ?? 'flex');
     const flexDirection = $flexDirection ?? (row ? 'row' : 'column');
-    const isRow = flexDirection === 'row';
 
-    const shouldCenterAlignItems = center || (isRow ? centerY : centerX);
-    const shouldCenterJustifyContent = center || (isRow ? centerX : centerY);
+    const isRowDirection = flexDirection === 'row' || flexDirection === 'row-reverse';
+    const isColumnDirection = flexDirection === 'column' || flexDirection === 'column-reverse';
+
+    const shouldCenterAlignItems =
+      center || (isRowDirection ? centerY : isColumnDirection ? centerX : false);
+
+    const shouldCenterJustifyContent =
+      center || (isRowDirection ? centerX : isColumnDirection ? centerY : false);
 
     const alignItems = $alignItems ?? (shouldCenterAlignItems ? 'center' : undefined);
     const justifyContent = $justifyContent ?? (shouldCenterJustifyContent ? 'center' : undefined);
@@ -171,9 +183,9 @@ export const HoneyFlex = styled<HoneyFlexProps>(
           [
             '[@react-hive/honey-layout]: HoneyFlex.',
             'Semantic centering props conflict with explicit flex alignment styles:',
-            hasAlignConflict && `   - align-items is controlled by both semantics and $alignItems`,
+            hasAlignConflict && '   - align-items is controlled by both semantics and $alignItems',
             hasJustifyConflict &&
-              `   - justify-content is controlled by both semantics and $justifyContent`,
+              '   - justify-content is controlled by both semantics and $justifyContent',
             'Explicit styles always win. Remove one side to silence this warning.',
           ]
             .filter(Boolean)
