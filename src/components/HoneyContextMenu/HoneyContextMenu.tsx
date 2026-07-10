@@ -14,7 +14,9 @@ export interface HoneyContextMenuProps<
   Context,
   Reference extends ReferenceType,
   UseAutoSize extends boolean,
-> extends FastOmit<HoneyPopupProps<Context, Reference, UseAutoSize>, 'content'>,
+>
+  extends
+    FastOmit<HoneyPopupProps<Context, Reference, UseAutoSize>, 'content'>,
     Pick<
       HoneyContextMenuContentProps<Option, Context, Reference, UseAutoSize>,
       'options' | 'optionProps'
@@ -28,15 +30,15 @@ export interface HoneyContextMenuProps<
 
 export const HoneyContextMenu = <
   Option extends HoneyContextMenuOption<Context, Reference>,
-  Context,
-  Reference extends ReferenceType,
-  UseAutoSize extends boolean,
+  Context = undefined,
+  Reference extends ReferenceType = ReferenceType,
+  UseAutoSize extends boolean = false,
 >({
   children,
   subProps,
   options,
   optionProps,
-  clickOptions,
+  roleOptions,
   context,
   ...popupProps
 }: HoneyContextMenuProps<Option, Context, Reference, UseAutoSize>) => {
@@ -54,11 +56,10 @@ export const HoneyContextMenu = <
             {...subProps}
           />
         }
-        clickOptions={{
-          toggle: false,
-          ...clickOptions,
+        roleOptions={{
+          role: 'menu',
+          ...roleOptions,
         }}
-        useArrow={true}
         {...popupProps}
       >
         {children}
