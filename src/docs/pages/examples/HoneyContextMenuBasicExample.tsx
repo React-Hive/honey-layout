@@ -67,9 +67,6 @@ export const HoneyContextMenuBasicExample = () => {
       floatingOptions={{
         placement: 'top',
       }}
-      subProps={{
-        event: 'click',
-      }}
     >
       Open Context Menu
     </HoneyContextMenu>

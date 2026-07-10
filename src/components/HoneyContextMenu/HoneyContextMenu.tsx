@@ -19,13 +19,9 @@ export interface HoneyContextMenuProps<
     FastOmit<HoneyPopupProps<Context, Reference, UseAutoSize>, 'content'>,
     Pick<
       HoneyContextMenuContentProps<Option, Context, Reference, UseAutoSize>,
-      'options' | 'optionProps'
+      'options' | 'renderOption' | 'optionProps'
     > {
   children: ReactNode | ((context: HoneyPopupContextValue<Context, Reference>) => ReactNode);
-  subProps?: FastOmit<
-    HoneyContextMenuContentProps<Option, Context, Reference, UseAutoSize>,
-    'options' | 'optionProps'
-  >;
 }
 
 export const HoneyContextMenu = <
@@ -35,33 +31,32 @@ export const HoneyContextMenu = <
   UseAutoSize extends boolean = false,
 >({
   children,
-  subProps,
   options,
+  renderOption,
   optionProps,
   roleOptions,
   context,
-  ...popupProps
+  ...props
 }: HoneyContextMenuProps<Option, Context, Reference, UseAutoSize>) => {
-  const { contentProps } = popupProps;
-
   return (
     <HoneyPopup
       context={context}
       content={
         <HoneyContextMenuContent
           options={options}
+          renderOption={renderOption}
           optionProps={optionProps}
-          contentProps={contentProps}
-          {...subProps}
+          popupProps={props}
         />
       }
       roleOptions={{
         role: 'menu',
         ...roleOptions,
       }}
+      useArrow={true}
       // Data
       data-testid="honey-context-menu"
-      {...popupProps}
+      {...props}
     >
       {children}
     </HoneyPopup>

@@ -1,5 +1,6 @@
 import React from 'react';
 import { isFunction } from '@react-hive/honey-utils';
+import type { ReactNode } from 'react';
 import type { ReferenceType } from '@floating-ui/react';
 
 import { useHoneyPopupContext } from '../HoneyPopup';
@@ -13,6 +14,7 @@ export interface HoneyContextMenuContentOptionProps<
   Reference extends ReferenceType,
 > extends HoneyContextMenuContentOptionStyledProps {
   option: Option;
+  renderOption?: (option: Option) => ReactNode;
 }
 
 export const HoneyContextMenuContentOption = <
@@ -21,6 +23,7 @@ export const HoneyContextMenuContentOption = <
   Reference extends ReferenceType,
 >({
   option,
+  renderOption,
   ...props
 }: HoneyContextMenuContentOptionProps<Option, Context, Reference>) => {
   const { context, floatingContext } = useHoneyPopupContext<Context, Reference>();
@@ -45,7 +48,7 @@ export const HoneyContextMenuContentOption = <
       data-testid="honey-context-menu-option"
       {...props}
     >
-      {option.label}
+      {renderOption?.(option) ?? option.label}
     </HoneyContextMenuContentOptionStyled>
   );
 };
