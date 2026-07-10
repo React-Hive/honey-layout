@@ -25,13 +25,15 @@ export const HoneyContextMenuContentOption = <
 }: HoneyContextMenuContentOptionProps<Option, Context, Reference>) => {
   const { context, floatingContext } = useHoneyPopupContext<Context, Reference>();
 
-  const handleClick = () => {
-    option.onClick?.({ context, floatingContext });
-  };
-
   const isDisabled = isFunction(option.disabled)
     ? option.disabled({ context, floatingContext })
     : option.disabled === false;
+
+  const handleClick = () => {
+    if (!isDisabled) {
+      option.onClick?.({ context, floatingContext });
+    }
+  };
 
   return (
     <HoneyContextMenuContentOptionStyled
