@@ -27,7 +27,7 @@ export const HoneyContextMenuContentOption = <
 
   const isDisabled = isFunction(option.disabled)
     ? option.disabled({ context, floatingContext })
-    : option.disabled === false;
+    : option.disabled === true;
 
   const handleClick = () => {
     if (!isDisabled) {
