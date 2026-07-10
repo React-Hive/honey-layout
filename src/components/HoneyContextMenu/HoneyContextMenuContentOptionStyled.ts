@@ -7,4 +7,6 @@ export type HoneyContextMenuContentOptionStyledProps = HoneyFlexProps;
 
 export const HoneyContextMenuContentOptionStyled = styled(HoneyFlex, {
   row: true,
-})<HoneyContextMenuContentOptionStyledProps>``;
+})<HoneyContextMenuContentOptionStyledProps>`
+  cursor: pointer;
+`;
