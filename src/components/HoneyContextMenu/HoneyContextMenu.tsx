@@ -22,6 +22,10 @@ export interface HoneyContextMenuProps<
       'options' | 'renderOption' | 'optionProps'
     > {
   children: ReactNode | ((context: HoneyPopupContextValue<Context, Reference>) => ReactNode);
+  optionsProps?: FastOmit<
+    HoneyContextMenuContentProps<Option, Context, Reference, UseAutoSize>,
+    'options' | 'renderOption' | 'optionProps' | 'popupProps'
+  >;
 }
 
 export const HoneyContextMenu = <
@@ -35,6 +39,7 @@ export const HoneyContextMenu = <
   renderOption,
   optionProps,
   roleOptions,
+  optionsProps,
   context,
   ...props
 }: HoneyContextMenuProps<Option, Context, Reference, UseAutoSize>) => {
@@ -47,6 +52,7 @@ export const HoneyContextMenu = <
           renderOption={renderOption}
           optionProps={optionProps}
           popupProps={props}
+          {...optionsProps}
         />
       }
       roleOptions={{

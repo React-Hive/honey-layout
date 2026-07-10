@@ -59,7 +59,6 @@ export const HoneyContextMenuContent = <
     <HoneyList
       items={visibleOptions}
       itemKey="id"
-      emptyContent="No options"
       // Data
       data-testid="honey-context-menu-options"
       {...props}
@@ -74,6 +73,7 @@ export const HoneyContextMenuContent = <
                 renderOption={renderOption}
                 optionProps={optionProps}
                 popupProps={popupProps}
+                {...props}
               />
             }
             event="hover"
