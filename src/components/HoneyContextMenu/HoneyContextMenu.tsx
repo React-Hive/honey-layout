@@ -45,25 +45,25 @@ export const HoneyContextMenu = <
   const { contentProps } = popupProps;
 
   return (
-    <>
-      <HoneyPopup
-        context={context}
-        content={
-          <HoneyContextMenuContent
-            options={options}
-            optionProps={optionProps}
-            contentProps={contentProps}
-            {...subProps}
-          />
-        }
-        roleOptions={{
-          role: 'menu',
-          ...roleOptions,
-        }}
-        {...popupProps}
-      >
-        {children}
-      </HoneyPopup>
-    </>
+    <HoneyPopup
+      context={context}
+      content={
+        <HoneyContextMenuContent
+          options={options}
+          optionProps={optionProps}
+          contentProps={contentProps}
+          {...subProps}
+        />
+      }
+      roleOptions={{
+        role: 'menu',
+        ...roleOptions,
+      }}
+      // Data
+      data-testid="honey-context-menu"
+      {...popupProps}
+    >
+      {children}
+    </HoneyPopup>
   );
 };

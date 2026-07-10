@@ -15,5 +15,8 @@ export interface HoneyContextMenuOption<
   visible?:
     | boolean
     | ((executionContext: HoneyContextMenuOptionExecutionContext<Context, Reference>) => boolean);
+  disabled?:
+    | boolean
+    | ((executionContext: HoneyContextMenuOptionExecutionContext<Context, Reference>) => boolean);
   onClick?: (executionContext: HoneyContextMenuOptionExecutionContext<Context, Reference>) => void;
 }

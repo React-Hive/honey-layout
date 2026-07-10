@@ -1,16 +1,17 @@
 import React from 'react';
+import { isFunction } from '@react-hive/honey-utils';
 import type { ReferenceType } from '@floating-ui/react';
 
-import { HoneyBox } from '../HoneyBox';
 import { useHoneyPopupContext } from '../HoneyPopup';
-import type { HoneyBoxProps } from '../HoneyBox';
+import { HoneyContextMenuContentOptionStyled } from './HoneyContextMenuContentOptionStyled';
 import type { HoneyContextMenuOption } from './HoneyContextMenu.types';
+import type { HoneyContextMenuContentOptionStyledProps } from './HoneyContextMenuContentOptionStyled';
 
 export interface HoneyContextMenuContentOptionProps<
   Option extends HoneyContextMenuOption<Context, Reference>,
   Context,
   Reference extends ReferenceType,
-> extends HoneyBoxProps {
+> extends HoneyContextMenuContentOptionStyledProps {
   option: Option;
 }
 
@@ -28,9 +29,21 @@ export const HoneyContextMenuContentOption = <
     option.onClick?.({ context, floatingContext });
   };
 
+  const isDisabled = isFunction(option.disabled)
+    ? option.disabled({ context, floatingContext })
+    : option.disabled !== false;
+
   return (
-    <HoneyBox onClick={handleClick} {...props}>
+    <HoneyContextMenuContentOptionStyled
+      onClick={handleClick}
+      // ARIA
+      role="menuitem"
+      aria-disabled={isDisabled}
+      // Data
+      data-testid="honey-context-menu-option"
+      {...props}
+    >
       {option.label}
-    </HoneyBox>
+    </HoneyContextMenuContentOptionStyled>
   );
 };

@@ -1,4 +1,5 @@
 import React, { useMemo } from 'react';
+import { isFunction } from '@react-hive/honey-utils';
 import type { ReferenceType } from '@floating-ui/react';
 import type { FastOmit } from '@react-hive/honey-style';
 
@@ -15,9 +16,9 @@ export interface HoneyContextMenuContentProps<
   Reference extends ReferenceType,
   UseAutoSize extends boolean,
 > extends FastOmit<
-    HoneyPopupProps<Context, Reference, UseAutoSize>,
-    'children' | 'context' | 'content'
-  > {
+  HoneyPopupProps<Context, Reference, UseAutoSize>,
+  'children' | 'context' | 'content'
+> {
   options: Option[] | undefined;
   optionProps?: FastOmit<HoneyContextMenuContentOptionProps<Option, Context, Reference>, 'option'>;
 }
@@ -40,7 +41,7 @@ export const HoneyContextMenuContent = <
   const visibleOptions = useMemo<Option[] | undefined>(
     () =>
       options?.filter(option =>
-        typeof option.visible === 'function'
+        isFunction(option.visible)
           ? option.visible({ context, floatingContext })
           : option.visible !== false,
       ),
@@ -48,7 +49,13 @@ export const HoneyContextMenuContent = <
   );
 
   return (
-    <HoneyList items={visibleOptions} itemKey="id" emptyContent="No options">
+    <HoneyList
+      items={visibleOptions}
+      itemKey="id"
+      emptyContent="No options"
+      // Data
+      data-testid="honey-context-menu-options"
+    >
       {option =>
         option.options?.length ? (
           <HoneyPopup
@@ -69,6 +76,8 @@ export const HoneyContextMenuContent = <
               ...floatingOptions,
             }}
             useArrow={true}
+            // Data
+            data-testid="honey-sub-context-menu"
             {...popupProps}
           >
             <HoneyContextMenuContentOption
