@@ -109,7 +109,9 @@ export const HoneyPopupContent = <
   return (
     <HoneyPopupStyled
       ref={floating.refs.setReference}
-      {...interactions.getReferenceProps()}
+      {...interactions.getReferenceProps({
+        onClick: e => e.stopPropagation(),
+      })}
       {...referenceProps}
       // Data
       data-testid="honey-popup"

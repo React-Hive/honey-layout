@@ -1,11 +1,10 @@
 import React from 'react';
-import type { ReactNode } from 'react';
 import type { ReferenceType } from '@floating-ui/react';
 import type { FastOmit } from '@react-hive/honey-style';
 
 import { HoneyPopup } from '../HoneyPopup';
 import { HoneyContextMenuContent } from './HoneyContextMenuContent';
-import type { HoneyPopupContextValue, HoneyPopupProps } from '../HoneyPopup';
+import type { HoneyPopupProps } from '../HoneyPopup';
 import type { HoneyContextMenuOption } from './HoneyContextMenu.types';
 import type { HoneyContextMenuContentProps } from './HoneyContextMenuContent';
 
@@ -21,7 +20,6 @@ export interface HoneyContextMenuProps<
       HoneyContextMenuContentProps<Option, Context, Reference, UseAutoSize>,
       'options' | 'renderOption' | 'optionProps'
     > {
-  children: ReactNode | ((context: HoneyPopupContextValue<Context, Reference>) => ReactNode);
   optionsProps?: FastOmit<
     HoneyContextMenuContentProps<Option, Context, Reference, UseAutoSize>,
     'options' | 'renderOption' | 'optionProps' | 'popupProps'
@@ -34,7 +32,6 @@ export const HoneyContextMenu = <
   Reference extends ReferenceType = ReferenceType,
   UseAutoSize extends boolean = false,
 >({
-  children,
   options,
   renderOption,
   optionProps,
@@ -63,8 +60,6 @@ export const HoneyContextMenu = <
       // Data
       data-testid="honey-context-menu"
       {...props}
-    >
-      {children}
-    </HoneyPopup>
+    />
   );
 };
