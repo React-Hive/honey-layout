@@ -1,11 +1,13 @@
 import React from 'react';
 import { isFunction } from '@react-hive/honey-utils';
-import type { ReactNode } from 'react';
 import type { ReferenceType } from '@floating-ui/react';
 
 import { useHoneyPopupContext } from '../HoneyPopup';
 import { HoneyContextMenuContentOptionStyled } from './HoneyContextMenuContentOptionStyled';
-import type { HoneyContextMenuOption } from './HoneyContextMenu.types';
+import type {
+  HoneyContextMenuOption,
+  HoneyContextMenuRenderOptionHandler,
+} from './HoneyContextMenu.types';
 import type { HoneyContextMenuContentOptionStyledProps } from './HoneyContextMenuContentOptionStyled';
 
 export interface HoneyContextMenuContentOptionProps<
@@ -14,7 +16,7 @@ export interface HoneyContextMenuContentOptionProps<
   Reference extends ReferenceType,
 > extends HoneyContextMenuContentOptionStyledProps {
   option: Option;
-  renderOption?: (option: Option) => ReactNode;
+  renderOption?: HoneyContextMenuRenderOptionHandler<Option, Context, Reference>;
 }
 
 export const HoneyContextMenuContentOption = <
@@ -48,7 +50,7 @@ export const HoneyContextMenuContentOption = <
       data-testid="honey-context-menu-option"
       {...props}
     >
-      {renderOption?.(option) ?? option.label}
+      {renderOption?.({ option, context, isDisabled }) ?? option.label}
     </HoneyContextMenuContentOptionStyled>
   );
 };

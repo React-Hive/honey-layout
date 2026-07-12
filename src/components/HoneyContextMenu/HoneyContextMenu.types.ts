@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react';
 import type { FloatingContext, ReferenceType } from '@floating-ui/react';
 
 interface HoneyContextMenuOptionExecutionContext<Context, Reference extends ReferenceType> {
@@ -20,3 +21,19 @@ export interface HoneyContextMenuOption<
     | ((executionContext: HoneyContextMenuOptionExecutionContext<Context, Reference>) => boolean);
   onClick?: (executionContext: HoneyContextMenuOptionExecutionContext<Context, Reference>) => void;
 }
+
+interface RenderOptionExecutionContext<
+  Option extends HoneyContextMenuOption<Context, Reference>,
+  Context,
+  Reference extends ReferenceType,
+> {
+  option: Option;
+  context: Context | undefined;
+  isDisabled: boolean;
+}
+
+export type HoneyContextMenuRenderOptionHandler<
+  Option extends HoneyContextMenuOption<Context, Reference>,
+  Context,
+  Reference extends ReferenceType,
+> = (executionContext: RenderOptionExecutionContext<Option, Context, Reference>) => ReactNode;
