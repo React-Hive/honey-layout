@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef } from 'react';
+import { useCallback, useEffect, useMemo, useRef } from 'react';
 import { generateEphemeralId } from '@react-hive/honey-utils';
 import type { RefObject } from 'react';
 
@@ -11,17 +11,55 @@ import type {
 import type { HoneyRegisterOverlay, HoneyUnregisterOverlay } from '../../contexts';
 
 /**
- * Manages the active overlay stack and global keyboard event dispatching.
+ * Manages the active overlay stack and dispatches global keyboard events.
  *
- * The hook keeps registered overlays in stack order, where the latest registered overlay
- * is treated as the top-level overlay. Keyboard events are forwarded only to the top-level
- * overlay, allowing nested or overlapping overlays to handle key interactions predictably.
+ * Registered overlays are stored in a ref so adding or removing an overlay does not re-render
+ * the component that owns this hook. The hook exposes a snapshot getter and subscription
+ * function that consumers can use with `useSyncExternalStore` to react to stack changes.
  *
- * @returns An object containing the active overlays stack and helper methods for registering
- * and unregistering overlays.
+ * Overlays are kept in stack order. The most recently registered overlay is treated as the
+ * top-level overlay and is the only overlay that receives global keyboard events.
+ *
+ * @returns A stable overlay store containing methods for reading and subscribing to the stack,
+ * together with helpers for registering and unregistering overlays.
  */
 export const useHoneyOverlays = () => {
   const overlaysRef = useRef<HoneyActiveOverlay[]>([]);
+  const subscribersRef = useRef(new Set<() => void>());
+
+  /**
+   * Returns the current overlay stack snapshot.
+   *
+   * The snapshot keeps the same array identity until the stack changes, making this getter
+   * compatible with `useSyncExternalStore`.
+   *
+   * @returns The current active overlays in registration order.
+   */
+  const getOverlaysSnapshot = useCallback(() => overlaysRef.current, []);
+
+  /**
+   * Subscribes to overlay stack changes.
+   *
+   * The subscriber is notified after an overlay is registered or successfully unregistered.
+   * Subscribing does not itself cause the component that owns this hook to re-render.
+   *
+   * @param subscriber - Callback invoked whenever the overlay stack snapshot changes.
+   * @returns A cleanup function that removes the subscriber.
+   */
+  const subscribeOverlays = useCallback((subscriber: () => void) => {
+    subscribersRef.current.add(subscriber);
+
+    return () => {
+      subscribersRef.current.delete(subscriber);
+    };
+  }, []);
+
+  /**
+   * Notifies every overlay stack subscriber that a new snapshot is available.
+   */
+  const notifyOverlaySubscribers = useCallback(() => {
+    subscribersRef.current.forEach(subscriber => subscriber());
+  }, []);
 
   useEffect(() => {
     /**
@@ -57,6 +95,9 @@ export const useHoneyOverlays = () => {
    * The returned overlay object exposes methods for storing its container element,
    * subscribing to overlay events, removing event listeners, and notifying registered
    * listeners when matching events occur.
+   *
+   * Registering creates a new stack snapshot and notifies overlay stack subscribers without
+   * re-rendering the component that owns this hook.
    *
    * @param overlayConfig - The overlay configuration, including an optional ID, optional keyup
    * handler, and optional list of keyboard codes the overlay should listen to.
@@ -142,6 +183,8 @@ export const useHoneyOverlays = () => {
 
     overlaysRef.current = [...overlaysRef.current, overlay];
 
+    notifyOverlaySubscribers();
+
     return overlay;
   }, []);
 
@@ -149,16 +192,27 @@ export const useHoneyOverlays = () => {
    * Unregisters an overlay by ID and removes it from the overlay stack.
    *
    * This should usually be called when an overlay is deactivated or unmounted.
+   * Subscribers are notified only when an overlay with the supplied ID was present.
    *
    * @param targetOverlayId - The ID of the overlay to remove.
    */
   const unregisterOverlay = useCallback<HoneyUnregisterOverlay>(targetOverlayId => {
-    overlaysRef.current = overlaysRef.current.filter(overlay => overlay.id !== targetOverlayId);
+    const nextOverlays = overlaysRef.current.filter(overlay => overlay.id !== targetOverlayId);
+
+    if (nextOverlays.length !== overlaysRef.current.length) {
+      overlaysRef.current = nextOverlays;
+
+      notifyOverlaySubscribers();
+    }
   }, []);
 
-  return {
-    overlays: overlaysRef.current,
-    registerOverlay,
-    unregisterOverlay,
-  };
+  return useMemo(
+    () => ({
+      getOverlaysSnapshot,
+      registerOverlay,
+      subscribeOverlays,
+      unregisterOverlay,
+    }),
+    [],
+  );
 };
