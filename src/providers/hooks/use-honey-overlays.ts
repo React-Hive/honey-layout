@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 import { generateEphemeralId } from '@react-hive/honey-utils';
 import type { RefObject } from 'react';
 
@@ -21,7 +21,7 @@ import type { HoneyRegisterOverlay, HoneyUnregisterOverlay } from '../../context
  * and unregistering overlays.
  */
 export const useHoneyOverlays = () => {
-  const [overlays, setOverlays] = useState<HoneyActiveOverlay[]>([]);
+  const overlaysRef = useRef<HoneyActiveOverlay[]>([]);
 
   useEffect(() => {
     /**
@@ -33,12 +33,12 @@ export const useHoneyOverlays = () => {
      * @param e - The native keyboard event emitted by the document.
      */
     const handleKeyUp = (e: KeyboardEvent) => {
-      if (!overlays.length) {
+      if (!overlaysRef.current.length) {
         // No overlays to handle key events.
         return;
       }
 
-      const topLevelOverlay = overlays[overlays.length - 1];
+      const topLevelOverlay = overlaysRef.current[overlaysRef.current.length - 1];
 
       topLevelOverlay.notifyListeners('keyup', e.code as HoneyKeyboardEventCode, e);
     };
@@ -48,7 +48,7 @@ export const useHoneyOverlays = () => {
     return () => {
       document.removeEventListener('keyup', handleKeyUp);
     };
-  }, [overlays]);
+  }, []);
 
   /**
    * Registers a new overlay and adds it to the top of the overlay stack.
@@ -140,7 +140,7 @@ export const useHoneyOverlays = () => {
       },
     };
 
-    setOverlays(prevOverlays => [...prevOverlays, overlay]);
+    overlaysRef.current = [...overlaysRef.current, overlay];
 
     return overlay;
   }, []);
@@ -153,11 +153,11 @@ export const useHoneyOverlays = () => {
    * @param targetOverlayId - The ID of the overlay to remove.
    */
   const unregisterOverlay = useCallback<HoneyUnregisterOverlay>(targetOverlayId => {
-    setOverlays(prevOverlays => prevOverlays.filter(overlay => overlay.id !== targetOverlayId));
+    overlaysRef.current = overlaysRef.current.filter(overlay => overlay.id !== targetOverlayId);
   }, []);
 
   return {
-    overlays,
+    overlays: overlaysRef.current,
     registerOverlay,
     unregisterOverlay,
   };

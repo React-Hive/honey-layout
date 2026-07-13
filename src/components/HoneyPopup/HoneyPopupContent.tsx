@@ -1,6 +1,7 @@
 import React, { useMemo, useCallback } from 'react';
 import { FloatingArrow, FloatingFocusManager, FloatingNode } from '@floating-ui/react';
 import { invokeIfFunction } from '@react-hive/honey-utils';
+import { useHoneyLatest } from '@react-hive/honey-hooks';
 import type { CSSProperties, ReactNode } from 'react';
 import type {
   ReferenceType,
@@ -91,12 +92,14 @@ export const HoneyPopupContent = <
 }: HoneyPopupContentProps<Context, Reference, UseAutoSize>) => {
   const { useArrow, onClose } = popupOptions;
 
+  const onCloseRef = useHoneyLatest(onClose);
+
   const { nodeId, floating, isOpen, arrowRef, interactions, transition } =
     useHoneyPopup(popupOptions);
 
   const handleDeactivateOverlay = useCallback(() => {
-    onClose?.('escape-key');
-  }, [onClose]);
+    onCloseRef.current?.('escape-key');
+  }, []);
 
   const popupContext = useMemo<HoneyPopupContextValue<Context, Reference>>(
     () => ({
