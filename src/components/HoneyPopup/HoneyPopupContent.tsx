@@ -2,7 +2,7 @@ import React, { useMemo, useCallback } from 'react';
 import { FloatingArrow, FloatingFocusManager, FloatingNode } from '@floating-ui/react';
 import { invokeIfFunction } from '@react-hive/honey-utils';
 import { useHoneyLatest } from '@react-hive/honey-hooks';
-import type { CSSProperties, ReactNode } from 'react';
+import type { CSSProperties, ReactNode, HTMLProps } from 'react';
 import type {
   ReferenceType,
   FloatingArrowProps,
@@ -31,6 +31,7 @@ export interface HoneyPopupContentProps<
   UseAutoSize extends boolean,
 > extends UseHoneyPopupOptions<Reference, UseAutoSize> {
   children: ReactNode | ((context: HoneyPopupContextValue<Context, Reference>) => ReactNode);
+  referenceUserProps?: HTMLProps<Element>;
   referenceProps?: FastOmit<HoneyPopupStyledProps, 'children' | 'content'>;
   /**
    * Content inside the popup.
@@ -80,6 +81,7 @@ export const HoneyPopupContent = <
   UseAutoSize extends boolean,
 >({
   children,
+  referenceUserProps,
   referenceProps,
   content,
   contentProps,
@@ -112,9 +114,7 @@ export const HoneyPopupContent = <
   return (
     <HoneyPopupStyled
       ref={floating.refs.setReference}
-      {...interactions.getReferenceProps({
-        onClick: e => e.stopPropagation(),
-      })}
+      {...interactions.getReferenceProps(referenceUserProps)}
       {...referenceProps}
       // Data
       data-testid="honey-popup"
