@@ -35,6 +35,7 @@ export const HoneyContextMenu = <
   options,
   renderOption,
   optionProps,
+  referenceUserProps,
   roleOptions,
   optionsProps,
   context,
@@ -43,6 +44,10 @@ export const HoneyContextMenu = <
   return (
     <HoneyPopup
       context={context}
+      referenceUserProps={{
+        onClick: e => e.stopPropagation(),
+        ...referenceUserProps,
+      }}
       content={
         <HoneyContextMenuContent
           options={options}
