@@ -5,3 +5,4 @@ minimumReleaseAgeExclude:
   - '@react-hive/honey-style@8.0.0'
   - ts-loader@9.6.1
   - prettier@3.9.5
+  - tsx@4.23.5
