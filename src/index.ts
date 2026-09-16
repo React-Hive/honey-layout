@@ -3,7 +3,7 @@ import { resolveSpacing as deprecatedImport__resolveSpacing } from '@react-hive/
 /**
  * @deprecated Please, use import from `@react-hive/honey-style`
  */
-const resolveSpacing = deprecatedImport__resolveSpacing;
+const resolveSpacing: typeof deprecatedImport__resolveSpacing = deprecatedImport__resolveSpacing;
 
 export { resolveSpacing };
 
