@@ -23,8 +23,18 @@ export interface UseHoneyMediaQueryOptions {
 }
 
 /**
+ * Whether two screen states hold the same value for every flag.
+ */
+const isSameScreenState = (a: HoneyScreenState, b: HoneyScreenState) =>
+  (Object.keys(b) as (keyof HoneyScreenState)[]).every(key => a[key] === b[key]);
+
+/**
  * The hook that tracks the current screen state based on the theme's media breakpoints.
  * It updates the state on window resize and orientation change.
+ *
+ * The state object is kept until one of its flags changes, so resizing within a breakpoint
+ * re-renders nothing that reads it. Mobile browsers fire `resize` whenever their toolbar
+ * collapses on scroll.
  *
  * @param theme - Theme object.
  * @param options - Optional configuration object.
@@ -43,10 +53,14 @@ export const useHoneyMediaQuery = (
 
   useEffect(() => {
     const handleResize = throttle(() => {
-      setScreenState({
+      const nextScreenState: HoneyScreenState = {
         ...resolveScreenState(theme.breakpoints),
         ...overrideScreenState,
-      });
+      };
+
+      setScreenState(prevScreenState =>
+        isSameScreenState(prevScreenState, nextScreenState) ? prevScreenState : nextScreenState,
+      );
     }, resizeThrottle);
 
     handleResize();

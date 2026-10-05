@@ -1,7 +1,2 @@
 allowBuilds:
   esbuild: true
-
-minimumReleaseAgeExclude:
-  - '@react-hive/honey-css@1.20.0'
-  - '@types/node@24.13.5'
-  - prettier@3.9.7

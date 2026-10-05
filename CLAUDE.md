@@ -124,7 +124,10 @@ layer over `HoneyPopup`. Prop objects are passed down by slot (`referenceProps`,
 
 `useHoneyMediaQuery(theme, options)` derives `HoneyScreenState` (`isXs`..`isXl`, `isPortrait`/`isLandscape`) from
 `theme.breakpoints`, `window.innerWidth`, and `window.screen.orientation`, with a throttled resize listener. It runs
-once inside `HoneyLayoutProvider`; consumers read `screenState` from `useHoneyLayout()`. Because it touches
+once inside `HoneyLayoutProvider`; consumers read `screenState` from `useHoneyLayout()`. The state object keeps
+its identity until a flag changes (`isSameScreenState`), so a resize within a breakpoint leaves the context value
+untouched — **do not set a fresh object per event**, or every `useHoneyLayout()` consumer re-renders on each
+resize (mobile browsers fire one whenever their toolbar collapses on scroll). Because it touches
 `screen.orientation`, `vitest.setup.ts` installs a mock for it — jsdom does not provide one.
 
 ### Effects
