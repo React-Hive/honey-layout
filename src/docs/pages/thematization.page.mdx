@@ -4,22 +4,31 @@
 
 ### HoneyLayoutThemeOverride
 
-Provides a theme override context to its children.
-Merges the provided theme with the existing theme from the `ThemeContext`.
+Overrides parts of the theme for its children.
+The `theme` prop is a partial theme: only the keys that change are needed. They are deep-merged into a copy of the nearest Honey style theme (from `HoneyLayoutProvider` or a parent `HoneyLayoutThemeOverride`), so the parent theme is never mutated.
 
 You can nest instances of `HoneyLayoutThemeOverride` within each other to provide different themes to different parts of your application.
 Each nested `HoneyLayoutThemeOverride` merges its theme with the theme provided by its parent.
 
+Styled components and `useHoneyStyle().theme` receive the merged theme, while `useHoneyLayout()` keeps the provider's theme and screen state, so a `breakpoints` override affects `@honey-media` rules but not `screenState`.
+
 ### Usage
 
-In this example, `NestedThemeProvider` is a component that provides a specific theme (nestedTheme) to its children.
-This nested instance of `HoneyLayoutThemeOverride` merges nested theme with the theme provided by its parent `HoneyLayoutProvider` or `HoneyLayoutThemeOverride`.
+In this example, `NestedThemeProvider` overrides one primary color for its children and keeps the rest of the parent theme.
+Pass a stable object (a module-level constant or a memoized value), since a new object re-creates the merged theme on every render.
 
 ~~~tsx
 import { HoneyLayoutProvider, HoneyLayoutThemeOverride } from '@react-hive/honey-layout';
 
 import theme from './theme';
-import nestedTheme from './nested-theme';
+
+const nestedTheme = {
+  colors: {
+    primary: {
+      royalBlue: '#1E40AF',
+    },
+  },
+};
 
 export const NestedThemeProvider = () => {
   return (
