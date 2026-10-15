@@ -50,10 +50,12 @@ The `package.json` version bump is part of that same commit.
 
 `webpack.config.mjs` emits three bundles from `src/index.ts`: `index.mjs` (ESM), `index.cjs` (CJS), and
 `index.dev.cjs` (development CJS, wired through the `development` condition in `package.json#exports`). Only
-`react` and `@react-hive/honey-style` are webpack `externals` — everything else, including `@floating-ui/*`,
-`@react-hive/honey-utils`, `@react-hive/honey-hooks`, and the lodash helpers, is **bundled into `dist`**. Keep
-this in mind when adding a dependency: it lands in the consumer's bundle unless it is also added to `externals`
-and to `peerDependencies`.
+`react`, `react/jsx-runtime`, `react-dom` and `@react-hive/honey-style` are webpack `externals` — everything else,
+including `@floating-ui/*`, `@react-hive/honey-utils`, `@react-hive/honey-hooks`, and the lodash helpers, is
+**bundled into `dist`**. Keep this in mind when adding a dependency: it lands in the consumer's bundle unless it is
+also added to `externals` and to `peerDependencies`. An `externals` key matches that exact request only, so a
+subpath (`react/jsx-runtime`, `react-dom/client`) needs an entry of its own, or it is bundled with the copy of
+React it belongs to.
 
 `tsconfig.build.json` excludes `src/docs`, `src/__mocks__`, and `src/**/__tests__` from the published output.
 

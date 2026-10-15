@@ -27,8 +27,15 @@ const baseConfig = {
   resolve: {
     extensions: ['.ts', '.tsx', '.js'],
   },
+  /**
+   * A key matches that exact request only, so each subpath needs its own: without `react/jsx-runtime` the
+   * production bundles carry React's production JSX runtime, and without `react-dom` (imported by
+   * `@floating-ui/react`) a private react-dom whose `flushSync` never flushes.
+   */
   externals: {
     react: 'react',
+    'react/jsx-runtime': 'react/jsx-runtime',
+    'react-dom': 'react-dom',
     '@react-hive/honey-style': '@react-hive/honey-style',
   },
 };
