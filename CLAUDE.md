@@ -19,6 +19,7 @@ pnpm test                   # vitest, single run (watch: false is set in vitest.
 pnpm test --watch           # watch mode
 pnpm test src/components/HoneyBox/__tests__/honey-box.spec.tsx   # single file
 pnpm test -t "should expose the overlay instance when it is active"  # single test by name
+pnpm typecheck              # tsc --noEmit over src, __tests__ included
 pnpm build:lib              # webpack -> dist (ESM + CJS + dev CJS), used by prepublishOnly
 pnpm build:docs             # static docs bundle (Netlify)
 pnpm diagnostics            # tsc --extendedDiagnostics over tsconfig.build.json -> diagnostics/latest.json
@@ -35,7 +36,7 @@ the husky `pre-commit` hook runs it and stages `diagnostics/`.
 ## Release flow
 
 Publishing is triggered by pushing to the **`release`** branch (`.github/workflows/publish.yml`), not by tags.
-`prepublishOnly` runs clean + test + build:lib. Commit messages follow a strict convention — the version being
+`prepublishOnly` runs clean + typecheck + test + build:lib. Commit messages follow a strict convention — the version being
 released, then a description of what changed:
 
 ```

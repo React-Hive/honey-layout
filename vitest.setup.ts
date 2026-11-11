@@ -1,4 +1,4 @@
-import '@testing-library/jest-dom';
+import '@testing-library/jest-dom/vitest';
 
 class MockOrientation extends EventTarget {
   type: string = 'portrait-primary';
