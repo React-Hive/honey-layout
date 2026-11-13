@@ -92,15 +92,20 @@ export const HoneyPopupContent = <
   context,
   ...popupOptions
 }: HoneyPopupContentProps<Context, Reference, UseAutoSize>) => {
-  const { useArrow, onClose } = popupOptions;
-
-  const onCloseRef = useHoneyLatest(onClose);
+  const { useArrow } = popupOptions;
 
   const { nodeId, floating, isOpen, arrowRef, interactions, transition } =
     useHoneyPopup(popupOptions);
 
+  const onOpenChangeRef = useHoneyLatest(floating.context.onOpenChange);
+
+  /**
+   * Escape closes the popup as any other dismissal does: through the open state, which closes a
+   * popup that keeps its own and tells `onClose` - all a popup whose owner holds `open` needs.
+   * Calling `onClose` alone left a popup with its own state open.
+   */
   const handleDeactivateOverlay = useCallback(() => {
-    onCloseRef.current?.('escape-key');
+    onOpenChangeRef.current(false, undefined, 'escape-key');
   }, []);
 
   const popupContext = useMemo<HoneyPopupContextValue<Context, Reference>>(

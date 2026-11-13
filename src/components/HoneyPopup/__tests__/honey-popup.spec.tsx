@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, fireEvent } from '@testing-library/react';
+import { render, fireEvent, waitFor } from '@testing-library/react';
 import type { ReactElement } from 'react';
 
 import { themeMock } from '../../../__mocks__';
@@ -21,5 +21,29 @@ describe('[HoneyPopup]: basic behavior', () => {
     fireEvent.click(getByTestId('honey-popup'));
 
     expect(getByTestId('honey-popup-floating-content')).toBeInTheDocument();
+  });
+});
+
+describe('[HoneyPopup]: Escape', () => {
+  it('should close a popup that keeps its own open state, and tell onClose why', async () => {
+    const onClose = vi.fn();
+
+    const { getByTestId, queryByTestId } = customRender(
+      <HoneyPopup content="Popup content" onClose={onClose}>
+        open
+      </HoneyPopup>,
+    );
+
+    fireEvent.click(getByTestId('honey-popup'));
+
+    const floatingContent = getByTestId('honey-popup-floating-content');
+
+    fireEvent.keyUp(floatingContent, { key: 'Escape', code: 'Escape' });
+
+    await waitFor(() =>
+      expect(queryByTestId('honey-popup-floating-content')).not.toBeInTheDocument(),
+    );
+
+    expect(onClose).toHaveBeenCalledWith('escape-key', undefined);
   });
 });
